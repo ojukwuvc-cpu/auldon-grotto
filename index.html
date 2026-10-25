@@ -1,0 +1,976 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Santa's Grotto at Auldon Toys — Book your visit</title>
+<meta name="description" content="Meet Santa at Auldon Toys. He greets your child by name, knows their wish and sends them home with a gift. Book your December visit in under two minutes.">
+<meta name="theme-color" content="#0a1621">
+<meta property="og:title" content="Santa's Grotto at Auldon Toys">
+<meta property="og:description" content="Book your child's magical visit to Santa's Grotto. Lagos & Abuja, 1–24 December.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://grotto.auldontoys.com/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23e8392f'/%3E%3Cpath d='M12 4l2 5.5h5.5l-4.4 3.3 1.7 5.4L12 15l-4.8 3.2 1.7-5.4L4.5 9.5H10z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap">
+<script>
+  // Where the booking API lives. Change this one line if the API domain ever changes.
+  window.GROTTO_API = "https://api.auldontoys.com";
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+  /* Layout concept: single dark "grotto-at-night" canvas; a glowing circular portal is the one bold focal point, everything else quiet. A full-screen wizard stacks one task per screen with a sticky action bar. */
+  :root{
+    color-scheme: dark;
+    --night:#0a1621;          /* deep grotto night */
+    --night-2:#0f2130;         /* raised surface */
+    --card:#13293b;            /* card fill */
+    --card-2:#17334a;          /* hover / selected fill */
+    --snow:#f6f2ea;            /* warm white text */
+    --frost:#9fb6c6;           /* muted secondary */
+    --frost-dim:#6f8698;       /* tertiary */
+    --gold:#f3c257;            /* candle gold accent */
+    --gold-soft:#ffe6a6;
+    --red:#e8392f;             /* Auldon santa red */
+    --red-deep:#b2211c;
+    --green:#49b36e;           /* "available" / success */
+    --amber:#e8a13a;           /* "filling up" */
+    --line:rgba(255,255,255,.10);
+    --line-2:rgba(255,255,255,.18);
+    --shadow:0 18px 50px -20px rgba(0,0,0,.75);
+    --glow-gold:0 0 0 1px rgba(243,194,87,.4), 0 10px 40px -8px rgba(243,194,87,.35);
+    --radius:18px;
+    --radius-sm:12px;
+    --maxw:1120px;
+    --display:"Fraunces", Georgia, "Times New Roman", serif;
+    --ui:"Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(130% 80% at 50% -10%, #163049 0%, rgba(22,48,73,0) 55%),
+      radial-gradient(90% 60% at 85% 110%, #1a1430 0%, rgba(26,20,48,0) 60%),
+      var(--night);
+    color:var(--snow);
+    font-family:var(--ui);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  #snow{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .app{position:relative;z-index:1}
+  .wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+  h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.08;text-wrap:balance;margin:0}
+  p{margin:0}
+  a{color:inherit}
+  button{font-family:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(10,22,33,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:31;background:rgba(10,22,33,.95)}
+  .topbar .wrap{display:flex;align-items:center;gap:12px;padding-block:12px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px}
+  .brand .mk{width:30px;height:30px;border-radius:9px;background:linear-gradient(145deg,var(--red),var(--red-deep));display:grid;place-items:center;box-shadow:0 6px 16px -6px rgba(232,57,47,.7)}
+  .brand .mk svg{width:17px;height:17px}
+  .brand small{display:block;font-weight:600;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);margin-top:-2px}
+  .topbar .mini-count{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--frost);background:rgba(255,255,255,.04);border:1px solid var(--line);padding:6px 11px;border-radius:999px;white-space:nowrap}
+  .topbar .mini-count b{color:var(--gold);font-weight:700}
+  .topbar .mini-count .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(73,179,110,.2)}
+
+  /* ---------- screens ---------- */
+  .screen{display:block}
+  .screen[hidden]{display:none!important}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;padding-block:30px 44px}
+  .hero-grid{display:grid;grid-template-columns:1fr;gap:26px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);background:rgba(243,194,87,.08);border:1px solid rgba(243,194,87,.25);padding:7px 13px;border-radius:999px}
+  .eyebrow .star{width:13px;height:13px;color:var(--gold)}
+  .hero h1{font-size:clamp(2.5rem,9vw,4.6rem);font-weight:600;font-optical-sizing:auto;letter-spacing:-.01em;margin-top:18px}
+  .hero h1 .em{font-style:italic;color:var(--gold-soft);font-weight:500}
+  .hero .lede{color:var(--frost);font-size:clamp(1.02rem,3.4vw,1.2rem);max-width:30ch;margin-top:16px;line-height:1.55}
+  .hero .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  .btn{appearance:none;border:0;border-radius:14px;padding:15px 22px;font-size:16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:transform .12s ease, box-shadow .2s ease, background .2s}
+  .btn:active{transform:translateY(1px) scale(.995)}
+  .btn-primary{background:linear-gradient(140deg,#ff5247,var(--red) 40%,var(--red-deep));color:#fff;box-shadow:0 14px 34px -12px rgba(232,57,47,.85), inset 0 1px 0 rgba(255,255,255,.22)}
+  .btn-primary:hover{box-shadow:0 18px 40px -12px rgba(232,57,47,.95)}
+  .btn-gold{background:linear-gradient(140deg,#ffd877,var(--gold) 55%,#d99f28);color:#3a2708;box-shadow:0 14px 34px -12px rgba(243,194,87,.8), inset 0 1px 0 rgba(255,255,255,.5)}
+  .btn-ghost{background:rgba(255,255,255,.05);color:var(--snow);border:1px solid var(--line-2)}
+  .btn-ghost:hover{background:rgba(255,255,255,.09)}
+  .btn-block{width:100%}
+  .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+  /* portal */
+  .portal-stage{display:grid;place-items:center;position:relative;padding:6px}
+  .portal{position:relative;width:min(78vw,340px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center}
+  .portal .halo{position:absolute;inset:-14%;border-radius:50%;background:
+     radial-gradient(circle at 50% 46%, rgba(255,230,166,.9) 0%, rgba(243,194,87,.55) 30%, rgba(243,194,87,.12) 52%, rgba(243,194,87,0) 70%);
+     filter:blur(2px);animation:breathe 6s ease-in-out infinite}
+  .portal .ring{position:absolute;inset:6%;border-radius:50%;background:conic-gradient(from 0deg, rgba(255,230,166,.0),rgba(255,230,166,.7),rgba(243,194,87,.1),rgba(255,230,166,.6),rgba(255,230,166,0));mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 7px),#000 calc(100% - 6px));animation:spin 18s linear infinite;opacity:.8}
+  .portal .disc{position:relative;width:70%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 42% 36%, #1c3246, #0a1621 70%);box-shadow:inset 0 10px 30px rgba(0,0,0,.6), inset 0 -6px 20px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);display:grid;place-items:center;text-align:center}
+  .portal .disc .north{position:absolute;top:14%;left:50%;transform:translateX(-50%);width:20px;height:20px;color:var(--gold-soft);filter:drop-shadow(0 0 8px rgba(255,230,166,.9))}
+  .countdown-k{color:var(--frost);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+  .countdown-n{font-family:var(--display);font-weight:600;font-size:clamp(2.6rem,12vw,3.4rem);line-height:1;color:var(--gold-soft);margin:3px 0}
+  .countdown-s{color:var(--frost);font-size:12.5px;font-weight:600}
+
+  .trust{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:22px}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--frost);background:rgba(255,255,255,.04);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
+  .chip svg{width:14px;height:14px;color:var(--gold)}
+
+  /* strip / section */
+  .section{padding-block:30px}
+  .kicker{font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .section h2{font-size:clamp(1.7rem,6vw,2.5rem);font-weight:600;margin-top:10px}
+  .section .sub{color:var(--frost);margin-top:10px;max-width:56ch}
+
+  .steps3{display:grid;grid-template-columns:1fr;gap:14px;margin-top:22px}
+  .howcard{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .howcard .num{font-family:var(--display);font-weight:600;font-size:14px;color:var(--gold);letter-spacing:.1em}
+  .howcard h3{font-size:1.2rem;margin-top:10px;font-weight:600}
+  .howcard p{color:var(--frost);font-size:14.5px;margin-top:7px}
+
+  .pkg-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:22px}
+  .pkg{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;gap:4px}
+  .pkg.feature{border-color:rgba(243,194,87,.5);box-shadow:var(--glow-gold)}
+  .pkg .tag{position:absolute;top:-11px;left:22px;background:linear-gradient(140deg,#ffd877,var(--gold));color:#3a2708;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:999px}
+  .pkg .pname{font-family:var(--display);font-weight:600;font-size:1.35rem}
+  .pkg .price{font-size:1.9rem;font-weight:800;color:var(--gold-soft);margin:6px 0 2px}
+  .pkg .price span{font-size:.8rem;font-weight:600;color:var(--frost)}
+  .pkg ul{list-style:none;padding:0;margin:12px 0 0;display:flex;flex-direction:column;gap:9px}
+  .pkg li{display:flex;gap:9px;font-size:14px;color:var(--frost);align-items:flex-start}
+  .pkg li svg{width:16px;height:16px;color:var(--green);flex:none;margin-top:2px}
+
+  .band{margin-top:30px;background:linear-gradient(135deg,rgba(232,57,47,.14),rgba(243,194,87,.08));border:1px solid var(--line);border-radius:22px;padding:26px}
+  .band h2{font-size:clamp(1.5rem,5.5vw,2rem)}
+  .band p{color:var(--frost);margin-top:8px;max-width:48ch}
+
+  footer{margin-top:40px;border-top:1px solid var(--line);padding-block:26px 34px;color:var(--frost-dim);font-size:13px}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+  footer a{color:var(--frost)}
+
+  /* ---------- WIZARD ---------- */
+  .wiz-head{position:sticky;top:calc(env(safe-area-inset-top,0px) + 55px);z-index:20;background:linear-gradient(180deg,var(--night) 70%,rgba(10,22,33,0));padding-block:14px 10px}
+  .wiz-head .bar{height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+  .wiz-head .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--red));transition:width .4s cubic-bezier(.4,0,.2,1)}
+  .wiz-head .meta{display:flex;justify-content:space-between;align-items:center;margin-top:9px;font-size:12.5px;color:var(--frost);font-weight:600}
+  .wiz-head .meta b{color:var(--snow)}
+  .wiz-body{padding-block:8px 150px}
+  .wiz-body h2{font-size:clamp(1.55rem,6vw,2.2rem);font-weight:600}
+  .wiz-body .hint{color:var(--frost);margin-top:9px;font-size:14.5px;max-width:52ch}
+
+  .opt-list{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}
+  .opt{display:flex;align-items:center;gap:14px;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;transition:border-color .15s, background .15s, transform .1s}
+  .opt:hover{background:var(--card-2)}
+  .opt[aria-pressed="true"]{border-color:var(--gold);background:var(--card-2);box-shadow:0 0 0 3px rgba(243,194,87,.14)}
+  .opt .ic{width:44px;height:44px;flex:none;border-radius:12px;background:rgba(243,194,87,.1);display:grid;place-items:center;color:var(--gold)}
+  .opt .ic svg{width:22px;height:22px}
+  .opt .t{flex:1;min-width:0}
+  .opt .t b{display:block;font-size:15.5px;font-weight:700}
+  .opt .t span{display:block;color:var(--frost);font-size:13px;margin-top:2px}
+  .opt .pick{width:22px;height:22px;flex:none;border-radius:50%;border:2px solid var(--line-2);display:grid;place-items:center}
+  .opt[aria-pressed="true"] .pick{border-color:var(--gold);background:var(--gold)}
+  .opt[aria-pressed="true"] .pick svg{width:12px;height:12px;color:#3a2708}
+  .opt .pick svg{display:none}
+  .opt[aria-pressed="true"] .pick svg{display:block}
+
+  /* date strip */
+  .daystrip{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 12px;margin-top:20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .daystrip::-webkit-scrollbar{height:6px}
+  .daystrip::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
+  .day{scroll-snap-align:start;flex:0 0 auto;width:66px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center;transition:.15s}
+  .day:hover{background:var(--card-2)}
+  .day[aria-pressed="true"]{border-color:var(--gold);background:var(--card-2);box-shadow:0 0 0 3px rgba(243,194,87,.14)}
+  .day .dow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--frost)}
+  .day .dnum{font-family:var(--display);font-weight:600;font-size:1.5rem;margin:3px 0}
+  .day .mon{font-size:10.5px;color:var(--frost-dim);font-weight:700;text-transform:uppercase}
+  .day .few{font-size:10px;color:var(--amber);font-weight:700;margin-top:4px}
+  .month-label{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--frost);margin-top:20px}
+
+  /* time slots */
+  .slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:10px;margin-top:10px}
+  .slot{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 8px;text-align:center;transition:.15s;position:relative}
+  .slot:hover:not([disabled]){background:var(--card-2)}
+  .slot[aria-pressed="true"]{border-color:var(--gold);background:var(--card-2);box-shadow:0 0 0 3px rgba(243,194,87,.14)}
+  .slot .tm{font-weight:800;font-size:15px}
+  .slot .av{font-size:10.5px;font-weight:700;margin-top:3px}
+  .slot .av.ok{color:var(--green)}
+  .slot .av.few{color:var(--amber)}
+  .slot[disabled]{opacity:.4;cursor:not-allowed}
+  .slot[disabled] .av{color:var(--frost-dim)}
+
+  /* forms */
+  .field{margin-top:16px}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--snow);margin-bottom:7px}
+  .field label .opt-tag{color:var(--frost-dim);font-weight:600}
+  .input,select,textarea{width:100%;background:rgba(255,255,255,.04);border:1.5px solid var(--line);color:var(--snow);border-radius:12px;padding:13px 14px;font-size:16px;font-family:inherit;transition:.15s}
+  .input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.06)}
+  select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239fb6c6' stroke-width='2.5' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:40px}
+  textarea{resize:vertical;min-height:84px;line-height:1.5}
+  .input.err,textarea.err,select.err{border-color:var(--red)}
+  .errmsg{color:#ff8a82;font-size:12.5px;margin-top:6px;font-weight:600}
+  .two{display:grid;grid-template-columns:1fr;gap:0}
+
+  .child-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px;position:relative}
+  .child-card .ch-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .child-card .ch-head .n{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:600;font-size:1.15rem}
+  .child-card .ch-head .n .b{width:30px;height:30px;border-radius:9px;background:rgba(243,194,87,.12);color:var(--gold);display:grid;place-items:center;font-weight:800;font-size:14px;font-family:var(--ui)}
+  .rm{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--frost);border-radius:9px;padding:7px 10px;font-size:12.5px;font-weight:700;display:inline-flex;gap:6px;align-items:center}
+  .rm:hover{color:#ff8a82;border-color:rgba(232,57,47,.5)}
+  .interests{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}
+  .ichip{background:rgba(255,255,255,.04);border:1.5px solid var(--line);color:var(--frost);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;transition:.12s}
+  .ichip:hover{background:rgba(255,255,255,.08)}
+  .ichip[aria-pressed="true"]{background:rgba(243,194,87,.16);border-color:var(--gold);color:var(--gold-soft)}
+  .letter-wrap{margin-top:14px;background:linear-gradient(180deg,rgba(243,194,87,.06),rgba(243,194,87,.02));border:1px dashed rgba(243,194,87,.35);border-radius:14px;padding:14px}
+  .letter-wrap .lh{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--gold);letter-spacing:.04em}
+  .letter-wrap .lh svg{width:15px;height:15px}
+  .letter-wrap p.note{color:var(--frost);font-size:12px;margin-top:3px}
+  .letter-wrap textarea{background:rgba(0,0,0,.18);margin-top:10px;border-color:rgba(243,194,87,.25)}
+  .addchild{margin-top:16px;width:100%;background:rgba(255,255,255,.03);border:1.5px dashed var(--line-2);color:var(--snow);border-radius:14px;padding:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:9px}
+  .addchild:hover{background:rgba(255,255,255,.06);border-color:var(--gold)}
+  .addchild svg{width:18px;height:18px;color:var(--gold)}
+
+  .divider{height:1px;background:var(--line);margin:24px 0}
+  .subhead{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--frost);margin-bottom:2px}
+
+  /* add-ons */
+  .addon{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:15px;margin-top:12px}
+  .addon[aria-checked="true"]{border-color:var(--gold);background:var(--card-2)}
+  .addon .ic{width:42px;height:42px;flex:none;border-radius:11px;background:rgba(243,194,87,.1);color:var(--gold);display:grid;place-items:center}
+  .addon .ic svg{width:21px;height:21px}
+  .addon .t{flex:1;min-width:0}
+  .addon .t b{font-size:14.5px;font-weight:700;display:block}
+  .addon .t span{color:var(--frost);font-size:12.5px}
+  .addon .pr{font-weight:800;color:var(--gold-soft);font-size:14px;white-space:nowrap}
+  .addon .pr.free{color:var(--green)}
+  .toggle{width:46px;height:28px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid var(--line-2);position:relative;flex:none;transition:.18s}
+  .toggle::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:var(--snow);transition:.18s}
+  .addon[aria-checked="true"] .toggle{background:var(--gold)}
+  .addon[aria-checked="true"] .toggle::after{transform:translateX(18px)}
+
+  /* review */
+  .summary{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-top:20px}
+  .srow{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+  .srow:last-child{border-bottom:0}
+  .srow .k{color:var(--frost)}
+  .srow .v{font-weight:700;text-align:right}
+  .srow .v small{display:block;color:var(--frost-dim);font-weight:500;font-size:12px}
+  .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:18px;padding-top:16px;border-top:2px solid var(--line-2)}
+  .total .k{font-weight:700}
+  .total .v{font-family:var(--display);font-weight:600;font-size:2rem;color:var(--gold-soft)}
+  .promo{display:flex;gap:10px;margin-top:16px}
+  .promo .input{flex:1}
+  .promo .btn{padding:13px 18px;border-radius:12px;font-size:14px}
+  .promo-ok{color:var(--green);font-size:12.5px;font-weight:700;margin-top:8px;display:flex;gap:6px;align-items:center}
+  .pay-note{display:flex;gap:9px;align-items:center;color:var(--frost);font-size:12.5px;margin-top:16px;justify-content:center}
+  .pay-note svg{width:15px;height:15px;color:var(--green)}
+  .paylogos{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;justify-content:center}
+  .paylogos span{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--frost);background:rgba(255,255,255,.05);border:1px solid var(--line);padding:5px 10px;border-radius:7px}
+
+  /* sticky action bar */
+  .actionbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:linear-gradient(180deg,rgba(10,22,33,0),var(--night) 32%);padding-top:22px}
+  .actionbar .inner{max-width:var(--maxw);margin-inline:auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));padding-bottom:max(16px,env(safe-area-inset-bottom,0px));display:flex;gap:12px;align-items:center}
+  .actionbar .back{width:54px;height:54px;flex:none;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line-2);color:var(--snow);display:grid;place-items:center}
+  .actionbar .back svg{width:20px;height:20px}
+  .actionbar .cont{flex:1;height:54px}
+  .actionbar .sumline{position:absolute;top:-2px;left:max(18px,env(safe-area-inset-left,0px));font-size:12px;color:var(--frost);font-weight:600}
+  .actionbar .sumline b{color:var(--gold-soft)}
+
+  /* ---------- TICKET ---------- */
+  .ticket-screen{padding-block:24px 60px;text-align:center}
+  .ticket-screen .burst{font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--green);display:inline-flex;gap:8px;align-items:center}
+  .ticket-screen h2{font-size:clamp(1.8rem,7vw,2.6rem);font-weight:600;margin-top:12px}
+  .ticket-screen .psub{color:var(--frost);margin-top:10px;max-width:40ch;margin-inline:auto}
+  .ticket{max-width:430px;margin:26px auto 0;text-align:left;background:
+      linear-gradient(135deg,#1a3148,#102232);
+      border:1px solid rgba(243,194,87,.45);border-radius:22px;overflow:hidden;box-shadow:0 30px 70px -28px rgba(0,0,0,.85), var(--glow-gold);position:relative;transform:translateY(14px);opacity:0;animation:ticketIn .7s cubic-bezier(.2,.8,.2,1) .15s forwards}
+  .ticket .tk-top{background:linear-gradient(135deg,var(--red),var(--red-deep));padding:18px 22px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden}
+  .ticket .tk-top::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% -20%,rgba(255,255,255,.3),transparent 55%);pointer-events:none}
+  .ticket .tk-top .lbl{font-size:10.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#ffe6c9}
+  .ticket .tk-top .gt{font-family:var(--display);font-weight:600;font-size:1.3rem;color:#fff;margin-top:1px}
+  .ticket .tk-top .seal{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe6a6,var(--gold));display:grid;place-items:center;color:#3a2708;box-shadow:0 6px 18px -6px rgba(0,0,0,.5)}
+  .ticket .tk-top .seal svg{width:24px;height:24px}
+  .ticket .tk-body{padding:22px}
+  .ticket .guest-k{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .ticket .guest-n{font-family:var(--display);font-weight:600;font-size:1.9rem;line-height:1.1;margin-top:4px;color:var(--snow)}
+  .ticket .guest-n small{display:block;font-family:var(--ui);font-size:12.5px;color:var(--frost);font-weight:600;margin-top:4px}
+  .ticket .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  .ticket .cell .ck{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--frost-dim)}
+  .ticket .cell .cv{font-weight:700;font-size:14px;margin-top:3px}
+  .ticket .perf{border-top:2px dashed rgba(255,255,255,.22);margin:20px -22px 0;position:relative}
+  .ticket .perf::before,.ticket .perf::after{content:"";position:absolute;top:-12px;width:24px;height:24px;border-radius:50%;background:var(--night)}
+  .ticket .perf::before{left:-12px}
+  .ticket .perf::after{right:-12px}
+  .ticket .qr-wrap{padding:20px 22px 4px;display:flex;gap:16px;align-items:center}
+  .ticket .qr{width:92px;height:92px;flex:none;background:#fff;border-radius:12px;padding:8px}
+  .ticket .qr canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
+  .ticket .qr-t .code{font-weight:800;letter-spacing:.14em;font-size:15px;color:var(--gold-soft)}
+  .ticket .qr-t .code-k{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--frost-dim)}
+  .ticket .qr-t p{font-size:12px;color:var(--frost);margin-top:7px;line-height:1.4}
+  .ticket .ct{margin:6px 22px 22px;background:rgba(243,194,87,.09);border:1px solid rgba(243,194,87,.25);border-radius:12px;padding:12px;text-align:center}
+  .ticket .ct .k{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .ticket .ct .n{font-weight:800;font-size:15px;margin-top:3px;color:var(--snow)}
+  .ticket-actions{max-width:430px;margin:18px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ticket-actions .btn{padding:14px;font-size:14.5px}
+  .ticket-actions .btn-wide{grid-column:1/-1}
+  .afterword{max-width:430px;margin:24px auto 0;color:var(--frost-dim);font-size:12.5px}
+
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);transform:translateX(-50%) translateY(20px);z-index:60;background:#1d3a52;border:1px solid var(--line-2);color:var(--snow);padding:13px 18px;border-radius:999px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;display:flex;gap:9px;align-items:center;max-width:90vw}
+  .toast svg{width:16px;height:16px;color:var(--gold);flex:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @keyframes breathe{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes ticketIn{to{transform:translateY(0);opacity:1}}
+
+  /* ---------- responsive up ---------- */
+  @media(min-width:720px){
+    .hero-grid{grid-template-columns:1.05fr .95fr}
+    .steps3{grid-template-columns:repeat(3,1fr)}
+    .pkg-grid{grid-template-columns:repeat(3,1fr)}
+    .two{grid-template-columns:1fr 1fr;gap:14px}
+    .hero h1{margin-top:6px}
+    .band{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:34px}
+    .band .band-cta{flex:none}
+  }
+  @media(min-width:1000px){
+    .hero{padding-block:46px 56px}
+    .portal{width:380px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .ticket{opacity:1;transform:none}
+  }
+</style>
+
+<style>
+  /* ---- live-site additions ---- */
+  html,body{min-height:100%}
+  :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+
+  .offline{background:rgba(232,57,47,.14);border:1px solid rgba(232,57,47,.4);color:#ffb3ad;border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;margin-top:16px}
+
+  /* skeleton while config/availability loads */
+  .skel{position:relative;overflow:hidden;background:rgba(255,255,255,.05);border-radius:12px;min-height:58px}
+  .skel::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);animation:shimmer 1.4s infinite}
+  @keyframes shimmer{to{transform:translateX(100%)}}
+
+  /* payment screen */
+  .pay-screen{padding-block:22px 80px}
+  .pay-card{max-width:460px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+  .pay-card .ph{padding:18px 22px;background:linear-gradient(135deg,rgba(243,194,87,.16),rgba(232,57,47,.1));border-bottom:1px solid var(--line)}
+  .pay-card .ph .k{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .pay-card .ph .amt{font-family:var(--display);font-weight:600;font-size:2.3rem;color:var(--gold-soft);line-height:1.1;margin-top:4px}
+  .pay-card .ph .ref{font-size:12.5px;color:var(--frost);margin-top:4px}
+  .pay-card .pb{padding:20px 22px}
+  .bank-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .bank-row:last-child{border-bottom:0}
+  .bank-row .k{font-size:12px;color:var(--frost);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .bank-row .v{font-weight:800;font-size:17px;text-align:right}
+  .bank-row .v.acct{font-size:1.65rem;letter-spacing:.12em;font-family:var(--display);color:var(--gold-soft)}
+  .copy{background:rgba(243,194,87,.12);border:1px solid rgba(243,194,87,.35);color:var(--gold-soft);border-radius:10px;padding:8px 11px;font-size:12.5px;font-weight:800;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+  .copy svg{width:14px;height:14px}
+  .pay-steps{margin:18px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:14px;color:var(--frost)}
+  .pay-steps li{display:flex;gap:10px}
+  .pay-steps li b{color:var(--gold);font-weight:800;flex:none;width:18px}
+  .waiting{margin-top:18px;background:rgba(73,179,110,.08);border:1px solid rgba(73,179,110,.3);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center}
+  .waiting .pulse{width:12px;height:12px;border-radius:50%;background:var(--green);flex:none;box-shadow:0 0 0 0 rgba(73,179,110,.6);animation:pulse 1.6s infinite}
+  @keyframes pulse{to{box-shadow:0 0 0 12px rgba(73,179,110,0)}}
+  .waiting b{display:block;font-size:14px}
+  .waiting span{font-size:12.5px;color:var(--frost)}
+  .expiry{font-size:12.5px;color:var(--frost);text-align:center;margin-top:14px}
+  .expiry b{color:var(--amber)}
+  .expired-box{margin-top:16px;background:rgba(232,161,58,.1);border:1px solid rgba(232,161,58,.4);border-radius:14px;padding:16px;text-align:center}
+  .pay-help{max-width:460px;margin:16px auto 0;font-size:12.5px;color:var(--frost-dim);text-align:center}
+
+  .ticket .qr{width:104px;height:104px}
+  .ticket .qr svg{width:100%;height:100%;display:block}
+  @media(prefers-reduced-motion:reduce){.waiting .pulse{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="snow"></canvas>
+
+<div class="app">
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.5H21l-5.3 4 2 6.5L12 15l-5.7 4 2-6.5L3 8.5h6.6z"/></svg></span>
+        <span>Auldon Toys<small>Santa's Grotto · 2026</small></span>
+      </div>
+      <div class="mini-count" id="miniCount"><span class="dot"></span><span><b id="miniDays">—</b> to Christmas Eve</span></div>
+    </div>
+  </header>
+
+  <!-- ===== LANDING ===== -->
+  <main id="screen-landing" class="screen">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.5H21l-5.3 4 2 6.5L12 15l-5.7 4 2-6.5L3 8.5h6.6z"/></svg> The most magical visit of the year</span>
+          <h1>Step into <span class="em">Santa's Grotto</span></h1>
+          <p class="lede">A hand-crafted winter wonderland where Santa greets your little one <em>by name</em>, knows their wish, and sends them home with a gift. Book your visit in under two minutes.</p>
+          <div class="cta-row">
+            <button class="btn btn-primary" id="startBtn">Book your visit
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <a href="#how" class="btn btn-ghost">How it works</a>
+          </div>
+          <div class="trust">
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-11a7 7 0 0114 0c0 6.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>3 Lagos & Abuja grottos</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Open 1–24 Dec</span>
+            <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M8 12h8M12 8v8"/></svg>Sensory-friendly hours</span>
+          </div>
+        </div>
+        <div class="portal-stage">
+          <div class="portal" role="img" aria-label="A glowing grotto portal counting down to Christmas">
+            <span class="halo"></span>
+            <span class="ring"></span>
+            <div class="disc">
+              <svg class="north" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>
+              <div>
+                <div class="countdown-k">Christmas Eve in</div>
+                <div class="countdown-n tnum" id="heroDays">—</div>
+                <div class="countdown-s">sleeps to go</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="wrap">
+        <span class="kicker">How the magic works</span>
+        <h2>Four small steps, one unforgettable morning</h2>
+        <p class="sub">Everything is handled online so there's no queue on the day — just walk up, scan your Golden Ticket, and step inside.</p>
+        <div class="steps3">
+          <div class="howcard"><div class="num">01</div><h3>Pick your grotto & time</h3><p>Choose a location, a December date and a live time slot. We never oversell a slot, so there's no waiting.</p></div>
+          <div class="howcard"><div class="num">02</div><h3>Tell Santa about your child</h3><p>Add each child, their age and a short letter. Santa reads it before you arrive — that's the real magic.</p></div>
+          <div class="howcard"><div class="num">03</div><h3>Get your Golden Ticket</h3><p>Pay securely and receive an animated ticket with a QR code by email and WhatsApp instantly.</p></div>
+          <div class="howcard"><div class="num">04</div><h3>Scan, meet & treasure</h3><p>Scan at the door, meet Santa, collect the gift, and download your photos the same evening.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <span class="kicker">Choose your experience</span>
+        <h2>Three ways to meet Santa</h2>
+        <div class="pkg-grid" id="pkgPreview"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="band">
+          <div>
+            <h2>Ready to make their Christmas?</h2>
+            <p>Weekend slots sell out first every year. Reserve yours now and pay in Naira with card, transfer or USSD.</p>
+          </div>
+          <div class="band-cta"><button class="btn btn-gold" onclick="document.getElementById('startBtn').click()">Start booking →</button></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <span>© 2026 Auldon Toys · Making the kids happy</span>
+        <span>support@auldontoys.com · +234 810 002 5985</span>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ===== WIZARD ===== -->
+  <main id="screen-wizard" class="screen" hidden>
+    <div class="wiz-head">
+      <div class="wrap">
+        <div class="bar"><i id="progBar" style="width:14%"></i></div>
+        <div class="meta"><span>Step <b id="stepNum">1</b> of 7</span><span id="stepName">Choose your grotto</span></div>
+      </div>
+    </div>
+    <div class="wrap wiz-body">
+      <!-- step panes injected -->
+      <div id="pane-location" class="pane"></div>
+      <div id="pane-date" class="pane" hidden></div>
+      <div id="pane-time" class="pane" hidden></div>
+      <div id="pane-package" class="pane" hidden></div>
+      <div id="pane-register" class="pane" hidden></div>
+      <div id="pane-addons" class="pane" hidden></div>
+      <div id="pane-review" class="pane" hidden></div>
+    </div>
+  </main>
+
+  <!-- ===== PAYMENT (bank transfer to a one-off virtual account) ===== -->
+  <main id="screen-pay" class="screen" hidden>
+    <div class="wrap pay-screen">
+      <div class="pay-card">
+        <div class="ph">
+          <div class="k">Transfer exactly</div>
+          <div class="amt tnum" id="payAmount">₦—</div>
+          <div class="ref">Booking reference <b id="payRef">—</b> · held for you while you pay</div>
+        </div>
+        <div class="pb">
+          <div class="bank-row"><span class="k">Bank</span><span class="v" id="payBank">—</span></div>
+          <div class="bank-row"><span class="k">Account number</span><span style="display:flex;gap:10px;align-items:center"><span class="v acct tnum" id="payAcct">—</span><button class="copy" id="copyAcct" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button></span></div>
+          <div class="bank-row"><span class="k">Account name</span><span class="v" id="payName">—</span></div>
+          <ol class="pay-steps">
+            <li><b>1</b><span>Open your bank app and make a transfer to the account above.</span></li>
+            <li><b>2</b><span>Send the exact amount so it matches your booking automatically.</span></li>
+            <li><b>3</b><span>Stay on this page — your Golden Ticket appears the moment it lands.</span></li>
+          </ol>
+          <div class="waiting" id="waitingBox"><span class="pulse"></span><div><b>Watching for your transfer…</b><span id="waitingSub">This usually takes under a minute.</span></div></div>
+          <div class="expired-box" id="expiredBox" hidden><b>This account has expired.</b><p style="color:var(--frost);font-size:13px;margin-top:6px">No money was taken. Start again and we'll give you a fresh account.</p><button class="btn btn-gold" id="restartBtn" style="margin-top:12px">Start again</button></div>
+          <div class="expiry" id="payExpiry">Account valid for <b>—</b></div>
+        </div>
+      </div>
+      <p class="pay-help">Already transferred but nothing happened? Transfers can take a few minutes to reach us. Keep this page open or WhatsApp +234 810 002 5985 with your reference.</p>
+    </div>
+  </main>
+
+  <!-- ===== TICKET ===== -->
+  <main id="screen-ticket" class="screen" hidden>
+    <div class="wrap ticket-screen">
+      <span class="burst"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M20 6L9 17l-5-5"/></svg> Booking confirmed</span>
+      <h2 id="ticketHeadline">The magic is booked!</h2>
+      <p class="psub">Payment received. We've emailed your Golden Ticket to <b id="tkEmail"></b>. Here it is to keep — screenshot it or save the link.</p>
+
+      <div class="ticket" id="ticketCard">
+        <div class="tk-top">
+          <div><div class="lbl">Auldon Toys presents</div><div class="gt">Golden Grotto Ticket</div></div>
+          <div class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 6.5H21l-5.3 4 2 6.5L12 15l-5.7 4 2-6.5L3 8.5h6.6z"/></svg></div>
+        </div>
+        <div class="tk-body">
+          <div class="guest-k">Admit</div>
+          <div class="guest-n" id="tkGuests">Your little one<small id="tkPackage"></small></div>
+          <div class="grid2">
+            <div class="cell"><div class="ck">Grotto</div><div class="cv" id="tkLocation">—</div></div>
+            <div class="cell"><div class="ck">When</div><div class="cv" id="tkWhen">—</div></div>
+          </div>
+        </div>
+        <div class="perf"></div>
+        <div class="qr-wrap">
+          <div class="qr" id="qrHost" role="img" aria-label="Entry QR code"></div>
+          <div class="qr-t">
+            <div class="code-k">Ticket code</div>
+            <div class="code" id="tkCode">—</div>
+            <p>Show this at the grotto entrance for fast, queue-free check-in.</p>
+          </div>
+        </div>
+        <div class="ct"><div class="k">Your visit begins in</div><div class="n tnum" id="tkCountdown">—</div></div>
+      </div>
+
+      <div class="ticket-actions">
+        <button class="btn btn-ghost" id="calBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Add to calendar</button>
+        <button class="btn btn-ghost" id="shareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"/><path d="M16 6l-4-4-4 4M12 2v14"/></svg>Share ticket</button>
+        <button class="btn btn-gold btn-wide" id="againBtn">Book another visit</button>
+      </div>
+      <p class="afterword">Please arrive 10 minutes before your slot. Show the QR code at the grotto entrance for queue-free check-in.</p>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toastMsg"></span></div>
+
+<script>
+(function(){
+  "use strict";
+  var API=(window.GROTTO_API||"").replace(/\/$/,"");
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var NGN=function(n){return "₦"+Number(n||0).toLocaleString("en-NG")};
+  var DOWS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  var MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  /* ---------- API ---------- */
+  function api(path,opts){
+    opts=opts||{};
+    var init={method:opts.method||"GET",headers:{"Accept":"application/json"}};
+    if(opts.body){init.headers["Content-Type"]="application/json";init.body=JSON.stringify(opts.body)}
+    return fetch(API+path,init).then(function(r){
+      return r.text().then(function(t){
+        var j=null;try{j=t?JSON.parse(t):null}catch(e){}
+        if(!r.ok){var e=new Error((j&&j.error)||("Request failed ("+r.status+")"));e.status=r.status;e.field=j&&j.field;throw e}
+        return j;
+      });
+    });
+  }
+
+  /* ---------- fallback catalogue (display only, if the API is unreachable) ---------- */
+  var FALLBACK={
+    locations:[{id:"lekki",name:"Auldon Toys — Lekki",sub:"Lekki Phase 1, Lagos",icon:"palm"},{id:"ikeja",name:"Auldon Toys — Ikeja City Mall",sub:"Alausa, Ikeja, Lagos",icon:"mall"},{id:"abuja",name:"Auldon Toys — Jabi Lake Mall",sub:"Jabi, Abuja",icon:"lake"}],
+    packages:[{id:"classic",name:"Classic Visit",price:8500,perks:["5-minute meeting with Santa","A wrapped age-appropriate gift","1 digital photo by email"]},{id:"premium",name:"Premium Visit",price:15000,feature:true,perks:["10-minute visit, Santa knows their name","A premium named gift to open","3 digital photos + 1 printed keepsake","Skip-the-queue priority entry"]},{id:"vip",name:"VIP Magic",price:25000,perks:["Private 15-minute session","Deluxe personalised gift","Full downloadable photo gallery","Personalised video message from Santa"]}],
+    addons:[],interests:[],slotTimes:[],season:{openDates:[]},bookingFee:400,maxChildren:6,paymentWindowMinutes:30,christmasEve:"2026-12-24"
+  };
+  var CFG=null, ONLINE=false;
+
+  var ICONS={
+    palm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V11"/><path d="M12 11c-3-3-7-2-8 0 2-1 5 0 8 0zM12 11c3-3 7-2 8 0-2-1-5 0-8 0zM12 11c0-4 3-6 6-6-2 1-3 3-3 6z"/></svg>',
+    mall:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/></svg>',
+    lake:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 16c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2"/><path d="M3 20c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2"/><path d="M12 11l3-7 3 7z"/></svg>',
+    photo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M3 17l5-4 3 2 4-3 6 5"/></svg>',
+    film:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16M16 4v16M3 9h5M16 9h5M3 15h5M16 15h5"/></svg>',
+    mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+    heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-11a4 4 0 017-2 4 4 0 017 2c0 6.5-7 11-7 11z"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>'
+  };
+  var ic=function(k){return ICONS[k]||ICONS.heart};
+
+  /* ---------- state ---------- */
+  function freshState(){return {location:null,date:null,time:null,pkg:null,addons:[],children:[],guardian:{name:"",phone:"",email:"",consent:false},promo:"",quote:null,availability:null}}
+  var S=freshState();
+  var STEPS=["location","date","time","package","register","addons","review"];
+  var STEP_NAMES=["Choose your grotto","Pick a date","Pick a time","Choose experience","Who's visiting?","Make it extra special","Review & pay"];
+  var CTA_LABEL=["Choose this grotto","Choose this date","Choose this time","Continue","Continue to extras","Review booking","Pay by bank transfer"];
+  var cur=0, pollTimer=null, expiryTimer=null, currentRef=null;
+
+  /* ---------- helpers ---------- */
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]})}
+  function parseDate(iso){var p=iso.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+  function fmtDay(iso){var d=parseDate(iso);return DOWS[d.getDay()]+" "+d.getDate()+" "+MONTHS[d.getMonth()]}
+  function daysTo(d){return Math.max(0,Math.ceil((d-new Date())/86400000))}
+  var toastT;
+  function toast(msg){$("#toastMsg").textContent=msg;var t=$("#toast");t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},3200)}
+  function store(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}}
+  function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function copyText(txt,ok){
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast(ok)}).catch(function(){toast(txt)})}
+    else toast(txt);
+  }
+
+  /* ---------- countdown & snow ---------- */
+  function initCountdown(){
+    var xmas=parseDate(CFG.christmasEve||"2026-12-24");
+    var d=daysTo(xmas);
+    $("#heroDays").textContent=d;
+    $("#miniDays").textContent=d+(d===1?" day":" days");
+  }
+  function initSnow(){
+    if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+    var c=$("#snow"),x=c.getContext("2d"),W,H,flakes=[];
+    function size(){W=c.width=innerWidth;H=c.height=innerHeight}
+    size();addEventListener("resize",size);
+    var n=Math.min(70,Math.round(innerWidth/16));
+    for(var i=0;i<n;i++)flakes.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.2+0.6,s:Math.random()*0.6+0.25,d:Math.random()*0.6-0.3});
+    (function tick(){
+      x.clearRect(0,0,W,H);
+      for(var i=0;i<flakes.length;i++){var f=flakes[i];x.beginPath();x.arc(f.x,f.y,f.r,0,6.283);x.fillStyle="rgba(246,242,234,"+(0.35+f.r/6)+")";x.fill();f.y+=f.s;f.x+=f.d;if(f.y>H+5){f.y=-5;f.x=Math.random()*W}if(f.x>W+5)f.x=-5;if(f.x<-5)f.x=W+5}
+      requestAnimationFrame(tick);
+    })();
+  }
+
+  /* ---------- landing ---------- */
+  function pkgCard(p,asButton,selected){
+    var tag=p.feature?'<span class="tag">Most loved</span>':'';
+    var inner=tag+'<div class="pname">'+esc(p.name)+'</div><div class="price">'+NGN(p.price)+' <span>/ child</span></div><ul>'+p.perks.map(function(k){return '<li>'+ICONS.check+'<span>'+esc(k)+'</span></li>'}).join('')+'</ul>';
+    var el=document.createElement(asButton?"button":"div");
+    el.className="pkg"+(p.feature?" feature":"");
+    if(asButton){el.type="button";el.style.cursor="pointer";el.style.textAlign="left";el.setAttribute("aria-pressed",!!selected);if(selected){el.style.borderColor="var(--gold)";el.style.boxShadow="0 0 0 3px rgba(243,194,87,.18)"}}
+    el.innerHTML=inner;return el;
+  }
+  function renderPkgPreview(){var h=$("#pkgPreview");h.innerHTML="";CFG.packages.forEach(function(p){h.appendChild(pkgCard(p,false))})}
+
+  /* ---------- navigation ---------- */
+  function show(id){$$(".screen").forEach(function(s){s.hidden=true});$(id).hidden=false;window.scrollTo(0,0)}
+  function openWizard(){
+    if(!ONLINE){toast("Booking is temporarily unavailable. Please try again shortly.");return}
+    if(S.children.length===0)addChild();
+    show("#screen-wizard");cur=0;mountActionBar();goStep();
+  }
+  function goStep(){
+    STEPS.forEach(function(k){$("#pane-"+k).hidden=true});
+    var key=STEPS[cur];
+    $("#pane-"+key).hidden=false;
+    $("#stepNum").textContent=cur+1;$("#stepName").textContent=STEP_NAMES[cur];
+    $("#progBar").style.width=((cur+1)/STEPS.length*100)+"%";
+    window.scrollTo(0,0);
+    renderStep(key);updateActionBar();
+  }
+  function next(){ if(cur<STEPS.length-1){cur++;goStep()} else pay(); }
+  function back(){ if(cur>0){cur--;goStep()} else {removeActionBar();show("#screen-landing")} }
+  function renderStep(key){({location:renderLocation,date:renderDate,time:renderTime,package:renderPackage,register:renderRegister,addons:renderAddons,review:renderReview})[key]()}
+
+  /* ---------- steps ---------- */
+  function renderLocation(){
+    var el=$("#pane-location");
+    el.innerHTML='<h2>Where would you like to visit?</h2><p class="hint">Each grotto is uniquely themed. Pick the one nearest you.</p><div class="opt-list"></div>';
+    var list=$(".opt-list",el);
+    CFG.locations.forEach(function(l){
+      var b=document.createElement("button");b.type="button";b.className="opt";b.setAttribute("aria-pressed",!!(S.location&&S.location.id===l.id));
+      b.innerHTML='<span class="ic">'+ic(l.icon)+'</span><span class="t"><b>'+esc(l.name)+'</b><span>'+esc(l.sub)+'</span></span><span class="pick">'+ICONS.check+'</span>';
+      b.onclick=function(){if(!S.location||S.location.id!==l.id){S.time=null;S.availability=null}S.location=l;$$(".opt",list).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()};
+      list.appendChild(b);
+    });
+  }
+  function renderDate(){
+    var el=$("#pane-date");
+    var dates=CFG.season.openDates||[];
+    var monthLabel=dates.length?(MONTHS[parseDate(dates[0]).getMonth()]+" "+parseDate(dates[0]).getFullYear()):"";
+    el.innerHTML='<h2>When shall Santa expect you?</h2><p class="hint">December dates fill up fast — weekends go first.</p><div class="month-label">'+esc(monthLabel)+'</div><div class="daystrip" role="group"></div>';
+    var strip=$(".daystrip",el), today=new Date();today.setHours(0,0,0,0);
+    dates.forEach(function(iso){
+      var d=parseDate(iso);if(d<today)return;
+      var wd=d.getDay(), weekend=(wd===0||wd===6)||d.getDate()>=22;
+      var b=document.createElement("button");b.type="button";b.className="day";b.setAttribute("aria-pressed",S.date===iso);
+      b.innerHTML='<div class="dow">'+DOWS[wd]+'</div><div class="dnum tnum">'+d.getDate()+'</div><div class="mon">'+MONTHS[d.getMonth()]+'</div>'+(weekend?'<div class="few">Popular</div>':'');
+      b.onclick=function(){if(S.date!==iso){S.time=null;S.availability=null}S.date=iso;$$(".day",strip).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()};
+      strip.appendChild(b);
+    });
+    if(!strip.children.length)strip.innerHTML='<p class="hint">Bookings for this season have closed.</p>';
+  }
+  function renderTime(){
+    var el=$("#pane-time");
+    el.innerHTML='<h2>Choose your time slot</h2><p class="hint">Live availability for <b style="color:var(--snow)">'+esc(S.date?fmtDay(S.date):"")+'</b> — we never oversell a slot.</p><div class="slot-grid" id="slotGrid"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>';
+    api("/api/availability?locationId="+encodeURIComponent(S.location.id)+"&date="+encodeURIComponent(S.date)).then(function(av){
+      S.availability=av.left;
+      var grid=$("#slotGrid");if(!grid)return;grid.innerHTML="";
+      var need=Math.max(1,S.children.length);
+      CFG.slotTimes.forEach(function(t){
+        var left=av.left[t]||0;
+        var b=document.createElement("button");b.type="button";b.className="slot";
+        if(left<=0){b.disabled=true;b.innerHTML='<div class="tm">'+t+'</div><div class="av">Full</div>'}
+        else{
+          var few=left<=3;
+          b.setAttribute("aria-pressed",S.time===t);
+          b.innerHTML='<div class="tm">'+t+'</div><div class="av '+(few?'few':'ok')+'">'+(few?left+' left':'Available')+'</div>';
+          b.onclick=function(){S.time=t;$$(".slot",grid).forEach(function(o){if(!o.disabled)o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()};
+        }
+        grid.appendChild(b);
+      });
+      if(S.time&&(av.left[S.time]||0)<need){S.time=null;updateActionBar()}
+    }).catch(function(e){var grid=$("#slotGrid");if(grid)grid.innerHTML='<div class="offline" style="grid-column:1/-1">Couldn\'t load availability: '+esc(e.message)+'. <a href="#" id="retrySlots" style="color:var(--gold-soft)">Try again</a></div>';var r=$("#retrySlots");if(r)r.onclick=function(ev){ev.preventDefault();renderTime()}});
+  }
+  function renderPackage(){
+    var el=$("#pane-package");
+    el.innerHTML='<h2>Pick your experience</h2><p class="hint">Priced per child. You can add more children in the next step.</p><div class="pkg-grid" style="margin-top:20px"></div>';
+    var grid=$(".pkg-grid",el);
+    CFG.packages.forEach(function(p){var b=pkgCard(p,true,S.pkg&&S.pkg.id===p.id);b.onclick=function(){S.pkg=p;renderPackage();updateActionBar()};grid.appendChild(b)});
+  }
+  function addChild(){S.children.push({name:"",age:"",interests:[],letter:""})}
+  function renderRegister(){
+    var el=$("#pane-register");
+    el.innerHTML='<h2>Who is Santa meeting?</h2><p class="hint">Tell us about each child so Santa can greet them personally.</p>'+
+      '<div id="childList"></div>'+
+      '<button type="button" class="addchild" id="addChildBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add another child</button>'+
+      '<div class="divider"></div><div class="subhead">Parent / guardian details</div>'+
+      '<div class="two"><div class="field"><label for="gName">Full name</label><input class="input" id="gName" autocomplete="name" value="'+esc(S.guardian.name)+'"></div>'+
+      '<div class="field"><label for="gPhone">WhatsApp number</label><input class="input" id="gPhone" inputmode="tel" autocomplete="tel" placeholder="+234…" value="'+esc(S.guardian.phone)+'"></div></div>'+
+      '<div class="field"><label for="gEmail">Email <span class="opt-tag">(for your ticket & photos)</span></label><input class="input" id="gEmail" inputmode="email" autocomplete="email" value="'+esc(S.guardian.email)+'"></div>'+
+      '<button type="button" class="addon" id="consentRow" role="switch" aria-checked="'+S.guardian.consent+'" style="width:100%;text-align:left;cursor:pointer;margin-top:14px"><span class="ic">'+ICONS.photo+'</span><span class="t"><b>Photo consent</b><span>I\'m happy for photos of my child to be taken during the visit.</span></span><span class="toggle"></span></button>';
+    renderChildren();
+    $("#addChildBtn").onclick=function(){if(S.children.length>=CFG.maxChildren){toast("That's the maximum of "+CFG.maxChildren+" children per booking.");return}addChild();renderChildren();updateActionBar()};
+    ["gName","gPhone","gEmail"].forEach(function(id){var i=$("#"+id);i.oninput=function(){S.guardian[id==="gName"?"name":id==="gPhone"?"phone":"email"]=i.value;i.classList.remove("err");updateActionBar()}});
+    var cr=$("#consentRow");cr.onclick=function(){S.guardian.consent=!S.guardian.consent;cr.setAttribute("aria-checked",S.guardian.consent);updateActionBar()};
+  }
+  function ageOpts(sel){var o='<option value="">Select…</option>';for(var a=0;a<=12;a++)o+='<option value="'+a+'"'+(String(sel)===String(a)?' selected':'')+'>'+(a===0?"Under 1":a+(a===1?" year":" years"))+'</option>';return o}
+  function renderChildren(){
+    var host=$("#childList");if(!host)return;host.innerHTML="";
+    S.children.forEach(function(ch,i){
+      var card=document.createElement("div");card.className="child-card";
+      card.innerHTML='<div class="ch-head"><div class="n"><span class="b">'+(i+1)+'</span>Child '+(i+1)+'</div>'+(S.children.length>1?'<button type="button" class="rm" data-rm="'+i+'">Remove</button>':'')+'</div>'+
+        '<div class="two"><div class="field"><label>First name</label><input class="input" data-f="name" data-i="'+i+'" value="'+esc(ch.name)+'" placeholder="e.g. Ada" autocomplete="off"></div>'+
+        '<div class="field"><label>Age</label><select data-f="age" data-i="'+i+'">'+ageOpts(ch.age)+'</select></div></div>'+
+        '<div class="field" style="margin-top:14px"><label>What do they love? <span class="opt-tag">(optional — helps Santa)</span></label><div class="interests" data-chips="'+i+'"></div></div>'+
+        '<div class="letter-wrap"><div class="lh">'+ICONS.mail+' A little letter to Santa</div><p class="note">Santa reads this before you arrive, so he can mention it in person.</p><textarea data-f="letter" data-i="'+i+'" maxlength="600" placeholder="Dear Santa, this year I have been... and I would love...">'+esc(ch.letter)+'</textarea></div>';
+      host.appendChild(card);
+      var chipWrap=$('[data-chips="'+i+'"]',card);
+      (CFG.interests||[]).forEach(function(it){var c=document.createElement("button");c.type="button";c.className="ichip";c.setAttribute("aria-pressed",ch.interests.indexOf(it)>=0);c.textContent=it;c.onclick=function(){var idx=ch.interests.indexOf(it);if(idx>=0)ch.interests.splice(idx,1);else ch.interests.push(it);c.setAttribute("aria-pressed",ch.interests.indexOf(it)>=0)};chipWrap.appendChild(c)});
+    });
+    $$("[data-rm]",host).forEach(function(b){b.onclick=function(){S.children.splice(+b.getAttribute("data-rm"),1);renderChildren();updateActionBar()}});
+    $$("[data-f]",host).forEach(function(inp){inp.oninput=inp.onchange=function(){var i=+inp.getAttribute("data-i"),f=inp.getAttribute("data-f");S.children[i][f]=inp.value;inp.classList.remove("err");if(f==="name"||f==="age")updateActionBar()}});
+  }
+  function renderAddons(){
+    var el=$("#pane-addons");
+    el.innerHTML='<h2>Make it extra special</h2><p class="hint">Optional little touches that keep the magic going after the visit.</p><div id="addonList"></div>';
+    var host=$("#addonList");
+    CFG.addons.forEach(function(a){
+      var on=S.addons.indexOf(a.id)>=0;
+      var row=document.createElement("button");row.type="button";row.className="addon";row.setAttribute("role","switch");row.setAttribute("aria-checked",on);
+      row.innerHTML='<span class="ic">'+ic(a.icon)+'</span><span class="t"><b>'+esc(a.name)+'</b><span>'+esc(a.sub)+'</span></span><span class="pr'+(a.price===0?' free':'')+'">'+(a.price===0?"Free":"+"+NGN(a.price))+'</span><span class="toggle"></span>';
+      row.onclick=function(){var i=S.addons.indexOf(a.id);if(i>=0)S.addons.splice(i,1);else S.addons.push(a.id);row.setAttribute("aria-checked",S.addons.indexOf(a.id)>=0);S.quote=null};
+      host.appendChild(row);
+    });
+    if(!CFG.addons.length)host.innerHTML='<p class="hint">No extras this season — continue to review.</p>';
+  }
+  function quote(){
+    return api("/api/quote",{method:"POST",body:{packageId:S.pkg.id,childCount:S.children.length,addons:S.addons,promoCode:S.promo||undefined}}).then(function(qt){S.quote=qt;return qt});
+  }
+  function renderReview(){
+    var el=$("#pane-review");
+    el.innerHTML='<h2>Almost there — review your visit</h2><p class="hint">Check the details, then pay by bank transfer to reserve your Golden Ticket.</p><div class="summary" id="summaryBox"><div class="skel" style="min-height:220px"></div></div>';
+    quote().then(drawSummary).catch(function(e){$("#summaryBox").innerHTML='<div class="offline">Couldn\'t calculate your total: '+esc(e.message)+'</div>'});
+  }
+  function drawSummary(p){
+    var names=S.children.map(function(c){return c.name.trim()}).filter(Boolean).join(", ");
+    var addRows=S.addons.map(function(id){var a=CFG.addons.filter(function(x){return x.id===id})[0];return a?'<div class="srow"><span class="k">'+esc(a.name)+'</span><span class="v">'+(a.price===0?"Free":NGN(a.price))+'</span></div>':''}).join('');
+    $("#summaryBox").innerHTML=
+      '<div class="srow"><span class="k">Grotto</span><span class="v">'+esc(S.location.name.replace("Auldon Toys — ",""))+'<small>'+esc(S.location.sub)+'</small></span></div>'+
+      '<div class="srow"><span class="k">Date & time</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.time)+'</small></span></div>'+
+      '<div class="srow"><span class="k">Experience</span><span class="v">'+esc(S.pkg.name)+'<small>'+p.kids+' × '+NGN(S.pkg.price)+'</small></span></div>'+
+      '<div class="srow"><span class="k">'+(p.kids>1?p.kids+" children":"Child")+'</span><span class="v">'+esc(names||"—")+'</span></div>'+
+      '<div class="srow"><span class="k">Experience × '+p.kids+'</span><span class="v">'+NGN(p.subtotal)+'</span></div>'+addRows+
+      '<div class="srow"><span class="k">Booking fee</span><span class="v">'+NGN(p.fee)+'</span></div>'+
+      (p.discount>0?'<div class="srow"><span class="k">Promo '+esc(p.promo)+'</span><span class="v" style="color:var(--green)">−'+NGN(p.discount)+'</span></div>':'')+
+      '<div class="total"><span class="k">Total</span><span class="v tnum">'+NGN(p.total)+'</span></div>'+
+      '<div class="promo"><input class="input" id="promoInput" placeholder="Promo code" value="'+esc(S.promo)+'" autocomplete="off"><button type="button" class="btn btn-ghost" id="promoBtn">Apply</button></div><div id="promoMsg"></div>'+
+      '<div class="pay-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Secure bank transfer powered by Flutterwave</div>'+
+      '<div class="paylogos"><span>Bank transfer</span><span>Any Nigerian bank app</span><span>Instant confirmation</span></div>';
+    if(S.promo&&!p.promo)$("#promoMsg").innerHTML='<div class="errmsg">That promo code isn\'t valid.</div>';
+    else if(p.promo)$("#promoMsg").innerHTML='<div class="promo-ok">'+ICONS.check+' '+esc(CFG.promos&&CFG.promos[p.promo]||"Promo applied")+'</div>';
+    $("#promoBtn").onclick=function(){S.promo=$("#promoInput").value.trim().toUpperCase();$("#promoBtn").disabled=true;quote().then(drawSummary).catch(function(e){toast(e.message)}).then(function(){var b=$("#promoBtn");if(b)b.disabled=false;updateActionBar()})};
+    updateActionBar();
+  }
+
+  /* ---------- validation / action bar ---------- */
+  function validStep(){
+    var k=STEPS[cur];
+    if(k==="location")return !!S.location;
+    if(k==="date")return !!S.date;
+    if(k==="time")return !!S.time;
+    if(k==="package")return !!S.pkg;
+    if(k==="register"){var g=S.guardian;return S.children.length>0&&S.children.every(function(c){return c.name.trim()&&c.age!==""})&&g.name.trim()&&/\d{6,}/.test(g.phone)&&/.+@.+\..+/.test(g.email)&&g.consent}
+    if(k==="review")return !!S.quote;
+    return true;
+  }
+  function mountActionBar(){
+    if($("#actionbar"))return;
+    var bar=document.createElement("div");bar.className="actionbar";bar.id="actionbar";
+    bar.innerHTML='<div class="inner"><span class="sumline" id="sumline"></span><button type="button" class="back" id="backBtn" aria-label="Go back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><button type="button" class="btn btn-primary cont" id="contBtn">Continue</button></div>';
+    document.body.appendChild(bar);
+    $("#backBtn").onclick=back;
+    $("#contBtn").onclick=function(){if(!validStep()){flashInvalid();return}next()};
+  }
+  function removeActionBar(){var b=$("#actionbar");if(b)b.remove()}
+  function updateActionBar(){
+    var c=$("#contBtn");if(!c)return;
+    c.textContent=CTA_LABEL[cur];c.disabled=!validStep();
+    var sl=$("#sumline");
+    if(cur>=3&&S.pkg){var est=S.quote?S.quote.total:(S.pkg.price*Math.max(1,S.children.length)+CFG.bookingFee);sl.innerHTML=(S.quote?'Total ':'From ')+'<b>'+NGN(est)+'</b>'}else sl.innerHTML="";
+  }
+  function flashInvalid(){
+    if(STEPS[cur]==="register"){
+      $$("#pane-register [data-f='name']").forEach(function(i){if(!i.value.trim())i.classList.add("err")});
+      $$("#pane-register [data-f='age']").forEach(function(i){if(!i.value)i.classList.add("err")});
+      var g=S.guardian;if(!g.name.trim())$("#gName").classList.add("err");if(!/\d{6,}/.test(g.phone))$("#gPhone").classList.add("err");if(!/.+@.+\..+/.test(g.email))$("#gEmail").classList.add("err");
+      toast(g.consent?"Please complete the highlighted details.":"Please complete the details and confirm photo consent.");
+    } else toast("Please make a selection to continue.");
+  }
+
+  /* ---------- pay: create booking → virtual account ---------- */
+  function pay(){
+    var c=$("#contBtn");c.textContent="Setting up your transfer…";c.disabled=true;
+    api("/api/bookings",{method:"POST",body:{
+      locationId:S.location.id,date:S.date,time:S.time,packageId:S.pkg.id,
+      children:S.children.map(function(ch){return {name:ch.name.trim(),age:Number(ch.age),interests:ch.interests,letter:ch.letter}}),
+      addons:S.addons,promoCode:S.promo||undefined,
+      guardian:{name:S.guardian.name.trim(),phone:S.guardian.phone.trim(),email:S.guardian.email.trim(),consent:S.guardian.consent}
+    }}).then(function(b){
+      removeActionBar();store("grotto_pending_ref",b.ref);showPayment(b);
+    }).catch(function(e){
+      toast(e.message||"Couldn't start the booking. Please try again.");
+      if(e.field==="time"){cur=2;goStep()}else{c.textContent=CTA_LABEL[cur];c.disabled=false}
+    });
+  }
+  function showPayment(b){
+    currentRef=b.ref;
+    var p=b.payment||{};
+    $("#payAmount").textContent=NGN(b.amount);$("#payRef").textContent=b.ref;
+    $("#payBank").textContent=p.bankName||"—";$("#payAcct").textContent=p.accountNumber||"—";$("#payName").textContent=p.accountName||"Auldon Toys";
+    $("#copyAcct").onclick=function(){copyText(p.accountNumber||"","Account number copied")};
+    $("#expiredBox").hidden=true;$("#waitingBox").hidden=false;
+    show("#screen-pay");
+    startExpiry(p.expiresAt);startPolling(b.ref);
+  }
+  function startExpiry(iso){
+    clearInterval(expiryTimer);
+    var end=iso?new Date(iso):new Date(Date.now()+(CFG.paymentWindowMinutes||30)*60000);
+    function upd(){var ms=end-new Date();if(ms<=0){$("#payExpiry").innerHTML="Account valid for <b>0:00</b>";return}var m=Math.floor(ms/60000),s=Math.floor(ms%60000/1000);$("#payExpiry").innerHTML="Account valid for <b>"+m+":"+(s<10?"0":"")+s+"</b>"}
+    upd();expiryTimer=setInterval(upd,1000);
+  }
+  function startPolling(ref){
+    clearInterval(pollTimer);var n=0;
+    function check(){
+      api("/api/bookings/"+encodeURIComponent(ref)).then(function(b){
+        if(b.status==="paid"){stopTimers();store("grotto_pending_ref",null);showTicket(b)}
+        else if(b.status==="expired"||b.status==="cancelled"){stopTimers();store("grotto_pending_ref",null);$("#waitingBox").hidden=true;$("#expiredBox").hidden=false}
+        else{n++;if(n===12)$("#waitingSub").textContent="Still watching. Some banks take a few minutes to settle."}
+      }).catch(function(){});
+    }
+    pollTimer=setInterval(check,5000);
+  }
+  function stopTimers(){clearInterval(pollTimer);clearInterval(expiryTimer)}
+  $("#restartBtn").onclick=function(){S.quote=null;show("#screen-wizard");mountActionBar();cur=2;goStep()};
+
+  /* ---------- ticket ---------- */
+  function ticketUrl(code){return location.origin+location.pathname+"#ticket-"+code}
+  function drawQR(text,retry){
+    var host=$("#qrHost");host.innerHTML="";
+    if(typeof qrcode==="undefined"){
+      if(!retry){var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js";s.onload=function(){drawQR(text,true)};s.onerror=function(){drawQR(text,true)};document.head.appendChild(s);return}
+      host.innerHTML='<div style="display:grid;place-items:center;height:100%;color:#0a1621;font:800 11px/1.3 system-ui;text-align:center;padding:6px">Show this code at the door</div>';return;
+    }
+    try{var q=qrcode(0,"M");q.addData(text);q.make();host.innerHTML=q.createSvgTag({cellSize:4,margin:0,scalable:true})}
+    catch(e){host.innerHTML='<div style="display:grid;place-items:center;height:100%;color:#0a1621;font:800 11px/1.3 system-ui;text-align:center;padding:6px">Show this code at the door</div>'}
+  }
+  function showTicket(b){
+    var loc=CFG.locations.filter(function(l){return l.id===b.locationId})[0];
+    var pkg=CFG.packages.filter(function(p){return p.id===b.packageId})[0];
+    var names=(b.children||[]).map(function(c){return c.name}).filter(Boolean);
+    $("#ticketHeadline").textContent=names[0]?("See you soon, "+names[0]+"!"):"The magic is booked!";
+    $("#tkGuests").firstChild.textContent=names.join(", ")||"Your little one";
+    $("#tkPackage").textContent=(pkg?pkg.name:"")+" · "+b.childCount+(b.childCount>1?" children":" child");
+    $("#tkLocation").textContent=loc?loc.name.replace("Auldon Toys — ",""):b.locationId;
+    $("#tkWhen").textContent=fmtDay(b.date)+" · "+b.time;
+    $("#tkCode").textContent=b.ticketCode;
+    $("#tkEmail").textContent=b.guardianEmail||"";
+    drawQR(ticketUrl(b.ticketCode));
+    show("#screen-ticket");
+    startTicketCountdown(b.date,b.time);
+    $("#calBtn").onclick=function(){downloadIcs(b,loc)};
+    $("#shareBtn").onclick=function(){
+      var url=ticketUrl(b.ticketCode),txt="Our Santa's Grotto ticket at Auldon Toys — "+fmtDay(b.date)+" "+b.time;
+      if(navigator.share){navigator.share({title:"Santa's Grotto ticket",text:txt,url:url}).catch(function(){})}else copyText(url,"Ticket link copied");
+    };
+    $("#againBtn").onclick=function(){S=freshState();history.replaceState(null,"",location.pathname);show("#screen-landing")};
+  }
+  function startTicketCountdown(date,time){
+    var p=time.split(":"),d=parseDate(date);d.setHours(+p[0],+p[1],0,0);
+    function upd(){var diff=d-new Date();if(diff<=0){$("#tkCountdown").textContent="It's time — welcome!";return}var dd=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000);$("#tkCountdown").textContent=dd+" days · "+h+" hrs · "+m+" mins"}
+    upd();setInterval(upd,30000);
+  }
+  function downloadIcs(b,loc){
+    var p=b.time.split(":"),s=parseDate(b.date);s.setHours(+p[0],+p[1],0,0);var e=new Date(s.getTime()+30*60000);
+    var f=function(d){return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"T"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+"00"};
+    var ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Auldon Toys//Grotto//EN","BEGIN:VEVENT","UID:"+b.ticketCode+"@grotto.auldontoys.com","DTSTAMP:"+f(new Date()),"DTSTART;TZID=Africa/Lagos:"+f(s),"DTEND;TZID=Africa/Lagos:"+f(e),"SUMMARY:Santa's Grotto at Auldon Toys","LOCATION:"+(loc?loc.name+", "+loc.sub:""),"DESCRIPTION:Ticket "+b.ticketCode+". Arrive 10 minutes early. "+ticketUrl(b.ticketCode),"BEGIN:VALARM","TRIGGER:-P1D","ACTION:DISPLAY","DESCRIPTION:Santa's Grotto tomorrow!","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+    var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics],{type:"text/calendar"}));a.download="santas-grotto.ics";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
+  }
+
+  /* ---------- boot ---------- */
+  function boot(){
+    $("#startBtn").onclick=openWizard;
+    renderPkgPreview();initCountdown();initSnow();
+    if(!ONLINE){
+      var o=document.createElement("div");o.className="offline";o.textContent="Online booking is temporarily unavailable. Please try again in a few minutes or WhatsApp +234 810 002 5985.";
+      $(".hero .cta-row").after(o);return;
+    }
+    var m=/^#ticket-([A-Z0-9-]+)$/i.exec(location.hash||"");
+    if(m){api("/api/tickets/"+encodeURIComponent(m[1].toUpperCase())).then(showTicket).catch(function(){toast("We couldn't find that ticket.")});return}
+    var pending=load("grotto_pending_ref");
+    if(pending){api("/api/bookings/"+encodeURIComponent(pending)).then(function(b){
+      if(b.status==="pending")showPayment(b);else if(b.status==="paid")showTicket(b);else store("grotto_pending_ref",null);
+    }).catch(function(){store("grotto_pending_ref",null)})}
+  }
+  api("/api/config").then(function(c){CFG=c;ONLINE=true}).catch(function(){CFG=FALLBACK;ONLINE=false}).then(boot);
+})();
+</script>
+</body>
+</html>
