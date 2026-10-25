@@ -8,7 +8,11 @@
 <meta name="theme-color" content="#0a1621">
 <meta property="og:title" content="Auldon Toys Santa Grotto 2026">
 <meta property="og:description" content="Where Christmas magic comes to life. Book your family's visit to Santa at Auldon Toys, Lekki this December.">
-<meta property="og:image" content="https://grotto.auldontoys.com/assets/hero-santa.jpg">
+<meta property="og:image" content="https://grotto.auldontoys.com/assets/og-santa.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://grotto.auldontoys.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://grotto.auldontoys.com/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23e8392f'/%3E%3Cpath d='M12 4l2 5.5h5.5l-4.4 3.3 1.7 5.4L12 15l-4.8 3.2 1.7-5.4L4.5 9.5H10z' fill='%23fff'/%3E%3C/svg%3E">
@@ -30,7 +34,7 @@
     --card-2:#17334a;          /* hover / selected fill */
     --snow:#f6f2ea;            /* warm white text */
     --frost:#9fb6c6;           /* muted secondary */
-    --frost-dim:#6f8698;       /* tertiary */
+    --frost-dim:#8aa0b2;       /* tertiary — 5.5:1 on cards (was #6f8698, 3.9:1) */
     --gold:#f3c257;            /* candle gold accent */
     --gold-soft:#ffe6a6;
     --red:#e8392f;             /* Auldon santa red */
@@ -99,7 +103,8 @@
   .hero .cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
   .btn{appearance:none;border:0;border-radius:14px;padding:15px 22px;font-size:16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:transform .12s ease, box-shadow .2s ease, background .2s}
   .btn:active{transform:translateY(1px) scale(.995)}
-  .btn-primary{background:linear-gradient(140deg,#ff5247,var(--red) 40%,var(--red-deep));color:#fff;box-shadow:0 14px 34px -12px rgba(232,57,47,.85), inset 0 1px 0 rgba(255,255,255,.22)}
+  /* darker red so white text passes 4.5:1 at every point of the gradient (lightest stop #d4342a = 4.9:1) */
+  .btn-primary{background:linear-gradient(140deg,#d4342a,#c42a21 40%,var(--red-deep));color:#fff;box-shadow:0 14px 34px -12px rgba(232,57,47,.85), inset 0 1px 0 rgba(255,255,255,.18)}
   .btn-primary:hover{box-shadow:0 18px 40px -12px rgba(232,57,47,.95)}
   .btn-gold{background:linear-gradient(140deg,#ffd877,var(--gold) 55%,#d99f28);color:#3a2708;box-shadow:0 14px 34px -12px rgba(243,194,87,.8), inset 0 1px 0 rgba(255,255,255,.5)}
   .btn-ghost{background:rgba(255,255,255,.05);color:var(--snow);border:1px solid var(--line-2)}
@@ -455,6 +460,34 @@
   select option{background-color:#13293b;color:#f6f2ea}
   select option[value=""]{color:#9fb6c6}
 
+  /* ---- audit fixes ---- */
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .pane h2:focus{outline:none}
+  .btn.cont.incomplete{background:linear-gradient(140deg,#7a2a25,#5e1f1a);box-shadow:none;color:#f1c9c5}
+  .form-alert{margin-top:14px;background:rgba(232,57,47,.12);border:1px solid rgba(232,57,47,.45);color:#ffb3ad;border-radius:12px;padding:11px 14px;font-size:13.5px;font-weight:600}
+  .form-alert:empty{display:none}
+  .bank-row.acct-row{flex-direction:column;align-items:stretch;gap:8px}
+  .acct-line{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .bank-row .v.acct{font-size:clamp(1.25rem,6.4vw,1.65rem);letter-spacing:.08em;text-align:left;overflow-wrap:anywhere}
+  .copy{min-height:40px}
+  .pay-what{font-size:13px;color:var(--frost);margin-top:8px}
+  .pay-what b{color:var(--snow)}
+  .opt.sess.full{opacity:.7;cursor:default;flex-wrap:wrap}
+  .opt.sess.full .pick{display:none}
+  .wl-btn{width:100%;margin-top:4px;background:rgba(243,194,87,.12);border:1.5px solid rgba(243,194,87,.4);color:var(--gold-soft);border-radius:12px;padding:12px 14px;font-weight:800;font-size:14px;min-height:44px}
+  .wl-btn:hover{background:rgba(243,194,87,.2)}
+  .terms-line{margin-top:16px;font-size:12.5px;color:var(--frost);line-height:1.5}
+  .terms-line a{color:var(--gold-soft)}
+  .terms{max-width:640px;margin:0 auto;padding-block:26px 90px}
+  .terms h3{font-size:1.15rem;margin-top:20px}
+  .terms p,.terms li{color:var(--frost);font-size:14px;margin-top:8px;line-height:1.55}
+  .terms .draft{background:rgba(243,194,87,.1);border:1px dashed rgba(243,194,87,.4);border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--gold-soft);margin-top:14px}
+  footer .fl a{padding:12px 0;display:inline-block}
+  .resume{margin-top:18px;background:rgba(73,179,110,.1);border:1px solid rgba(73,179,110,.35);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .resume b{display:block;font-size:14px}
+  .resume span{font-size:12.5px;color:var(--frost)}
+  .resume .btn{padding:11px 16px;font-size:14px;margin-left:auto}
+
   /* vouchers */
   .vrow{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 15px;margin-top:12px}
   .vrow.on{border-color:var(--gold);background:var(--card-2)}
@@ -600,9 +633,35 @@
           <a href="https://www.tiktok.com/@auldontoys" target="_blank" rel="noopener">TikTok</a>
           <a href="https://www.facebook.com/auldontoys" target="_blank" rel="noopener">Facebook</a>
           <a href="https://x.com/auldontoys" target="_blank" rel="noopener">X</a>
+          <a href="#terms" id="termsLink">Privacy &amp; booking terms</a>
         </div>
       </div>
     </footer>
+  </main>
+
+  <!-- ===== PRIVACY & BOOKING TERMS ===== -->
+  <main id="screen-terms" class="screen" hidden>
+    <div class="wrap terms">
+      <span class="kicker">Auldon Toys Santa Grotto 2026</span>
+      <h2>Privacy &amp; booking terms</h2>
+      <div class="draft">Draft wording — to be confirmed by Auldon Toys before launch.</div>
+      <h3>Your booking</h3>
+      <ul>
+        <li>One Experience Ticket covers one family visit (up to 6 children) in the session you choose. Please arrive within your session.</li>
+        <li>Your place is held for 30 minutes while you pay. If the transfer doesn't arrive in that time the booking expires and no money is taken.</li>
+        <li>Tickets are non-refundable, but can be moved to another date or session subject to availability — WhatsApp us on +234 810 002 5985 with your booking reference.</li>
+        <li>Gift bundles contain toys and selected Christmas items; final contents depend on stock. Vouchers are redeemed in store up to their value.</li>
+      </ul>
+      <h3>Your privacy</h3>
+      <ul>
+        <li>We collect the details you enter here (parent name, WhatsApp number, email, and each child's first name, age, interests and letter to Santa) only to run your visit, send your Golden Ticket and contact you about your booking.</li>
+        <li>Payment is handled by Flutterwave; we never see your card or bank details.</li>
+        <li>Photos are only taken of children whose parent has given photo consent when booking.</li>
+        <li>We don't sell or share your details with anyone else, and we delete booking details after the season ends (by 31 March 2027).</li>
+        <li>To see, correct or delete your details, WhatsApp +234 810 002 5985 or email the address on your ticket. Auldon Toys follows the Nigeria Data Protection Act.</li>
+      </ul>
+      <p style="margin-top:22px"><button type="button" class="btn btn-ghost" id="termsBack">← Back</button></p>
+    </div>
   </main>
 
   <!-- ===== WIZARD ===== -->
@@ -631,10 +690,11 @@
           <div class="k">Transfer exactly</div>
           <div class="amt tnum" id="payAmount">₦—</div>
           <div class="ref">Booking reference <b id="payRef">—</b> · held for you while you pay</div>
+          <div class="pay-what" id="payWhat"></div>
         </div>
         <div class="pb">
           <div class="bank-row"><span class="k">Bank</span><span class="v" id="payBank">—</span></div>
-          <div class="bank-row"><span class="k">Account number</span><span style="display:flex;gap:10px;align-items:center"><span class="v acct tnum" id="payAcct">—</span><button class="copy" id="copyAcct" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button></span></div>
+          <div class="bank-row acct-row"><span class="k">Account number</span><div class="acct-line"><span class="v acct tnum" id="payAcct">—</span><button class="copy" id="copyAcct" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copy</button></div></div>
           <div class="bank-row"><span class="k">Account name</span><span class="v" id="payName">—</span></div>
           <ol class="pay-steps">
             <li><b>1</b><span>Open your bank app and make a transfer to the account above.</span></li>
@@ -693,7 +753,8 @@
   </main>
 </div>
 
-<div class="toast" id="toast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toastMsg"></span></div>
+<div class="sr-only" id="liveStep" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg><span id="toastMsg"></span></div>
 
 <script>
 (function(){
@@ -771,13 +832,25 @@
   function bundleValid(b){if(!b||!b.tier)return true;var d=bundleOf(b.tier);if(!d||!b.variant)return false;if(d.custom){var a=Number(b.amount);return a>=d.minPrice&&a<=d.maxPrice&&a===Math.floor(a)}return true}
   function estimate(){var t=(CFG.ticket?CFG.ticket.price:0);S.children.forEach(function(c){t+=bundleAmount(c.bundle)});voucherList().forEach(function(v){t+=v});return t+(CFG.bookingFee||0)}
   var toastT;
-  function toast(msg){$("#toastMsg").textContent=msg;var t=$("#toast");t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},3400)}
+  function toast(msg){$("#toastMsg").textContent=msg;var t=$("#toast");var bar=$("#actionbar");t.style.bottom=bar&&!bar.hidden?(bar.offsetHeight+10)+"px":"";t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},3400)}
   function store(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}}
   function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
   function copyText(txt,ok){
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(function(){toast(ok)}).catch(function(){toast(txt)})}
     else toast(txt);
   }
+  /* validation: phone accepts spaces/dashes/brackets ("0810 002 5985", "+234-810-002-5985"); 10–14 digits once stripped */
+  function normPhone(p){var s=String(p||"").replace(/[^\d+]/g,"");if(s.indexOf("+")>0)s=s.replace(/\+/g,"");return s}
+  function phoneOk(p){return /^\+?\d{10,14}$/.test(normPhone(p))}
+  function emailOk(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e||"").trim())}
+  /* draft: keep what the parent typed across refresh / accidental navigation (24 h) */
+  var DRAFT_KEY="grotto_draft_v1";
+  function saveDraft(){try{if(!CFG||!ONLINE)return;localStorage.setItem(DRAFT_KEY,JSON.stringify({t:Date.now(),cur:cur,S:{location:S.location,date:S.date,session:S.session,children:S.children,vouchers:S.vouchers,guardian:S.guardian,promo:S.promo}}))}catch(e){}}
+  function loadDraft(){try{var d=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null");if(!d||Date.now()-d.t>86400000)return null;return d}catch(e){return null}}
+  function clearDraft(){store(DRAFT_KEY,null)}
+  /* focus + announce each step for keyboard and screen-reader users */
+  function announce(msg){var l=$("#liveStep");if(l){l.textContent="";setTimeout(function(){l.textContent=msg},50)}}
+  function focusHeading(pane){var h=$("h2",pane);if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}}
 
   /* ---------- countdown & snow ---------- */
   function initCountdown(){
@@ -830,25 +903,42 @@
 
   /* ---------- navigation ---------- */
   function show(id){$$(".screen").forEach(function(s){s.hidden=true});$(id).hidden=false;window.scrollTo(0,0)}
-  function openWizard(){
+  /* Browser history mirrors the wizard, so the phone's Back button steps back instead of leaving the site. */
+  function pushStep(){try{history.pushState({g:"wiz",step:cur},"")}catch(e){}}
+  function openWizard(resume){
     if(!ONLINE){toast("Booking is temporarily unavailable. Please try again shortly.");return}
     if(CFG.bookingsOpen===false){toast("Bookings haven't opened yet — Santa is on his way!");return}
     if(CFG.locations.length===1)S.location=CFG.locations[0];
     if(S.children.length===0)addChild();
-    show("#screen-wizard");cur=0;mountActionBar();goStep();
+    if(!resume)cur=0;
+    show("#screen-wizard");mountActionBar();pushStep();goStep();
   }
   function goStep(){
     $$(".pane").forEach(function(p){p.hidden=true});
     var key=STEPS[cur];
-    $("#pane-"+key).hidden=false;
+    var pane=$("#pane-"+key);pane.hidden=false;
     $("#stepNum").textContent=cur+1;$("#stepTotal").textContent=STEPS.length;$("#stepName").textContent=STEP_NAMES[key];
     $("#progBar").style.width=((cur+1)/STEPS.length*100)+"%";
     window.scrollTo(0,0);
     renderStep(key);updateActionBar();
+    focusHeading(pane);announce("Step "+(cur+1)+" of "+STEPS.length+": "+STEP_NAMES[key]);
+    saveDraft();
   }
-  function next(){ if(cur<STEPS.length-1){cur++;goStep()} else pay(); }
-  function back(){ if(cur>0){cur--;goStep()} else {removeActionBar();show("#screen-landing")} }
-  function goto(key){var i=STEPS.indexOf(key);if(i>=0){cur=i;goStep()}}
+  function next(){ if(cur<STEPS.length-1){cur++;pushStep();goStep()} else pay(); }
+  function back(){ if(cur>0){cur--;pushStep();goStep()} else {leaveWizard()} }
+  function leaveWizard(){removeActionBar();show("#screen-landing");try{history.pushState({g:"home"},"")}catch(e){}}
+  function goto(key){var i=STEPS.indexOf(key);if(i>=0){cur=i;pushStep();goStep()}}
+  addEventListener("popstate",function(e){
+    var st=e.state||{};
+    if(!$("#screen-pay").hidden){stopTimers();removeActionBar();show("#screen-landing");toast("Your booking is still reserved — reopen this page to finish paying.");return}
+    if(!$("#screen-terms").hidden){closeTerms();return}
+    if(!$("#screen-ticket").hidden){show("#screen-landing");return}
+    if(st.g==="wiz"&&ONLINE&&CFG.bookingsOpen!==false){
+      // A stale entry from before a reload (nothing typed yet) shouldn't open a half-empty wizard.
+      if(!S.date&&(st.step||0)>0){removeActionBar();show("#screen-landing");return}
+      if($("#screen-wizard").hidden){show("#screen-wizard");mountActionBar()}cur=Math.min(st.step||0,STEPS.length-1);goStep();return}
+    if(!$("#screen-wizard").hidden){removeActionBar();show("#screen-landing")}
+  });
   function renderStep(key){({location:renderLocation,date:renderDate,session:renderSession,register:renderRegister,gifts:renderGifts,review:renderReview})[key]()}
 
   /* ---------- steps ---------- */
@@ -887,18 +977,21 @@
       var list=$("#sessList");if(!list)return;list.innerHTML="";
       CFG.sessions.forEach(function(s){
         var left=(av.left&&av.left[s.id])||0, wl=(av.waitlist&&av.waitlist[s.id])||0;
-        var b=document.createElement("button");b.type="button";b.className="opt sess";
         var avTxt=left<=0?'<span class="av full">Full'+(wl?' · '+wl+' on the waiting list':'')+'</span>':(left<=3?'<span class="av few">'+left+' place'+(left===1?'':'s')+' left</span>':'<span class="av ok">Available</span>');
-        b.innerHTML='<span class="ic">'+ICONS.clock+'</span><span class="t"><b>'+esc(s.name)+' · '+esc(s.label)+'</b>'+avTxt+(left<=0?'<span class="wl-link" data-wl="'+s.id+'">Join the waiting list</span>':'')+'</span><span class="pick">'+ICONS.check+'</span>';
-        if(left<=0){b.disabled=true;b.onclick=null}
-        else{
+        var inner='<span class="ic">'+ICONS.clock+'</span><span class="t"><b>'+esc(s.name)+' · '+esc(s.label)+'</b>'+avTxt+'</span>';
+        var b;
+        if(left<=0){
+          // Full: a plain card (not a disabled button) with a real, keyboard-reachable button for the waiting list.
+          b=document.createElement("div");b.className="opt sess full";b.setAttribute("aria-label",s.name+" session, full");
+          b.innerHTML=inner+'<button type="button" class="wl-btn" data-wl="'+s.id+'">Join the waiting list for '+esc(s.name)+'</button>';
+        }else{
+          b=document.createElement("button");b.type="button";b.className="opt sess";b.innerHTML=inner+'<span class="pick">'+ICONS.check+'</span>';
           b.setAttribute("aria-pressed",!!(S.session&&S.session.id===s.id));
-          b.onclick=function(){S.session=s;$$(".sess",list).forEach(function(o){if(!o.disabled)o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()};
+          b.onclick=function(){S.session=s;$$(".sess",list).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()};
         }
         list.appendChild(b);
       });
-      $$("[data-wl]",list).forEach(function(a){a.onclick=function(ev){ev.stopPropagation();ev.preventDefault();renderWaitlistForm(a.getAttribute("data-wl"))}});
-      $$(".sess[disabled] .wl-link",list).forEach(function(a){a.style.pointerEvents="auto"});
+      $$("[data-wl]",list).forEach(function(a){a.onclick=function(ev){ev.preventDefault();renderWaitlistForm(a.getAttribute("data-wl"))}});
       if(S.session&&((av.left&&av.left[S.session.id])||0)<=0){S.session=null;updateActionBar()}
     }).catch(function(e){var list=$("#sessList");if(list)list.innerHTML='<div class="offline">Couldn\'t load availability: '+esc(e.message)+'. <a href="#" id="retrySess" style="color:var(--gold-soft)">Try again</a></div>';var r=$("#retrySess");if(r)r.onclick=function(ev){ev.preventDefault();renderSession()}});
   }
@@ -915,11 +1008,11 @@
     host.scrollIntoView({behavior:"smooth",block:"center"});
     $("#wlSubmit").onclick=function(){
       var name=$("#wlName").value.trim(),phone=$("#wlPhone").value.trim(),email=$("#wlEmail").value.trim(),kids=Number($("#wlKids").value);
-      var bad=false;[["#wlName",!name],["#wlPhone",!/\d{6,}/.test(phone)],["#wlEmail",!/.+@.+\..+/.test(email)]].forEach(function(p){var i=$(p[0]);i.classList.toggle("err",p[1]);if(p[1])bad=true});
-      if(bad){toast("Please complete the highlighted details.");return}
+      var bad=null;[["#wlName",!name,"Please enter your name."],["#wlPhone",!phoneOk(phone),"Please enter a valid WhatsApp number, e.g. 0810 002 5985."],["#wlEmail",!emailOk(email),"Please enter a valid email address."]].forEach(function(p){var i=$(p[0]);i.classList.toggle("err",p[1]);if(p[1]&&!bad)bad={el:i,msg:p[2]}});
+      if(bad){bad.el.focus();toast(bad.msg);return}
       S.guardian.name=name;S.guardian.phone=phone;S.guardian.email=email;
       var btn=$("#wlSubmit");btn.disabled=true;btn.textContent="Adding you…";
-      api("/api/waitlist",{method:"POST",body:{locationId:S.location.id,date:S.date,sessionId:sessionId,childCount:kids,guardian:{name:name,phone:phone,email:email}}}).then(function(r){
+      api("/api/waitlist",{method:"POST",body:{locationId:S.location.id,date:S.date,sessionId:sessionId,childCount:kids,guardian:{name:name,phone:normPhone(phone),email:email.toLowerCase()}}}).then(function(r){
         host.innerHTML='<div class="wl-ok"><b>'+ICONS.check+' You\'re on the waiting list</b><p>'+esc(s.name)+' session · '+esc(fmtDay(S.date))+' · position '+r.position+'. We\'ll WhatsApp or email you if a place opens up. You can still pick another session or date now.</p></div>';
         renderSession();
       }).catch(function(e){btn.disabled=false;btn.textContent="Join the waiting list";toast(e.message||"Couldn't join the waiting list.");if(e.field==="sessionId")renderSession()});
@@ -935,7 +1028,8 @@
       '<div class="two"><div class="field"><label for="gName">Full name</label><input class="input" id="gName" autocomplete="name" value="'+esc(S.guardian.name)+'"></div>'+
       '<div class="field"><label for="gPhone">WhatsApp number</label><input class="input" id="gPhone" inputmode="tel" autocomplete="tel" placeholder="+234…" value="'+esc(S.guardian.phone)+'"></div></div>'+
       '<div class="field"><label for="gEmail">Email <span class="opt-tag">(for your Golden Ticket)</span></label><input class="input" id="gEmail" inputmode="email" autocomplete="email" value="'+esc(S.guardian.email)+'"></div>'+
-      '<button type="button" class="addon" id="consentRow" role="switch" aria-checked="'+S.guardian.consent+'" style="width:100%;text-align:left;cursor:pointer;margin-top:14px"><span class="ic">'+ICONS.photo+'</span><span class="t"><b>Photo consent</b><span>I\'m happy for photos of my child to be taken during the visit.</span></span><span class="toggle"></span></button>';
+      '<button type="button" class="addon" id="consentRow" role="switch" aria-checked="'+S.guardian.consent+'" style="width:100%;text-align:left;cursor:pointer;margin-top:14px"><span class="ic">'+ICONS.photo+'</span><span class="t"><b>Photo consent <span class="opt-tag">(optional)</span></b><span>Switch on if you\'re happy for photos of your child to be taken during the visit. Leave off and no photos will be taken.</span></span><span class="toggle"></span></button>'+
+      '<div class="form-alert" id="formAlert" role="alert"></div>';
     renderChildren();
     $("#addChildBtn").onclick=function(){if(S.children.length>=CFG.maxChildren){toast("That's the maximum of "+CFG.maxChildren+" children per booking.");return}addChild();renderChildren();updateActionBar()};
     ["gName","gPhone","gEmail"].forEach(function(id){var i=$("#"+id);i.oninput=function(){S.guardian[id==="gName"?"name":id==="gPhone"?"phone":"email"]=i.value;i.classList.remove("err");updateActionBar()}});
@@ -1009,7 +1103,9 @@
       '<div class="total"><span class="k">Total</span><span class="v tnum">'+NGN(p.total)+'</span></div>'+
       (hasPromo?'<div class="promo"><input class="input" id="promoInput" placeholder="Promo code" value="'+esc(S.promo)+'" autocomplete="off"><button type="button" class="btn btn-ghost" id="promoBtn">Apply</button></div><div id="promoMsg"></div>':'')+
       '<div class="pay-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>Secure bank transfer powered by Flutterwave</div>'+
-      '<div class="paylogos"><span>Bank transfer</span><span>Any Nigerian bank app</span><span>No hidden charges</span></div>';
+      '<div class="paylogos"><span>Bank transfer</span><span>Any Nigerian bank app</span><span>No hidden charges</span></div>'+
+      '<p class="terms-line">By paying you accept our <a href="#terms" class="terms-open">booking terms</a>: tickets can be moved to another session (subject to availability) but aren\'t refundable. We use your details only to run your visit — see our <a href="#terms" class="terms-open">privacy notice</a>.</p>';
+    $$(".terms-open",$("#summaryBox")).forEach(function(a){a.onclick=function(ev){ev.preventDefault();openTerms()}});
     if(hasPromo){
       if(S.promo&&!p.promo)$("#promoMsg").innerHTML='<div class="errmsg">That promo code isn\'t valid.</div>';
       else if(p.promo)$("#promoMsg").innerHTML='<div class="promo-ok">'+ICONS.check+' '+esc(CFG.promos[p.promo]||"Promo applied")+'</div>';
@@ -1024,9 +1120,22 @@
     if(k==="location")return !!S.location;
     if(k==="date")return !!S.date;
     if(k==="session")return !!S.session;
-    if(k==="register"){var g=S.guardian;return S.children.length>0&&S.children.every(function(c){return c.name.trim()&&c.age!==""&&bundleValid(c.bundle)})&&g.name.trim()&&/\d{6,}/.test(g.phone)&&/.+@.+\..+/.test(g.email)&&g.consent}
+    if(k==="register")return !firstProblem();
     if(k==="review")return !!S.quote;
     return true;
+  }
+  /* First thing missing on the "Who's visiting?" step → { el, msg } so we can scroll to it and say what's wrong. */
+  function firstProblem(){
+    var g=S.guardian;
+    for(var i=0;i<S.children.length;i++){var c=S.children[i];
+      if(!c.name.trim())return {sel:'[data-f=name][data-i="'+i+'"]',msg:"Please enter child "+(i+1)+"'s first name."};
+      if(c.age==="")return {sel:'[data-f=age][data-i="'+i+'"]',msg:"Please choose child "+(i+1)+"'s age."};
+      if(!bundleValid(c.bundle)){var d=bundleOf(c.bundle.tier);return {sel:c.bundle.variant?'[data-amt="'+i+'"]':'[data-variant][data-i="'+i+'"]',msg:c.bundle.variant?"Enter a Diamond bundle value from "+NGN((d||{}).minPrice||150000)+" for child "+(i+1)+".":"Choose Boy, Girl or Baby for child "+(i+1)+"'s "+(d?d.name:"")+" bundle."}}
+    }
+    if(!g.name.trim())return {sel:"#gName",msg:"Please enter the parent or guardian's full name."};
+    if(!phoneOk(g.phone))return {sel:"#gPhone",msg:"Please enter a valid WhatsApp number, e.g. 0810 002 5985."};
+    if(!emailOk(g.email))return {sel:"#gEmail",msg:"Please enter a valid email address — we send your Golden Ticket there."};
+    return null;
   }
   function mountActionBar(){
     if($("#actionbar"))return;
@@ -1040,18 +1149,25 @@
   function updateActionBar(){
     var c=$("#contBtn");if(!c)return;
     var k=STEPS[cur];
-    c.textContent=CTA_LABEL[k];c.disabled=!validStep();
+    // The button stays tappable; when the step is incomplete it looks muted and a tap explains what is missing.
+    var ok=validStep();c.textContent=CTA_LABEL[k];c.disabled=false;c.classList.toggle("incomplete",!ok);c.setAttribute("aria-describedby",ok?"":"formAlert");
     var sl=$("#sumline");
-    if(STEPS.indexOf(k)>=STEPS.indexOf("session")){var est=S.quote?S.quote.total:estimate();sl.innerHTML=(S.quote?'Total ':'')+'<b>'+NGN(est)+'</b>'}else sl.innerHTML="";
+    if(STEPS.indexOf(k)>=STEPS.indexOf("session")&&k!=="review"){var est=S.quote?S.quote.total:estimate();sl.innerHTML='<b>'+NGN(est)+'</b>'}else sl.innerHTML="";
+    var fa=$("#formAlert");if(fa&&ok)fa.textContent="";
+    saveDraft();
   }
   function flashInvalid(){
-    if(STEPS[cur]==="register"){
-      $$("#pane-register [data-f='name']").forEach(function(i){if(!i.value.trim())i.classList.add("err")});
-      $$("#pane-register [data-f='age']").forEach(function(i){if(!i.value)i.classList.add("err")});
-      var bundleBad=false;S.children.forEach(function(c,i){if(!bundleValid(c.bundle)){bundleBad=true;var a=$('#pane-register [data-amt="'+i+'"]');if(a)a.classList.add("err")}});
-      var g=S.guardian;if(!g.name.trim())$("#gName").classList.add("err");if(!/\d{6,}/.test(g.phone))$("#gPhone").classList.add("err");if(!/.+@.+\..+/.test(g.email))$("#gEmail").classList.add("err");
-      toast(bundleBad?"Choose Boy, Girl or Baby for each gift bundle (and a value from "+NGN((bundleOf("diamond")||{}).minPrice||150000)+" for Diamond).":(g.consent?"Please complete the highlighted details.":"Please complete the details and confirm photo consent."));
-    } else toast("Please make a selection to continue.");
+    var k=STEPS[cur], msg="Please make a selection to continue.", target=null;
+    if(k==="date"){msg="Please pick a date to continue.";target=$(".daystrip")}
+    else if(k==="session"){msg="Please choose a session, or join the waiting list if it's full.";target=$("#sessList")}
+    else if(k==="register"){
+      var p=firstProblem();
+      if(p){msg=p.msg;target=$("#pane-register "+p.sel);if(target&&target.classList)target.classList.add("err")}
+      var fa=$("#formAlert");if(fa)fa.textContent=msg;
+    }
+    else if(k==="review"){msg="Still calculating your total — one moment."}
+    toast(msg);
+    if(target){target.scrollIntoView({behavior:"smooth",block:"center"});if(target.focus&&/^(INPUT|SELECT|TEXTAREA|BUTTON)$/.test(target.tagName))setTimeout(function(){target.focus()},350)}
   }
 
   /* ---------- pay: create booking → virtual account ---------- */
@@ -1061,18 +1177,25 @@
       locationId:S.location.id,date:S.date,sessionId:S.session.id,
       children:S.children.map(function(ch){return {name:ch.name.trim(),age:Number(ch.age),interests:ch.interests,letter:ch.letter,bundle:ch.bundle&&ch.bundle.tier?{tier:ch.bundle.tier,variant:ch.bundle.variant,amount:ch.bundle.amount?Number(ch.bundle.amount):undefined}:null}}),
       vouchers:voucherList(),promoCode:S.promo||undefined,
-      guardian:{name:S.guardian.name.trim(),phone:S.guardian.phone.trim(),email:S.guardian.email.trim(),consent:S.guardian.consent}
+      guardian:{name:S.guardian.name.trim(),phone:normPhone(S.guardian.phone),email:S.guardian.email.trim().toLowerCase(),consent:S.guardian.consent}
     }}).then(function(b){
-      removeActionBar();store("grotto_pending_ref",b.ref);showPayment(b);
+      removeActionBar();store("grotto_pending_ref",b.ref);clearDraft();showPayment(b,true);
     }).catch(function(e){
+      var f=e.field||"";
       toast(e.message||"Couldn't start the booking. Please try again.");
-      if(e.field==="sessionId"||e.field==="time"){goto("session")}else if(e.field==="children"){goto("register")}else{c.textContent=CTA_LABEL[STEPS[cur]];c.disabled=false}
+      if(f==="sessionId"||f==="time"){goto("session")}
+      else if(f==="children"||/^guardian/.test(f)){goto("register");setTimeout(function(){var fa=$("#formAlert");if(fa)fa.textContent=e.message||"";var sel=f==="guardian.phone"?"#gPhone":f==="guardian.email"?"#gEmail":f==="guardian.name"?"#gName":null;var el=sel&&$(sel);if(el){el.classList.add("err");el.scrollIntoView({behavior:"smooth",block:"center"});el.focus()}},100)}
+      else if(f==="date"){goto("date")}
+      else{c.textContent=CTA_LABEL[STEPS[cur]];c.disabled=false;c.classList.remove("incomplete")}
     });
   }
-  function showPayment(b){
+  function showPayment(b,fresh){
     currentRef=b.ref;
+    try{history.replaceState({g:"pay"},"")}catch(e){}
     var p=b.payment||{};
     $("#payAmount").textContent=NGN(b.amount);$("#payRef").textContent=b.ref;
+    var sess=sessionOf(b.sessionId)||(fresh&&S.session), date=b.date||(fresh&&S.date), kids=(b.children&&b.children.length?b.children.map(function(c){return c.name}):(fresh?S.children.map(function(c){return c.name.trim()}):[])).filter(Boolean);
+    $("#payWhat").innerHTML=(date?'<b>'+esc(fmtDay(date))+'</b>'+(sess?' · '+esc(sess.name+" "+sess.label):"")+(kids.length?' · for <b>'+esc(kids.join(", "))+'</b>':''):"");
     $("#payBank").textContent=p.bankName||"—";$("#payAcct").textContent=p.accountNumber||"—";$("#payName").textContent=p.accountName||"Auldon Toys";
     $("#copyAcct").onclick=function(){copyText(p.accountNumber||"","Account number copied")};
     $("#expiredBox").hidden=true;$("#waitingBox").hidden=false;
@@ -1097,7 +1220,7 @@
     pollTimer=setInterval(check,5000);
   }
   function stopTimers(){clearInterval(pollTimer);clearInterval(expiryTimer)}
-  $("#restartBtn").onclick=function(){S.quote=null;show("#screen-wizard");mountActionBar();goto("session")};
+  $("#restartBtn").onclick=function(){S.quote=null;store("grotto_pending_ref",null);show("#screen-wizard");mountActionBar();goto("session")};
 
   /* ---------- ticket ---------- */
   function ticketUrl(code){return location.origin+location.pathname+"#ticket-"+code}
@@ -1132,7 +1255,7 @@
       var url=ticketUrl(b.ticketCode),txt="Our Santa Grotto ticket at Auldon Toys — "+fmtDay(b.date)+", "+(sess?sess.name+" session":"");
       if(navigator.share){navigator.share({title:"Santa Grotto ticket",text:txt,url:url}).catch(function(){})}else copyText(url,"Ticket link copied");
     };
-    $("#againBtn").onclick=function(){S=freshState();history.replaceState(null,"",location.pathname);show("#screen-landing")};
+    $("#againBtn").onclick=function(){S=freshState();clearDraft();history.replaceState(null,"",location.pathname);show("#screen-landing")};
   }
   function startTicketCountdown(date,time){
     var p=time.split(":"),d=parseDate(date);d.setHours(+p[0],+p[1],0,0);
@@ -1147,10 +1270,25 @@
   }
 
   /* ---------- boot ---------- */
+  var termsFrom=null;
+  function openTerms(){termsFrom=$$(".screen").filter(function(s){return !s.hidden})[0];var bar=$("#actionbar");if(bar)bar.hidden=true;show("#screen-terms");try{history.pushState({g:"terms"},"")}catch(e){};focusHeading($("#screen-terms"))}
+  function closeTerms(){var bar=$("#actionbar");if(bar)bar.hidden=false;show(termsFrom?"#"+termsFrom.id:"#screen-landing");termsFrom=null}
   function boot(){
-    $("#startBtn").onclick=openWizard;$("#bandBtn").onclick=openWizard;
+    $("#startBtn").onclick=function(){openWizard(false)};$("#bandBtn").onclick=function(){openWizard(false)};
+    $("#termsLink").onclick=function(ev){ev.preventDefault();openTerms()};$("#termsBack").onclick=function(){history.back()};
     if(CFG.locations&&CFG.locations.length>1)STEPS.unshift("location");
     renderLanding();initCountdown();initSnow();
+    try{history.replaceState({g:"home"},"")}catch(e){}
+    if(location.hash==="#terms"){openTerms()}
+    // Resume an unfinished booking after a refresh or accidental navigation.
+    var draft=ONLINE&&CFG.bookingsOpen!==false&&loadDraft();
+    if(draft&&draft.S&&draft.S.date){
+      var r=document.createElement("div");r.className="resume";
+      r.innerHTML='<div><b>Carry on where you left off?</b><span>We kept your booking details for '+esc(fmtDay(draft.S.date))+(draft.S.session?' · '+esc(draft.S.session.name):'')+'.</span></div><button type="button" class="btn btn-gold" id="resumeBtn">Continue booking</button><button type="button" class="btn btn-ghost" id="discardBtn" style="padding:11px 14px;font-size:13px">Start over</button>';
+      $(".hero .trust").after(r);
+      $("#resumeBtn").onclick=function(){var d=draft.S;S=freshState();S.location=d.location;S.date=d.date;S.session=d.session;S.children=d.children||[];S.vouchers=d.vouchers||{};S.guardian=d.guardian||S.guardian;S.promo=d.promo||"";cur=Math.min(draft.cur||0,STEPS.length-1);r.remove();openWizard(true)};
+      $("#discardBtn").onclick=function(){clearDraft();r.remove()};
+    }
     if(!ONLINE){
       var o=document.createElement("div");o.className="offline";o.innerHTML='Online booking is temporarily unavailable. Please try again in a few minutes or WhatsApp <a href="https://wa.me/2348100025985" style="color:var(--gold-soft)">+234 810 002 5985</a>.';
       $(".hero .cta-row").after(o);return;
