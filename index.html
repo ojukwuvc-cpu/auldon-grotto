@@ -451,6 +451,9 @@
   .variants .lbl{font-size:12px;color:var(--frost);font-weight:700;margin-right:2px}
   .diamond-amt{margin-top:10px}
   .diamond-amt .input{max-width:220px}
+  /* Native dropdown lists are drawn by the OS (white on Windows) but inherit the page's light text: give options their own colours. */
+  select option{background-color:#13293b;color:#f6f2ea}
+  select option[value=""]{color:#9fb6c6}
 
   /* vouchers */
   .vrow{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 15px;margin-top:12px}
