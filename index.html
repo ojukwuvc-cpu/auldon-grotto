@@ -15,7 +15,10 @@
 <link rel="canonical" href="https://grotto.auldontoys.com/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://grotto.auldontoys.com/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23e8392f'/%3E%3Cpath d='M12 4l2 5.5h5.5l-4.4 3.3 1.7 5.4L12 15l-4.8 3.2 1.7-5.4L4.5 9.5H10z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23e8392f'/%3E%3Cpath d='M12 4l2 5.5h5.5l-4.4 3.3 1.7 5.4L12 15l-4.8 3.2 1.7-5.4L4.5 9.5H10z' fill='%23fff'/%3E%3C/svg%3E" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,900;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap">
@@ -488,6 +491,26 @@
   .resume span{font-size:12.5px;color:var(--frost)}
   .resume .btn{padding:11px 16px;font-size:14px;margin-left:auto}
 
+  /* ---- audit items 13–23 ---- */
+  .actionbar .inner{flex-wrap:wrap}
+  .actionbar .sumline{position:static;flex-basis:100%;order:-1;text-align:right;padding-right:2px;margin-bottom:6px}
+  .actionbar .sumline:empty{display:none}
+  .brand small{white-space:nowrap}
+  .mini-count .lbl{display:none}
+  @media(min-width:430px){.mini-count .lbl{display:inline}}
+  @media(max-width:360px){.brand small{font-size:9.5px;letter-spacing:.1em}.topbar .mini-count{font-size:12px;padding:5px 9px}}
+  .day .full{font-size:10px;color:#ff8a82;font-weight:700;margin-top:4px}
+  .day[disabled]{opacity:.45;cursor:not-allowed}
+  .day[disabled]:hover{background:var(--card)}
+  .srow .chg{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;color:var(--gold-soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
+  .pay-cancel{display:block;width:100%;margin:16px auto 0;background:none;border:0;color:var(--frost);font-size:13px;font-weight:600;text-decoration:underline;cursor:pointer;padding:12px}
+  .letter-wrap .count{font-size:11.5px;color:var(--frost-dim);text-align:right;margin-top:5px}
+  .ticket-screen h2{font-size:clamp(1.45rem,6vw,2.6rem);overflow-wrap:anywhere}
+  .ticket .guest-n{font-size:clamp(1.25rem,5.5vw,1.9rem);overflow-wrap:anywhere}
+  .gift-cta{margin-top:18px}
+  .how3{grid-template-columns:1fr}
+  @media(min-width:720px){.how3{grid-template-columns:repeat(3,1fr)}}
+
   /* vouchers */
   .vrow{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:14px 15px;margin-top:12px}
   .vrow.on{border-color:var(--gold);background:var(--card-2)}
@@ -527,7 +550,7 @@
         <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.5H21l-5.3 4 2 6.5L12 15l-5.7 4 2-6.5L3 8.5h6.6z"/></svg></span>
         <span>Auldon Toys<small>Santa Grotto · 2026</small></span>
       </div>
-      <div class="mini-count" id="miniCount"><span class="dot"></span><span><b id="miniDays">—</b> to Christmas Eve</span></div>
+      <div class="mini-count" id="miniCount"><span class="dot"></span><span><b id="miniDays">—</b> <span class="lbl">to Christmas Eve</span></span></div>
     </div>
   </header>
 
@@ -569,27 +592,33 @@
       </div>
     </section>
 
+    <section class="section" id="ticket">
+      <div class="wrap">
+        <span class="kicker">The experience ticket</span>
+        <h2>One ticket, the whole family</h2>
+        <p class="sub">One Experience Ticket covers your booking for up to 6 children. Santa greets each child by name.</p>
+        <div id="ticketCardHost"></div>
+      </div>
+    </section>
+
     <section class="section" id="experience">
       <div class="wrap">
         <span class="kicker">The Santa Grotto experience</span>
         <h2>Step into the magic of Christmas</h2>
         <p class="sub">More than a visit to Santa — every part of the experience is designed to delight your child and your family.</p>
         <div class="exp-grid" id="expGrid"></div>
-        <div id="ticketCardHost"></div>
       </div>
     </section>
 
     <section class="section" id="how">
       <div class="wrap">
         <span class="kicker">How it works</span>
-        <h2>From booking to Christmas memories</h2>
-        <p class="sub">Everything is handled online so there's no queue on the day — walk up, show your Golden Ticket, and step inside.</p>
-        <div class="steps3">
-          <div class="howcard"><div class="num">01 · BOOK</div><h3>Pick a date &amp; session</h3><p>Choose a December date and a morning, afternoon or evening session at Auldon Toys, Lekki. If a session is full, join its waiting list.</p></div>
-          <div class="howcard"><div class="num">02 · ARRIVE</div><h3>Check in with your ticket</h3><p>Show the QR code on your Golden Ticket at the grotto entrance — no queue, no paperwork.</p></div>
-          <div class="howcard"><div class="num">03 · EXPERIENCE</div><h3>Meet Santa</h3><p>Your child meets Santa, listens to his Christmas story and captures Christmas photo moments inside the grotto.</p></div>
-          <div class="howcard"><div class="num">04 · RECEIVE</div><h3>A gift from Santa</h3><p>Santa presents each child's gift — plus any Santa Gift Bundle or Gift Voucher you've added.</p></div>
-          <div class="howcard"><div class="num">05 · DISCOVER</div><h3>Explore &amp; shop</h3><p>Discover Christmas gifts, toys, hampers and seasonal offerings in store before you head home.</p></div>
+        <h2>Three steps to Christmas memories</h2>
+        <p class="sub">Everything is handled online so there's no queue on the day.</p>
+        <div class="steps3 how3">
+          <div class="howcard"><div class="num">01 · BOOK</div><h3>Pick a date &amp; session</h3><p>Choose a December date and a morning, afternoon or evening session, tell Santa about each child, and pay by bank transfer. If a session is full, join its waiting list.</p></div>
+          <div class="howcard"><div class="num">02 · ARRIVE</div><h3>Show your Golden Ticket</h3><p>Scan the QR code on your ticket at the grotto entrance — no queue, no paperwork.</p></div>
+          <div class="howcard"><div class="num">03 · ENJOY &amp; SHOP</div><h3>Meet Santa, then explore</h3><p>After the grotto, Santa hands over any gift bundle or voucher you've added, and the family can discover Christmas gifts, toys and hampers in store.</p></div>
         </div>
       </div>
     </section>
@@ -604,6 +633,7 @@
         <div class="subhead" style="margin-top:22px">Santa Gift Vouchers</div>
         <div class="vchips" id="voucherChips"></div>
         <p class="note-sm" id="voucherNote"></p>
+        <div class="gift-cta"><button type="button" class="btn btn-ghost" id="giftsBtn">Add gifts when you book →</button></div>
         <div class="other-gift" id="otherGift"></div>
       </div>
     </section>
@@ -707,6 +737,7 @@
         </div>
       </div>
       <p class="pay-help">Already transferred but nothing happened? Transfers can take a few minutes to reach us. Keep this page open or WhatsApp <a href="https://wa.me/2348100025985" style="color:var(--gold-soft)">+234 810 002 5985</a> with your reference.</p>
+      <button type="button" class="pay-cancel" id="payCancel">Changed your mind or need to edit something? Start a new booking</button>
     </div>
   </main>
 
@@ -812,7 +843,7 @@
   var ic=function(k){return ICONS[k]||ICONS.heart};
 
   /* ---------- state ---------- */
-  function freshState(){return {location:null,date:null,session:null,children:[],vouchers:{},guardian:{name:"",phone:"",email:"",consent:false},promo:"",quote:null,availability:null}}
+  function freshState(){return {location:null,date:null,session:null,children:[],vouchers:{},guardian:{name:"",phone:"",email:"",consent:false},promo:"",quote:null,availability:null,calendar:null}}
   var S=freshState();
   var STEPS=["date","session","register","gifts","review"];
   var STEP_NAMES={location:"Choose your grotto",date:"Pick a date",session:"Pick a session",register:"Who's visiting?",gifts:"Santa gift vouchers",review:"Review & pay"};
@@ -896,7 +927,7 @@
     if(c.whatsappUrl){var links=[['WhatsApp '+(c.whatsapp||''),c.whatsappUrl],[(c.website||'').replace(/^https?:\/\/(www\.)?/,''),c.website]];var so=c.socials||{};[['Instagram',so.instagram],['TikTok',so.tiktok],['Facebook',so.facebook],['X',so.x]].forEach(function(p){if(p[1])links.push(p)});$("#ftLinks").innerHTML=links.filter(function(l){return l[1]}).map(function(l){return '<a href="'+esc(l[1])+'" target="_blank" rel="noopener">'+esc(l[0])+'</a>'}).join("")}
     // Campaign phase: before bookings open, show the "Santa is coming" state.
     var open=ONLINE&&CFG.bookingsOpen!==false;
-    $("#startBtn").hidden=!open;$("#band").hidden=!open;
+    $("#startBtn").hidden=!open;$("#band").hidden=!open;$("#giftsBtn").hidden=!open;
     var cs=$("#comingSoon");cs.hidden=open;
     if(!open&&ONLINE){var when=CFG.bookingsOpenAt?(" Bookings open on "+fmtDay(CFG.bookingsOpenAt)+"."):" Bookings open soon.";$("#comingText").textContent="Something magical is on its way to Auldon Toys, Lekki."+when+" Follow @auldontoys for the reveal, or WhatsApp "+(c.whatsapp||"")+"."}
   }
@@ -957,17 +988,24 @@
     var el=$("#pane-date");
     var dates=CFG.season.openDates||[];
     var monthLabel=dates.length?(MONTHS[parseDate(dates[0]).getMonth()]+" "+parseDate(dates[0]).getFullYear()):"";
-    el.innerHTML='<h2>When shall Santa expect you?</h2><p class="hint">'+esc(S.location?S.location.name.replace("Auldon Toys — ","Auldon Toys, "):"")+' · December dates fill up fast — weekends go first.</p><div class="month-label">'+esc(monthLabel)+'</div><div class="daystrip" role="group"></div>';
+    el.innerHTML='<h2>When shall Santa expect you?</h2><p class="hint">'+esc(S.location?S.location.name.replace("Auldon Toys — ","Auldon Toys, "):"")+' · December dates fill up fast — weekends go first.</p><div class="month-label">'+esc(monthLabel)+'</div><div class="daystrip" role="group" aria-label="Choose a date"></div>';
     var strip=$(".daystrip",el), today=new Date();today.setHours(0,0,0,0);
-    dates.forEach(function(iso){
-      var d=parseDate(iso);if(d<today)return;
-      var wd=d.getDay(), weekend=(wd===0||wd===6)||d.getDate()>=22;
-      var b=document.createElement("button");b.type="button";b.className="day";b.setAttribute("aria-pressed",S.date===iso);
-      b.innerHTML='<div class="dow">'+DOWS[wd]+'</div><div class="dnum tnum">'+d.getDate()+'</div><div class="mon">'+MONTHS[d.getMonth()]+'</div>'+(weekend?'<div class="few">Popular</div>':'');
-      b.onclick=function(){if(S.date!==iso){S.session=null;S.availability=null}S.date=iso;$$(".day",strip).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()};
-      strip.appendChild(b);
-    });
-    if(!strip.children.length)strip.innerHTML='<p class="hint">Bookings for this season have closed.</p>';
+    function draw(cal){
+      strip.innerHTML="";
+      dates.forEach(function(iso){
+        var d=parseDate(iso);if(d<today)return;
+        var wd=d.getDay(), weekend=(wd===0||wd===6), info=cal&&cal[iso], full=!!(info&&info.full), few=!!(info&&!info.full&&info.total<=6);
+        var b=document.createElement("button");b.type="button";b.className="day";b.setAttribute("aria-pressed",S.date===iso);
+        var tag=full?'<div class="full">Full</div>':few?'<div class="few">'+info.total+' left</div>':weekend?'<div class="few">Popular</div>':'';
+        b.innerHTML='<div class="dow">'+DOWS[wd]+'</div><div class="dnum tnum">'+d.getDate()+'</div><div class="mon">'+MONTHS[d.getMonth()]+'</div>'+tag;
+        if(full){b.disabled=true;b.setAttribute("aria-label",fmtDay(iso)+", full")}
+        else b.onclick=function(){if(S.date!==iso){S.session=null;S.availability=null}S.date=iso;$$(".day",strip).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()};
+        strip.appendChild(b);
+      });
+      if(!strip.children.length)strip.innerHTML='<p class="hint">Bookings for this season have closed.</p>';
+    }
+    draw(S.calendar||null);
+    if(!S.calendar){api("/api/calendar?locationId="+encodeURIComponent(S.location?S.location.id:"")).then(function(c){S.calendar=c.dates;if(!$("#pane-date").hidden)draw(S.calendar)}).catch(function(){})}
   }
   function renderSession(){
     var el=$("#pane-session");
@@ -1052,14 +1090,14 @@
         '<div class="two"><div class="field"><label>First name</label><input class="input" data-f="name" data-i="'+i+'" value="'+esc(ch.name)+'" placeholder="e.g. Ada" autocomplete="off"></div>'+
         '<div class="field"><label>Age</label><select data-f="age" data-i="'+i+'">'+ageOpts(ch.age)+'</select></div></div>'+
         '<div class="field" style="margin-top:14px"><label>What do they love? <span class="opt-tag">(optional — helps Santa)</span></label><div class="interests" data-chips="'+i+'"></div></div>'+
-        '<div class="letter-wrap"><div class="lh">'+ICONS.mail+' A little letter to Santa</div><p class="note">Santa reads this before you arrive, so he can mention it in person.</p><textarea data-f="letter" data-i="'+i+'" maxlength="600" placeholder="Dear Santa, this year I have been... and I would love...">'+esc(ch.letter)+'</textarea></div>'+
+        '<div class="letter-wrap"><div class="lh">'+ICONS.mail+' A little letter to Santa</div><p class="note">Santa reads this before you arrive, so he can mention it in person.</p><textarea data-f="letter" data-i="'+i+'" maxlength="600" aria-describedby="lc'+i+'" placeholder="Dear Santa, this year I have been... and I would love...">'+esc(ch.letter)+'</textarea><div class="count" id="lc'+i+'">'+(ch.letter||"").length+' / 600</div></div>'+
         bundleChooser(ch,i);
       host.appendChild(card);
       var chipWrap=$('[data-chips="'+i+'"]',card);
       (CFG.interests||[]).forEach(function(it){var c=document.createElement("button");c.type="button";c.className="ichip";c.setAttribute("aria-pressed",ch.interests.indexOf(it)>=0);c.textContent=it;c.onclick=function(){var idx=ch.interests.indexOf(it);if(idx>=0)ch.interests.splice(idx,1);else ch.interests.push(it);c.setAttribute("aria-pressed",ch.interests.indexOf(it)>=0)};chipWrap.appendChild(c)});
     });
     $$("[data-rm]",host).forEach(function(b){b.onclick=function(){S.children.splice(+b.getAttribute("data-rm"),1);S.quote=null;renderChildren();updateActionBar()}});
-    $$("[data-f]",host).forEach(function(inp){inp.oninput=inp.onchange=function(){var i=+inp.getAttribute("data-i"),f=inp.getAttribute("data-f");S.children[i][f]=inp.value;inp.classList.remove("err");if(f==="name"||f==="age")updateActionBar()}});
+    $$("[data-f]",host).forEach(function(inp){inp.oninput=inp.onchange=function(){var i=+inp.getAttribute("data-i"),f=inp.getAttribute("data-f");S.children[i][f]=inp.value;inp.classList.remove("err");if(f==="letter"){var c=$("#lc"+i);if(c)c.textContent=inp.value.length+" / 600"}if(f==="name"||f==="age")updateActionBar()}});
     $$("[data-tier]",host).forEach(function(b){b.onclick=function(){var i=+b.getAttribute("data-i"),t=b.getAttribute("data-tier");S.children[i].bundle=t?{tier:t,variant:(S.children[i].bundle||{}).variant||null,amount:(S.children[i].bundle||{}).amount||""}:null;S.quote=null;renderChildren();updateActionBar();var el=$$(".child-card")[i];if(el)el.scrollIntoView({block:"nearest"})}});
     $$("[data-variant]",host).forEach(function(b){b.onclick=function(){var i=+b.getAttribute("data-i");if(!S.children[i].bundle)return;S.children[i].bundle.variant=b.getAttribute("data-variant");$$('[data-variant][data-i="'+i+'"]',host).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");S.quote=null;updateActionBar()}});
     $$("[data-amt]",host).forEach(function(inp){inp.oninput=function(){var i=+inp.getAttribute("data-amt");if(S.children[i].bundle){S.children[i].bundle.amount=inp.value.replace(/[^\d]/g,"");inp.classList.remove("err");S.quote=null;updateActionBar()}}});
@@ -1093,11 +1131,13 @@
     var bundleRows=S.children.filter(function(c){return c.bundle&&c.bundle.tier}).map(function(c){var d=bundleOf(c.bundle.tier),v=variantOf(c.bundle.variant);return '<div class="srow"><span class="k">'+esc(d?d.name:"")+' bundle · '+esc(c.name||"child")+(v?' ('+esc(v.name)+')':'')+'</span><span class="v">'+NGN(bundleAmount(c.bundle))+'</span></div>'}).join('');
     var vl=voucherList(), voucherRows=vl.length?'<div class="srow"><span class="k">Santa gift voucher'+(vl.length>1?'s':'')+'</span><span class="v">'+NGN(p.vouchersTotal)+'<small>'+Object.keys(S.vouchers).map(function(v){return S.vouchers[v]+' × '+NGN(v)}).join(', ')+'</small></span></div>':'';
     var hasPromo=CFG.promos&&Object.keys(CFG.promos).length>0;
+    var chg=function(step,label){return '<button type="button" class="chg" data-goto="'+step+'">Change '+label+'</button>'};
     $("#summaryBox").innerHTML=
       '<div class="srow"><span class="k">Grotto</span><span class="v">'+esc(S.location.name.replace("Auldon Toys — ",""))+'<small>'+esc(S.location.sub)+'</small></span></div>'+
-      '<div class="srow"><span class="k">Date & session</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.session.name+' · '+S.session.label)+'</small></span></div>'+
-      '<div class="srow"><span class="k">'+(p.kids>1?p.kids+" children":"Child")+'</span><span class="v">'+esc(names||"—")+'</span></div>'+
-      '<div class="srow"><span class="k">'+esc(p.ticketName||"Experience ticket")+'</span><span class="v">'+NGN(p.ticket)+'<small>per booking</small></span></div>'+bundleRows+voucherRows+
+      '<div class="srow"><span class="k">Date & session'+chg("date","date")+'</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.session.name+' · '+S.session.label)+'</small>'+chg("session","session")+'</span></div>'+
+      '<div class="srow"><span class="k">'+(p.kids>1?p.kids+" children":"Child")+chg("register","details")+'</span><span class="v">'+esc(names||"—")+'</span></div>'+
+      '<div class="srow"><span class="k">'+esc(p.ticketName||"Experience ticket")+'</span><span class="v">'+NGN(p.ticket)+'<small>per booking</small></span></div>'+bundleRows+voucherRows.replace('<span class="k">Santa gift voucher','<span class="k">'+chg("gifts","vouchers").replace("Change vouchers","")+'Santa gift voucher')+
+      (voucherRows?'':'<div class="srow"><span class="k">Santa gift vouchers'+chg("gifts","")+'</span><span class="v" style="color:var(--frost)">None added</span></div>')+
       (p.fee>0?'<div class="srow"><span class="k">Booking fee</span><span class="v">'+NGN(p.fee)+'</span></div>':'')+
       (p.discount>0?'<div class="srow"><span class="k">Promo '+esc(p.promo)+'</span><span class="v" style="color:var(--green)">−'+NGN(p.discount)+'</span></div>':'')+
       '<div class="total"><span class="k">Total</span><span class="v tnum">'+NGN(p.total)+'</span></div>'+
@@ -1106,6 +1146,7 @@
       '<div class="paylogos"><span>Bank transfer</span><span>Any Nigerian bank app</span><span>No hidden charges</span></div>'+
       '<p class="terms-line">By paying you accept our <a href="#terms" class="terms-open">booking terms</a>: tickets can be moved to another session (subject to availability) but aren\'t refundable. We use your details only to run your visit — see our <a href="#terms" class="terms-open">privacy notice</a>.</p>';
     $$(".terms-open",$("#summaryBox")).forEach(function(a){a.onclick=function(ev){ev.preventDefault();openTerms()}});
+    $$(".chg",$("#summaryBox")).forEach(function(b){if(!b.textContent.trim().replace("Change","").trim())b.textContent="Change";b.onclick=function(){S.quote=null;goto(b.getAttribute("data-goto"))}});
     if(hasPromo){
       if(S.promo&&!p.promo)$("#promoMsg").innerHTML='<div class="errmsg">That promo code isn\'t valid.</div>';
       else if(p.promo)$("#promoMsg").innerHTML='<div class="promo-ok">'+ICONS.check+' '+esc(CFG.promos[p.promo]||"Promo applied")+'</div>';
@@ -1140,7 +1181,7 @@
   function mountActionBar(){
     if($("#actionbar"))return;
     var bar=document.createElement("div");bar.className="actionbar";bar.id="actionbar";
-    bar.innerHTML='<div class="inner"><span class="sumline" id="sumline"></span><button type="button" class="back" id="backBtn" aria-label="Go back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><button type="button" class="btn btn-primary cont" id="contBtn">Continue</button></div>';
+    bar.innerHTML='<div class="inner"><span class="sumline" id="sumline" aria-live="polite"></span><button type="button" class="back" id="backBtn" aria-label="Go back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><button type="button" class="btn btn-primary cont" id="contBtn">Continue</button></div>';
     document.body.appendChild(bar);
     $("#backBtn").onclick=back;
     $("#contBtn").onclick=function(){if(!validStep()){flashInvalid();return}next()};
@@ -1152,7 +1193,7 @@
     // The button stays tappable; when the step is incomplete it looks muted and a tap explains what is missing.
     var ok=validStep();c.textContent=CTA_LABEL[k];c.disabled=false;c.classList.toggle("incomplete",!ok);c.setAttribute("aria-describedby",ok?"":"formAlert");
     var sl=$("#sumline");
-    if(STEPS.indexOf(k)>=STEPS.indexOf("session")&&k!=="review"){var est=S.quote?S.quote.total:estimate();sl.innerHTML='<b>'+NGN(est)+'</b>'}else sl.innerHTML="";
+    if(STEPS.indexOf(k)>=STEPS.indexOf("session")&&k!=="review"){var est=S.quote?S.quote.total:estimate();sl.innerHTML='Total so far <b>'+NGN(est)+'</b>'}else sl.innerHTML="";
     var fa=$("#formAlert");if(fa&&ok)fa.textContent="";
     saveDraft();
   }
@@ -1221,6 +1262,8 @@
   }
   function stopTimers(){clearInterval(pollTimer);clearInterval(expiryTimer)}
   $("#restartBtn").onclick=function(){S.quote=null;store("grotto_pending_ref",null);show("#screen-wizard");mountActionBar();goto("session")};
+  // Leaving the payment page: the old reservation simply expires (no money can be taken from an unpaid account).
+  $("#payCancel").onclick=function(){stopTimers();store("grotto_pending_ref",null);clearDraft();S=freshState();show("#screen-landing");try{history.replaceState({g:"home"},"")}catch(e){};toast("No problem — nothing was charged. Start again whenever you're ready.")};
 
   /* ---------- ticket ---------- */
   function ticketUrl(code){return location.origin+location.pathname+"#ticket-"+code}
@@ -1237,12 +1280,16 @@
     var loc=CFG.locations.filter(function(l){return l.id===b.locationId})[0];
     var sess=sessionOf(b.sessionId||b.time);
     var names=(b.children||[]).map(function(c){return c.name}).filter(Boolean);
-    $("#ticketHeadline").textContent=names[0]?("See you soon, "+names[0]+"!"):"The magic is booked!";
+    var firsts=names.map(function(n){return n.split(/[\s-]/)[0]});
+    var who=firsts.length<=1?firsts[0]:firsts.length===2?firsts.join(" & "):firsts.slice(0,-1).join(", ")+" & "+firsts[firsts.length-1];
+    $("#ticketHeadline").textContent=who?("See you soon, "+who+"!"):"The magic is booked!";
     $("#tkGuests").firstChild.textContent=names.join(", ")||"Your little one";
     $("#tkPackage").textContent=(b.package||"Santa Grotto Experience")+" · "+b.childCount+(b.childCount>1?" children":" child");
     $("#tkLocation").textContent=loc?loc.name.replace("Auldon Toys — ",""):b.locationId;
     $("#tkWhen").textContent=fmtDay(b.date)+" · "+(sess?sess.name+" "+sess.label:(b.session||b.time));
-    var gifts=[];(b.children||[]).forEach(function(c){if(c.bundle)gifts.push(esc(c.bundle.name||c.bundle.tier)+" bundle ("+esc(c.bundle.variant)+") for "+esc(c.name))});if(b.vouchers&&b.vouchers.length)gifts.push("Gift voucher"+(b.vouchers.length>1?"s":"")+": "+b.vouchers.map(function(v){return NGN(v)}).join(", "));
+    var cap=function(s){s=String(s||"");return s.charAt(0).toUpperCase()+s.slice(1)};
+    var gifts=[];(b.children||[]).forEach(function(c){if(c.bundle){var v=variantOf(c.bundle.variant);gifts.push(esc(c.bundle.name||cap(c.bundle.tier))+" bundle for "+esc(c.name)+" ("+esc(v?v.name:cap(c.bundle.variant))+(c.bundle.amount?", "+NGN(c.bundle.amount):"")+")")}});
+    if(b.vouchers&&b.vouchers.length){var byV={};b.vouchers.forEach(function(v){byV[v]=(byV[v]||0)+1});gifts.push("Gift voucher"+(b.vouchers.length>1?"s":"")+": "+Object.keys(byV).map(function(v){return (byV[v]>1?byV[v]+" × ":"")+NGN(v)}).join(", "))}
     $("#tkGifts").innerHTML=gifts.length?'<div class="grid2" style="grid-template-columns:1fr"><div class="cell"><div class="ck">From Santa</div><div class="cv">'+gifts.join("<br>")+'</div></div></div>':'';
     $("#tkCode").textContent=b.ticketCode;
     $("#tkEmail").textContent=b.guardianEmail||"";
@@ -1274,7 +1321,7 @@
   function openTerms(){termsFrom=$$(".screen").filter(function(s){return !s.hidden})[0];var bar=$("#actionbar");if(bar)bar.hidden=true;show("#screen-terms");try{history.pushState({g:"terms"},"")}catch(e){};focusHeading($("#screen-terms"))}
   function closeTerms(){var bar=$("#actionbar");if(bar)bar.hidden=false;show(termsFrom?"#"+termsFrom.id:"#screen-landing");termsFrom=null}
   function boot(){
-    $("#startBtn").onclick=function(){openWizard(false)};$("#bandBtn").onclick=function(){openWizard(false)};
+    $("#startBtn").onclick=function(){openWizard(false)};$("#bandBtn").onclick=function(){openWizard(false)};$("#giftsBtn").onclick=function(){openWizard(false)};
     $("#termsLink").onclick=function(ev){ev.preventDefault();openTerms()};$("#termsBack").onclick=function(){history.back()};
     if(CFG.locations&&CFG.locations.length>1)STEPS.unshift("location");
     renderLanding();initCountdown();initSnow();
