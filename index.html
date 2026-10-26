@@ -408,8 +408,15 @@
   /* ---- brief alignment (Oct 2026): hero artwork, sessions, gift bundles, vouchers, waiting list, footer ---- */
   .hero{overflow:hidden}
   .hero::before{content:"";position:absolute;inset:0;background:url("assets/hero-santa.jpg") center 38%/cover no-repeat;opacity:.6;z-index:0}
-  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,28,.8) 0%,rgba(13,18,28,.55) 50%,var(--night) 100%);z-index:0}
-  .hero>.wrap{position:relative;z-index:1}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,28,.72) 0%,rgba(13,18,28,.4) 48%,rgba(10,22,33,.85) 88%,var(--night) 100%);z-index:0}
+  .hero>.wrap{position:relative;z-index:2}
+  .hero{padding-bottom:calc(44px + 44px)}
+  @media(min-width:1000px){.hero{padding-bottom:calc(56px + 70px)}}
+  /* snow falls in front of the photo and overlay, behind the text */
+  .hero-snow{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+  /* snowdrift along the bottom edge of the hero */
+  .drift{position:absolute;left:0;right:0;bottom:-1px;height:64px;z-index:1;pointer-events:none;display:block;width:100%}
+  @media(min-width:1000px){.drift{height:96px}}
   .hero .lede{max-width:38ch;text-shadow:0 1px 12px rgba(0,0,0,.5)}
   .hero h1{text-shadow:0 2px 18px rgba(0,0,0,.55)}
   .coming{margin-top:22px;background:rgba(243,194,87,.1);border:1px solid rgba(243,194,87,.4);border-radius:16px;padding:16px 18px}
@@ -496,6 +503,11 @@
   .actionbar .sumline{position:static;flex-basis:100%;order:-1;text-align:right;padding-right:2px;margin-bottom:6px}
   .actionbar .sumline:empty{display:none}
   .brand small{white-space:nowrap}
+  .brand .logo{display:block;background:#fff;border-radius:10px;padding:3px 7px;box-shadow:0 6px 18px -8px rgba(0,0,0,.6);flex:none}
+  .brand .logo img{display:block;height:34px;width:auto}
+  .brand .brand-sub{font-family:var(--display);font-weight:600;font-size:15px;line-height:1.05;color:var(--snow)}
+  .brand .brand-sub small{font-family:var(--ui);letter-spacing:.14em}
+  @media(max-width:360px){.brand .logo img{height:30px}.brand .brand-sub{font-size:14px}}
   .mini-count .lbl{display:none}
   @media(min-width:430px){.mini-count .lbl{display:inline}}
   @media(max-width:360px){.brand small{font-size:9.5px;letter-spacing:.1em}.topbar .mini-count{font-size:12px;padding:5px 9px}}
@@ -547,8 +559,8 @@
   <header class="topbar">
     <div class="wrap">
       <div class="brand">
-        <span class="mk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.5H21l-5.3 4 2 6.5L12 15l-5.7 4 2-6.5L3 8.5h6.6z"/></svg></span>
-        <span>Auldon Toys<small>Santa Grotto · 2026</small></span>
+        <span class="logo"><img src="assets/auldon-logo.png" width="148" height="57" alt="Auldon Toys"></span>
+        <span class="brand-sub">Santa Grotto<small>2026</small></span>
       </div>
       <div class="mini-count" id="miniCount"><span class="dot"></span><span><b id="miniDays">—</b> <span class="lbl">to Christmas Eve</span></span></div>
     </div>
@@ -557,6 +569,15 @@
   <!-- ===== LANDING ===== -->
   <main id="screen-landing" class="screen">
     <section class="hero">
+      <canvas class="hero-snow" id="heroSnow" aria-hidden="true"></canvas>
+      <svg class="drift" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="driftBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbe6ee" stop-opacity=".55"/><stop offset="1" stop-color="#9fb6c6" stop-opacity="0"/></linearGradient>
+          <linearGradient id="driftFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".35" stop-color="#e4edf3"/><stop offset=".75" stop-color="#7f97aa" stop-opacity=".55"/><stop offset="1" stop-color="#0a1621" stop-opacity="0"/></linearGradient>
+        </defs>
+        <path d="M0 62 C90 40 170 44 250 58 C330 72 400 30 520 34 C640 38 690 66 790 62 C890 58 960 24 1080 30 C1200 36 1260 64 1340 58 C1390 54 1420 46 1440 44 V120 H0Z" fill="url(#driftBack)"/>
+        <path d="M0 84 C70 66 150 60 230 72 C310 84 380 92 470 78 C560 64 640 54 740 66 C840 78 900 94 1000 84 C1100 74 1170 58 1270 64 C1350 69 1400 80 1440 76 V120 H0Z" fill="url(#driftFront)"/>
+      </svg>
       <div class="wrap hero-grid">
         <div>
           <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.5H21l-5.3 4 2 6.5L12 15l-5.7 4 2-6.5L3 8.5h6.6z"/></svg> Auldon Toys presents</span>
@@ -890,6 +911,37 @@
     var d=daysTo(xmas);
     $("#heroDays").textContent=d;
     $("#miniDays").textContent=d+(d===1?" day":" days");
+  }
+  function initHeroSnow(){
+    var c=$("#heroSnow");if(!c||!c.getContext)return;
+    var x=c.getContext("2d"),host=c.parentNode,W=0,H=0,dpr=1,flakes=[],still=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches,visible=true,t=0;
+    // Three depths: far (small, slow, dim), mid, near (large, soft, faster).
+    var LAYERS=[{r:[1,2],v:[0.35,0.6],a:0.6,share:0.48},{r:[2,3.2],v:[0.6,1.0],a:0.85,share:0.34},{r:[3.6,6.5],v:[1.0,1.7],a:0.95,share:0.18}];
+    function rnd(a){return a[0]+Math.random()*(a[1]-a[0])}
+    function make(L,anyY){return {L:L,x:Math.random()*W,y:anyY?Math.random()*H:-10,r:rnd(L.r),v:rnd(L.v),ph:Math.random()*6.283,sw:0.3+Math.random()*0.9}}
+    function size(){
+      dpr=Math.min(2,window.devicePixelRatio||1);W=host.clientWidth;H=host.clientHeight;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0);
+      var n=Math.min(230,Math.round(W*H/5200));flakes=[];
+      LAYERS.forEach(function(L){for(var i=0;i<Math.round(n*L.share);i++)flakes.push(make(L,true))});
+      if(still)draw(false);
+    }
+    function dot(f){
+      var a=f.L.a;
+      if(f.r>=3){var g=x.createRadialGradient(f.x,f.y,0,f.x,f.y,f.r);g.addColorStop(0,"rgba(255,255,255,"+a+")");g.addColorStop(0.55,"rgba(255,255,255,"+(a*0.55)+")");g.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=g}
+      else x.fillStyle="rgba(255,255,255,"+a+")";
+      x.beginPath();x.arc(f.x,f.y,f.r,0,6.283);x.fill();
+    }
+    function draw(move){
+      x.clearRect(0,0,W,H);t+=0.016;
+      for(var i=0;i<flakes.length;i++){var f=flakes[i];
+        if(move){f.y+=f.v;f.x+=Math.sin(t*f.sw+f.ph)*0.45*(f.r/2);if(f.y>H+10){var nf=make(f.L,false);flakes[i]=f=nf}if(f.x>W+10)f.x=-10;if(f.x<-10)f.x=W+10}
+        dot(f);
+      }
+    }
+    size();addEventListener("resize",size);
+    if(still)return;
+    if("IntersectionObserver" in window)new IntersectionObserver(function(es){visible=es[0].isIntersecting}).observe(host);
+    (function tick(){if(visible)draw(true);requestAnimationFrame(tick)})();
   }
   function initSnow(){
     if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)return;
@@ -1325,7 +1377,7 @@
     $("#startBtn").onclick=function(){openWizard(false)};$("#bandBtn").onclick=function(){openWizard(false)};$("#giftsBtn").onclick=function(){openWizard(false)};
     $("#termsLink").onclick=function(ev){ev.preventDefault();openTerms()};$("#termsBack").onclick=function(){history.back()};
     if(CFG.locations&&CFG.locations.length>1)STEPS.unshift("location");
-    renderLanding();initCountdown();initSnow();
+    renderLanding();initCountdown();initSnow();initHeroSnow();
     try{history.replaceState({g:"home"},"")}catch(e){}
     if(location.hash==="#terms"){openTerms()}
     // Resume an unfinished booking after a refresh or accidental navigation.
