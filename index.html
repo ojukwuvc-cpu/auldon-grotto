@@ -686,6 +686,7 @@
       <ul>
         <li>We collect the details you enter here (parent name, WhatsApp number, email, and each child's first name, age, interests and letter to Santa) only to run your visit, send your Golden Ticket and contact you about your booking.</li>
         <li>Payment is handled by Flutterwave; we never see your card or bank details.</li>
+        <li>We count visits to this page with Cloudflare Web Analytics, which uses no cookies and doesn't identify you.</li>
         <li>Photos are only taken of children whose parent has given photo consent when booking.</li>
         <li>We don't sell or share your details with anyone else, and we delete booking details after the season ends (by 31 March 2027).</li>
         <li>To see, correct or delete your details, WhatsApp +234 810 002 5985 or email the address on your ticket. Auldon Toys follows the Nigeria Data Protection Act.</li>
@@ -1350,5 +1351,6 @@
   api("/api/config").then(function(c){CFG=c;ONLINE=true}).catch(function(){CFG=FALLBACK;ONLINE=false}).then(boot);
 })();
 </script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "12fa217ff6c5495bba5ce88fdc37e3d2"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
