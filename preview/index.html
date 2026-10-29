@@ -700,7 +700,7 @@
         </figure>
         <div class="hero-copy">
           <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.5H21l-5.3 4 2 6.5L12 15l-5.7 4 2-6.5L3 8.5h6.6z"/></svg> Where Christmas magic comes to life</span>
-          <h1>Ten magical minutes. <span class="em">A memory forever.</span></h1>
+          <h1>One magical visit. <span class="em">A memory forever.</span></h1>
           <p class="lede">Your family's own private visit with Santa — no queues, no rush. Capture the smiles, write a letter to Santa while you wait, and add a gift package for the big moment.</p>
           <div class="cta-row">
             <button class="btn btn-primary" id="startBtn">Book your visit
@@ -745,9 +745,9 @@
         <h2>Three steps to Christmas memories</h2>
         <p class="sub">Everything is handled online, so your family has its own time with Santa.</p>
         <div class="steps3 how3">
-          <div class="howcard"><div class="num">01 · BOOK</div><h3>Pick a date &amp; time slot</h3><p>Choose any day from 10 December to 3 January and a 10-minute time slot, tell us who's coming, add a gift package if you'd like, and pay by bank transfer. If a day is fully booked, join its waiting list.</p></div>
+          <div class="howcard"><div class="num">01 · BOOK</div><h3>Pick a date &amp; time slot</h3><p>Choose any day from 10 December to 3 January and a time slot, tell us who's coming, add a gift package if you'd like, and pay by bank transfer. If a day is fully booked, join its waiting list.</p></div>
           <div class="howcard"><div class="num">02 · ARRIVE</div><h3>Come 10 minutes early</h3><p>Show your booking confirmation or reference at check-in. Children write their letter to Santa while they wait — we provide everything.</p></div>
-          <div class="howcard"><div class="num">03 · MEET SANTA</div><h3>Your 10 minutes with Santa</h3><p>Meet Santa in his grotto and capture the moment. If you added a gift package, it's ready for your child on the day. Then explore Christmas gifts and toys in store.</p></div>
+          <div class="howcard"><div class="num">03 · MEET SANTA</div><h3>Your moment with Santa</h3><p>Meet Santa in his grotto and capture the moment. If you added a gift package, it's ready for your child on the day. Then explore Christmas gifts and toys in store.</p></div>
         </div>
       </div>
     </section>
@@ -805,7 +805,7 @@
       <h3>Your booking</h3>
       <ul>
         <li>The Santa Experience is priced per child: every child attending needs their own ticket. Up to two parents or guardians are included in each booking; each additional adult is ₦15,000.</li>
-        <li>Each booking is a 10-minute visit at the time slot you choose. Please arrive 10 minutes before your slot and present your booking confirmation or reference. Late arrival may affect your experience.</li>
+        <li>Each booking is a private visit at the time slot you choose. Please arrive 10 minutes before your slot and present your booking confirmation or reference. Late arrival may affect your experience.</li>
         <li>The Santa Experience does not include a gift. Only bookings that include a Santa Gift Package receive a gift. Package pictures show the packages currently in stock.</li>
         <li>Early-bird prices apply only while the offer is running and are fixed at the time you book.</li>
         <li>Your slot is held for 30 minutes while you pay. If the transfer doesn't arrive in that time the booking expires, the slot is released and no money is taken.</li>
@@ -948,10 +948,10 @@
     bookingsOpen:false,
     locations:[{id:"lekki",name:"Auldontoys Experience Centre",sub:"Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos",icon:"palm"}],
     season:{start:"2026-12-10",end:"2027-01-03",label:"10 December 2026 – 3 January 2027",openDates:[]},
-    openingHours:[{days:"Monday – Saturday",hours:"9:00 AM – 9:00 PM"},{days:"Sunday",hours:"12:00 PM – 9:00 PM"}],slotMinutes:10,
-    ticket:{id:"experience",name:"Santa Experience",price:30000,per:"child",perks:["A private 10-minute visit with Santa for your family","Meet Santa face to face in his magical grotto","Christmas photo moments inside the grotto","Write a letter to Santa while you wait","Gift & toy discovery around the store","Up to two parents or guardians included"],note:"The Santa Experience does not include a gift. To include a gift, add a Santa Gift Package to your booking."},
+    openingHours:[{days:"Monday – Saturday",hours:"9:00 AM – 9:00 PM"},{days:"Sunday",hours:"12:00 PM – 9:00 PM"}],
+    ticket:{id:"experience",name:"Santa Experience",price:30000,per:"child",perks:["A private visit with Santa, just for your family","Meet Santa face to face in his magical grotto","Christmas photo moments inside the grotto","Write a letter to Santa while you wait","Gift & toy discovery around the store","Up to two parents or guardians included"],note:"The Santa Experience does not include a gift. To include a gift, add a Santa Gift Package to your booking."},
     earlyBird:{active:false,price:25000,from:"2026-11-01",upcoming:true},adults:{included:2,extraPrice:15000,maxExtra:4},
-    experience:[{icon:"santa",name:"Meet Santa",sub:"Children come face to face with Santa in his magical grotto."},{icon:"clock",name:"Your Own Time Slot",sub:"A private 10-minute visit just for your family — no queueing."},{icon:"photo",name:"Christmas Photo Moments",sub:"Captured family moments inside the grotto."},{icon:"mail",name:"Letters to Santa",sub:"Children write their letter to Santa while they wait — we provide everything."},{icon:"bear",name:"Gift & Toy Discovery",sub:"Families explore and discover Christmas gifts and toys."},{icon:"heart",name:"Family Memories",sub:"An experience built around lasting family memories."}],
+    experience:[{icon:"santa",name:"Meet Santa",sub:"Children come face to face with Santa in his magical grotto."},{icon:"clock",name:"Your Own Time Slot",sub:"A private visit just for your family, at the time you choose — no queueing."},{icon:"photo",name:"Christmas Photo Moments",sub:"Captured family moments inside the grotto."},{icon:"mail",name:"Letters to Santa",sub:"Children write their letter to Santa while they wait — we provide everything."},{icon:"bear",name:"Gift & Toy Discovery",sub:"Families explore and discover Christmas gifts and toys."},{icon:"heart",name:"Family Memories",sub:"An experience built around lasting family memories."}],
     giftPackages:[{id:"bronze",name:"Bronze",price:50000,images:{}},{id:"silver",name:"Silver",price:100000,images:{}},{id:"gold",name:"Gold",price:150000,images:{}}],
     giftVariants:[{id:"boy",name:"Boy"},{id:"girl",name:"Girl"},{id:"baby",name:"Baby"}],
     giftNote:"Each package contains toys and selected Christmas items. Pictures show the packages currently in stock.",
@@ -1104,7 +1104,7 @@
     $("#ticketCardHost").innerHTML='<div class="pkg feature ticket-card"><span class="tag">Per child</span><div class="pname">'+esc(t.name)+'</div>'+priceHtml()+'<ul>'+t.perks.map(function(k){return '<li>'+ICONS.check+'<span>'+esc(k)+'</span></li>'}).join('')+'</ul><p class="note">Additional adults beyond two: '+NGN(ad.extraPrice)+' each. '+esc(t.note||"")+'</p></div>';
     var hrs=CFG.openingHours||[];
     $("#hoursCard").innerHTML='<h3>Opening hours</h3>'+hrs.map(function(h){return '<div class="hr"><b>'+esc(h.days)+'</b><span>'+esc(h.hours)+'</span></div>'}).join("")+
-      '<p>Open every day, '+esc((CFG.season&&CFG.season.label)||"")+', including Christmas Day, Boxing Day and New Year\'s Day. Each family books a 10-minute time slot.</p>'+
+      '<p>Open every day, '+esc((CFG.season&&CFG.season.label)||"")+', including Christmas Day, Boxing Day and New Year\'s Day. Each family books its own time slot.</p>'+
       '<p><b style="color:var(--snow)">'+esc(c.venue||"")+'</b><br>'+esc(c.address||"")+'<br><a href="'+esc(c.mapsUrl||"#")+'" target="_blank" rel="noopener">Open in Google Maps '+ICONS.ext+'</a></p>';
     $("#pkGrid").innerHTML=(CFG.giftPackages||[]).map(pkgCard).join("")+diamondCard();
     $("#giftNote").textContent=(CFG.giftNote||"")+" One package per booking.";
@@ -1199,7 +1199,7 @@
   }
   function renderTime(){
     var el=$("#pane-time");
-    el.innerHTML='<h2>Choose your time with Santa</h2><p class="hint">Live availability for <b style="color:var(--snow)">'+esc(S.date?fmtDay(S.date):"")+'</b>. Each family has a private 10-minute visit — please arrive 10 minutes early.</p><div id="slotHost"><div class="skel" style="margin-top:20px"></div><div class="skel" style="margin-top:10px"></div></div>';
+    el.innerHTML='<h2>Choose your time with Santa</h2><p class="hint">Live availability for <b style="color:var(--snow)">'+esc(S.date?fmtDay(S.date):"")+'</b>. Each family has its own private visit — please arrive 10 minutes early.</p><div id="slotHost"><div class="skel" style="margin-top:20px"></div><div class="skel" style="margin-top:10px"></div></div>';
     api("/api/availability?locationId="+encodeURIComponent(S.location.id)+"&date="+encodeURIComponent(S.date)).then(function(av){
       var host=$("#slotHost");if(!host)return;host.innerHTML="";
       if(av.full){dayFull=true;host.innerHTML='<div class="offline">Every time slot on '+esc(fmtDay(S.date))+' has just been booked. Go back to pick another date or join that day\'s waiting list.</div>';S.slot=null;updateActionBar();return}
@@ -1320,7 +1320,7 @@
     var chg=function(step,label){return '<button type="button" class="chg" data-goto="'+step+'">Change '+label+'</button>'};
     $("#summaryBox").innerHTML=
       '<div class="srow"><span class="k">Venue</span><span class="v">'+esc(S.location.name)+'<small>'+esc(S.location.sub)+'</small></span></div>'+
-      '<div class="srow"><span class="k">Date & time'+chg("date","date")+'</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.slot.label)+' · 10-minute visit</small>'+chg("time","time")+'</span></div>'+
+      '<div class="srow"><span class="k">Date & time'+chg("date","date")+'</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.slot.label)+' · private visit</small>'+chg("time","time")+'</span></div>'+
       '<div class="srow"><span class="k">'+(p.kids>1?p.kids+" children":"1 child")+chg("register","details")+'</span><span class="v">'+esc(names||"—")+'</span></div>'+
       '<div class="srow"><span class="k">Santa Experience'+(p.earlyBird?' <span style="color:var(--green);font-weight:700">· early-bird</span>':'')+'</span><span class="v">'+NGN(p.childrenTotal)+'<small>'+p.kids+' × '+NGN(p.childPrice)+'</small></span></div>'+
       '<div class="srow"><span class="k">Adults</span><span class="v">'+(p.extraAdults?NGN(p.adultsTotal)+'<small>'+p.adultsIncluded+' included + '+p.extraAdults+' × '+NGN(p.extraAdultPrice)+'</small>':'Included<small>up to '+p.adultsIncluded+' parents or guardians</small>')+'</span></div>'+
@@ -1482,7 +1482,7 @@
     $("#tkEmail").textContent=b.guardianEmail||"";
     drawQR(ticketUrl(b.ticketCode));
     show("#screen-ticket");
-    var start=b.slotStart||"09:00", end=b.slotEnd||"09:10";
+    var start=b.slotStart||"09:00", end=start; // calendar entry marks the start time only
     startTicketCountdown(b.date,start);
     $("#calBtn").onclick=function(){downloadIcs(b,loc,start,end)};
     $("#shareBtn").onclick=function(){

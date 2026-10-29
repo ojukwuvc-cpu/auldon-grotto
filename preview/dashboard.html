@@ -185,7 +185,7 @@
     </div>
 
     <div class="card">
-      <div class="card-h"><h2>Fill by date and time slot</h2><span class="muted" style="font-size:13px">slots booked ÷ slots · one family per 10-minute slot</span></div>
+      <div class="card-h"><h2>Fill by date and time slot</h2><span class="muted" style="font-size:13px">slots booked ÷ slots · one family per slot</span></div>
       <div id="fill"></div>
     </div>
 
@@ -295,7 +295,7 @@
     data=j;var T=j.totals,C=j.capacity,W=j.waitlist;
     $("#updated").textContent="Updated "+new Date(j.generatedAt).toLocaleTimeString("en-NG",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Lagos"});
     var first=j.days.length?j.days[0].date:null,last=j.days.length?j.days[j.days.length-1].date:null;
-    $("#season").textContent=first?(fmtDay(first)+" – "+fmtDay(last)+" · "+plural(C.days,"day")+" · 40 ten-minute slots a day (32 on Sundays) · "+C.season.toLocaleString("en-NG")+" in the season"):"No open dates configured.";
+    $("#season").textContent=first?(fmtDay(first)+" – "+fmtDay(last)+" · "+plural(C.days,"day")+" · 40 time slots a day (32 on Sundays) · "+C.season.toLocaleString("en-NG")+" in the season"):"No open dates configured.";
 
     // KPI tiles
     var fillPct=C.season?Math.min(100,T.bookings*100/C.season):0;
