@@ -612,6 +612,51 @@
     .pk-grid{grid-template-columns:repeat(4,1fr)}
     footer .wrap{flex-direction:row;align-items:center;justify-content:space-between}
   }
+
+  /* ---- hero: the grotto window (photo framed, countdown as a hanging gift tag) ---- */
+  /* The page behind keeps only a soft, blurred glow of the same photo; the photo itself is shown whole in the window. */
+  .hero::before{background:url("/assets/hero-santa.jpg") center/cover no-repeat;filter:blur(30px) saturate(1.25);opacity:.4;transform:scale(1.15)}
+  @media(max-width:719px){.hero::before{background-position:center}}
+  .window{position:relative;margin:0;justify-self:center;width:min(100%,430px)}
+  .window .arch{--ry:40;position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:50% 50% 26px 26px / 40% 40% 26px 26px;border:2px solid rgba(243,194,87,.7);
+    box-shadow:0 0 0 7px rgba(10,22,33,.6),0 0 0 8px rgba(243,194,87,.28),0 34px 80px -30px rgba(0,0,0,.95),0 0 70px -6px rgba(243,194,87,.38);background:#1a1410}
+  .window .arch img{width:100%;height:100%;object-fit:cover;object-position:59% 50%;display:block}
+  /* frost gathering on the sill */
+  .window .arch::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+    radial-gradient(120% 34% at 50% 108%,rgba(255,255,255,.75),rgba(255,255,255,0) 62%),
+    radial-gradient(45% 30% at -4% 102%,rgba(255,255,255,.5),transparent 70%),
+    radial-gradient(45% 30% at 104% 102%,rgba(255,255,255,.5),transparent 70%)}
+  /* a string of lights on the frame itself (outside the photo, so they don't blend into it) */
+  .window .lights{position:absolute;left:0;top:0;width:100%;aspect-ratio:4/5;pointer-events:none}
+  .window .lights i{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:#ffe6a6;box-shadow:0 0 8px 2px rgba(255,214,120,.85);animation:twinkle 2.4s ease-in-out infinite}
+  .window .lights i:nth-child(3n){background:#ff8a7a;box-shadow:0 0 8px 2px rgba(255,110,90,.8)}
+  .window .lights i:nth-child(3n+1){background:#bff0c8;box-shadow:0 0 8px 2px rgba(140,230,160,.75)}
+  @keyframes twinkle{0%,100%{opacity:1}50%{opacity:.35}}
+  /* gift tag hanging off the frame on a red string */
+  .tag-hang{position:absolute;left:-128px;top:70%;transform-origin:150px -34px;animation:swing 6s ease-in-out infinite;filter:drop-shadow(0 12px 18px rgba(0,0,0,.5))}
+  .tag-hang::before{content:"";position:absolute;left:96px;top:-40px;width:2px;height:58px;background:linear-gradient(#e8392f,#b2211c);transform:rotate(-58deg);transform-origin:bottom}
+  @keyframes swing{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(-2deg)}}
+  .gtag{position:relative;display:grid;gap:1px;min-width:148px;padding:12px 16px 12px 32px;color:#6b1d17;
+    background:linear-gradient(160deg,#fbf4e6,#efe2c8);clip-path:polygon(18px 0,100% 0,100% 100%,18px 100%,0 50%)}
+  .gtag::before{content:"";position:absolute;left:13px;top:50%;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:#0a1621;box-shadow:inset 0 0 0 2px #c9b48e}
+  .gtag .gk{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b2211c}
+  .gtag .gn{font-family:var(--display);font-size:15px;font-weight:600;line-height:1}
+  .gtag .gn b{font-size:40px;font-weight:600;color:#7a1c15;margin-right:2px}
+  .gtag .gs{font-size:11.5px;font-weight:700;color:#7d5a35;margin-top:3px}
+  @media(max-width:719px){
+    .hero-grid{gap:16px}
+    .window{order:-1;width:100%}
+    .window .arch{--ry:30;aspect-ratio:4/3;border-radius:50% 50% 20px 20px / 30% 30% 20px 20px}
+    .window .lights{aspect-ratio:4/3}
+    .window .arch img{object-position:64% 40%}
+    .tag-hang{left:auto;right:-6px;top:auto;bottom:-22px;transform-origin:70% -30px;animation-name:swing-r}
+    .tag-hang::before{left:auto;right:30px;transform:rotate(18deg)}
+    .gtag{min-width:0;padding:9px 13px 9px 28px}
+    .gtag .gn b{font-size:30px}
+    .hero h1{margin-top:12px}
+  }
+  @keyframes swing-r{0%,100%{transform:rotate(5deg)}50%{transform:rotate(1deg)}}
+  @media(prefers-reduced-motion:reduce){.tag-hang,.window .lights i{animation:none}}
 </style>
 </head>
 <body>
@@ -660,20 +705,19 @@
             <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg><span id="chipPrice">₦30,000 per child</span></span>
           </div>
         </div>
-        <div class="portal-stage">
-          <div class="portal" role="img" aria-label="A glowing grotto portal counting down to Christmas">
-            <span class="halo"></span>
-            <span class="ring"></span>
-            <div class="disc">
-              <svg class="north" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>
-              <div>
-                <div class="countdown-k">Christmas Eve in</div>
-                <div class="countdown-n tnum" id="heroDays">—</div>
-                <div class="countdown-s">sleeps to go</div>
-              </div>
+        <figure class="window">
+          <div class="arch">
+            <img src="/assets/hero-santa.jpg" width="1407" height="772" alt="Santa laughing with a little girl on his knee inside the Auldontoys Santa's Grotto" fetchpriority="high">
+          </div>
+          <span class="lights" aria-hidden="true"></span>
+          <div class="tag-hang" role="group" aria-label="Countdown">
+            <div class="gtag">
+              <span class="gk" id="tagK">Grotto opens in</span>
+              <span class="gn"><b class="tnum" id="heroDays">—</b> <span id="tagUnit">days</span></span>
+              <span class="gs" id="tagSleeps"></span>
             </div>
           </div>
-        </div>
+        </figure>
       </div>
     </section>
 
@@ -981,10 +1025,24 @@
 
   /* ---------- countdown & snow ---------- */
   function initCountdown(){
-    var xmas=parseDate(CFG.christmasEve||"2026-12-24");
-    var d=daysTo(xmas);
-    $("#heroDays").textContent=d;
-    $("#miniDays").textContent=d+(d===1?" day":" days");
+    var xmas=parseDate(CFG.christmasEve||"2026-12-24"), sz=CFG.season||{};
+    var start=parseDate(sz.start||"2026-12-10"), end=parseDate(sz.end||"2027-01-03"), today=new Date();today.setHours(0,0,0,0);
+    var sleeps=daysTo(xmas), toOpen=daysTo(start);
+    $("#miniDays").textContent=sleeps+(sleeps===1?" day":" days");
+    var k,n,u,sub;
+    if(today<start){k="Grotto opens in";n=toOpen;u=toOpen===1?"day":"days";sub=sleeps+" sleeps till Christmas"}
+    else if(today<=end){k="Santa is in";n="Open";u="today";sub=today<xmas?(sleeps+(sleeps===1?" sleep":" sleeps")+" till Christmas"):"Until "+end.getDate()+" "+MONTHS[end.getMonth()]}
+    else{k="See you";n="Next";u="Christmas";sub="Thank you for visiting!"}
+    $("#tagK").textContent=k;$("#heroDays").textContent=n;$("#tagUnit").textContent=u;$("#tagSleeps").textContent=sub;
+  }
+  function initLights(){
+    var arch=$(".window .arch"),host=$(".window .lights");if(!arch||!host)return;
+    function place(){
+      var ry=parseFloat(getComputedStyle(arch).getPropertyValue("--ry"))||40,n=13,html="";
+      for(var i=0;i<n;i++){var t=Math.PI*(i/(n-1)),x=50-50*Math.cos(t),y=ry-ry*Math.sin(t);html+='<i style="left:'+x.toFixed(2)+'%;top:'+y.toFixed(2)+'%;animation-delay:'+(i%4*0.6)+'s"></i>'}
+      host.innerHTML=html;
+    }
+    place();addEventListener("resize",place);
   }
   function initHeroSnow(){
     var c=$("#heroSnow");if(!c||!c.getContext)return;
@@ -1465,7 +1523,7 @@
     $("#startBtn").onclick=function(){openWizard(false)};$("#bandBtn").onclick=function(){openWizard(false)};$("#giftsBtn").onclick=function(){openWizard(false)};
     $("#termsBack").onclick=function(){history.back()};
     if(CFG.locations&&CFG.locations.length>1)STEPS.unshift("location");
-    renderLanding();initCountdown();initSnow();initHeroSnow();
+    renderLanding();initCountdown();initLights();initSnow();initHeroSnow();
     var tl=$("#termsLink");if(tl)tl.onclick=function(ev){ev.preventDefault();openTerms()};
     try{history.replaceState({g:"home"},"")}catch(e){}
     if(location.hash==="#terms"){openTerms()}
