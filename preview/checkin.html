@@ -75,6 +75,7 @@
   .badge.nophoto{background:rgba(232,57,47,.18);border-color:rgba(232,57,47,.6);color:#ffb3ad}
   .badge.photo{background:rgba(73,179,110,.14);border-color:rgba(73,179,110,.45);color:#9be3b5}
   .badge.gift{background:rgba(243,194,87,.16);border-color:rgba(243,194,87,.6);color:var(--gold-soft)}
+  .badge.diamond{background:rgba(159,227,255,.14);border-color:rgba(159,227,255,.6);color:#c9f2ff}
   .badge.nogift{background:rgba(255,255,255,.06);border-color:var(--line-2);color:var(--snow)}
   .item .tm{flex:none;width:68px;font-weight:800;font-size:13.5px;color:var(--gold-soft)}
   .actions{display:grid;gap:10px;margin-top:16px}
@@ -237,7 +238,7 @@
     $("#rCode").textContent=b.ticket_code+" · "+b.ref;
     var badges=[];
     badges.push(b.photo_consent?'<span class="badge photo">Photos OK</span>':'<span class="badge nophoto">NO PHOTOS</span>');
-    badges.push(b.gift?'<span class="badge gift">GIFT: '+esc(giftText(b.gift))+'</span>':'<span class="badge nogift">NO GIFT</span>');
+    badges.push(b.gift&&b.gift.tier==="diamond"?'<span class="badge diamond">DIAMOND — ONLINE ORDER · look up '+esc(b.ref)+' in the store</span>':b.gift?'<span class="badge gift">GIFT: '+esc(giftText(b.gift))+'</span>':'<span class="badge nogift">NO GIFT</span>');
     badges.push('<span class="badge">'+(b.child_count||names.length)+' child'+((b.child_count||names.length)===1?"":"ren")+'</span>');
     badges.push('<span class="badge">Up to '+(2+(b.extra_adults||0))+' adults'+(b.extra_adults?' ('+b.extra_adults+' paid extra)':'')+'</span>');
     $("#rBadges").innerHTML=badges.join("");
@@ -281,7 +282,7 @@
         var h=document.createElement("div");h.className="sess-h";h.textContent=s+" · "+inS.length;host.appendChild(h);
         inS.forEach(function(b){
           var el=document.createElement("button");el.type="button";el.className="item";
-          el.innerHTML='<span class="tm">'+esc(t12(b.visit_time))+'</span><span class="t"><b>'+esc((b.children||[]).map(function(c){return c.name}).join(", "))+'</b><span>'+esc(b.guardian_name)+' · '+esc(b.ticket_code)+(b.gift?' · GIFT '+esc(BUNDLES[b.gift.tier]||b.gift.tier):' · no gift')+(b.photo_consent?'':' · NO PHOTOS')+'</span></span><span class="st'+(b.arrived_at?' in':'')+'">'+(b.arrived_at?'In '+fmtTime(b.arrived_at):'Expected')+'</span>';
+          el.innerHTML='<span class="tm">'+esc(t12(b.visit_time))+'</span><span class="t"><b>'+esc((b.children||[]).map(function(c){return c.name}).join(", "))+'</b><span>'+esc(b.guardian_name)+' · '+esc(b.ticket_code)+(b.gift&&b.gift.tier==="diamond"?' · DIAMOND (online order)':b.gift?' · GIFT '+esc(BUNDLES[b.gift.tier]||b.gift.tier):' · no gift')+(b.photo_consent?'':' · NO PHOTOS')+'</span></span><span class="st'+(b.arrived_at?' in':'')+'">'+(b.arrived_at?'In '+fmtTime(b.arrived_at):'Expected')+'</span>';
           el.onclick=function(){$("#code").value=b.ticket_code;render(b)};
           host.appendChild(el);
         });
