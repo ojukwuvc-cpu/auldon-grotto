@@ -374,9 +374,9 @@
     $("#attach").textContent=T.bookings?(PCT(T.withGift,T.bookings)+" of bookings added one"):"";
     var n=j.gifts.reduce(function(a,b){return a+b.count},0), v=j.variants||{};
     var html='<div class="sub" style="margin-top:12px">'+plural(n,"package")+' · '+NGN(T.giftRevenue)+' · one per booking</div>';
-    html+=n?hbars(j.gifts,function(b){return b.name},function(b){return b.count},function(b){return NGNs(b.amount)}):'<div class="empty">No gift packages sold yet.</div>';
+    html+=n?hbars(j.gifts,function(b){return b.name},function(b){return b.count},function(b){return b.external?"online":NGNs(b.amount)}):'<div class="empty">No gift packages sold yet.</div>';
     if(n)html+='<div class="chips"><span>Boy <b>'+(v.boy||0)+'</b></span><span>Girl <b>'+(v.girl||0)+'</b></span><span>Baby <b>'+(v.baby||0)+'</b></span></div>';
-    html+='<p class="hint">Experience-only bookings: <b style="color:var(--snow)">'+(T.bookings-T.withGift)+'</b> (no gift). Diamond gifts are bought on auldontoys.com and don\'t show here.</p>';
+    html+='<p class="hint">Experience-only bookings: <b style="color:var(--snow)">'+(T.bookings-T.withGift)+'</b> (no gift). Diamond bookings choose and pay for their gifts on auldontoys.com (booking reference in the order note), so their value isn\'t counted here.</p>';
     $("#gifts").innerHTML=html;
   }
 
