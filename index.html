@@ -411,7 +411,9 @@
 <style>
   /* ---- brief alignment (Oct 2026): hero artwork, sessions, gift bundles, vouchers, waiting list, footer ---- */
   .hero{overflow:hidden}
-  .hero::before{content:"";position:absolute;inset:0;background:url("/assets/hero-santa.jpg") center 38%/cover no-repeat;opacity:.6;z-index:0}
+  .hero::before{content:"";position:absolute;inset:0;background:url("/assets/hero-santa.jpg") center 30%/cover no-repeat;opacity:.6;z-index:0}
+  /* landscape photo: on narrow screens keep Santa and the child in frame */
+  @media(max-width:719px){.hero::before{background-position:53% 30%}}
   .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,18,28,.72) 0%,rgba(13,18,28,.4) 48%,rgba(10,22,33,.85) 88%,var(--night) 100%);z-index:0}
   .hero>.wrap{position:relative;z-index:2}
   .hero{padding-bottom:calc(44px + 44px)}
