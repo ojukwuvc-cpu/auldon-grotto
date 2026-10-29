@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Grotto dashboard — Auldon Toys</title>
+<title>Grotto dashboard — Auldontoys</title>
 <meta name="theme-color" content="#0a1621">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Hanken+Grotesk:wght@400;600;700;800&display=swap">
-<script>window.GROTTO_API = "https://api.auldontoys.com";</script>
+<script>window.GROTTO_API = "https://api.auldontoys.com";
+  if (location.pathname.indexOf("/preview/") === 0) window.GROTTO_API = "https://api.auldontoys.com/preview";
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { var apiQ = new URLSearchParams(location.search).get("api"); if (apiQ) window.GROTTO_API = apiQ; }</script>
 <style>
   :root{color-scheme:dark;--night:#0a1621;--card:#13293b;--card-2:#17334a;--snow:#f6f2ea;--frost:#9fb6c6;--frost-dim:#8aa0b2;--gold:#f3c257;--gold-soft:#ffe6a6;--red:#e8392f;--green:#49b36e;--line:rgba(255,255,255,.10);--line-2:rgba(255,255,255,.18);--track:rgba(255,255,255,.07);--radius:18px;--display:"Fraunces",Georgia,serif;--ui:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
     /* revenue split: categorical slots 1–3, validated on --card (#13293b), all pairs */
@@ -125,6 +127,9 @@
   .hb .n span{font-weight:600;color:var(--frost);font-size:12.5px;margin-left:6px}
   .sub{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--frost);margin-top:18px}
   .exports{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .eb-state{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .eb-state .tag{margin-top:0}
+  .btn-danger{background:rgba(232,57,47,.14);border:1px solid rgba(232,57,47,.55);color:#ffb3ad}
   .empty{color:var(--frost);font-size:14px;margin-top:14px;padding:18px;border:1px dashed var(--line-2);border-radius:12px;text-align:center}
   .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);transform:translateX(-50%) translateY(20px);z-index:60;background:#1d3a52;border:1px solid var(--line-2);color:var(--snow);padding:13px 18px;border-radius:999px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;max-width:90vw}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -180,17 +185,19 @@
     </div>
 
     <div class="card">
-      <div class="card-h"><h2>Fill by date and session</h2><span class="muted" style="font-size:13px">bookings ÷ places · one booking = one family</span></div>
+      <div class="card-h"><h2>Fill by date and time slot</h2><span class="muted" style="font-size:13px">slots booked ÷ slots · one family per 10-minute slot</span></div>
       <div id="fill"></div>
     </div>
 
     <div class="grid2">
       <div class="card">
-        <div class="card-h"><h2>Gifts</h2><span class="muted" style="font-size:13px" id="attach"></span></div>
+        <div class="card-h"><h2>Gift packages</h2><span class="muted" style="font-size:13px" id="attach"></span></div>
         <div id="gifts"></div>
       </div>
       <div class="card">
-        <div class="card-h"><h2>Checkouts and waiting list</h2></div>
+        <div class="card-h"><h2>Early-bird offer</h2></div>
+        <div id="earlyBird"></div>
+        <div class="sub">Checkouts and waiting list</div>
         <div id="funnel"></div>
         <div class="sub">Exports</div>
         <p class="hint">Spreadsheets with names and contact details. Keep them private.</p>
@@ -218,7 +225,8 @@
   var NGNs=function(n){n=Number(n||0);if(n>=1e6)return "₦"+(n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,"")+"m";if(n>=1e3)return "₦"+Math.round(n/1e3)+"k";return "₦"+n};
   var PCT=function(a,b){return b?Math.round(a*100/b)+"%":"–"};
   var DOWS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  var SESSION_NAMES={morning:"Morning",afternoon:"Afternoon",evening:"Evening"};
+  // Fill table columns; Sundays have a midday block in place of the morning.
+  var COLS=[{id:["morning","midday"],name:"Morning",sub:"9:00 AM – 12:00 PM · Sun 12:00 – 1:00 PM"},{id:["afternoon"],name:"Afternoon",sub:"1:00 – 3:00 PM"},{id:["late"],name:"Afternoon",sub:"3:30 – 5:30 PM"},{id:["evening"],name:"Evening",sub:"6:00 – 9:00 PM"}];
   var TOKEN_KEY="grotto_admin_token", token=null, data=null, timer=null, salesTable=false, toastT;
 
   function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -229,8 +237,10 @@
   function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},3200)}
   function plural(n,one,many){return n+" "+(n===1?one:(many||one+"s"))}
 
-  function api(path,raw){
-    return fetch(API+path,{headers:{"Accept":raw?"text/csv":"application/json","X-Admin-Token":token||""}}).then(function(r){
+  function api(path,raw,body){
+    var init={headers:{"Accept":raw?"text/csv":"application/json","X-Admin-Token":token||""}};
+    if(body){init.method="POST";init.headers["Content-Type"]="application/json";init.body=JSON.stringify(body)}
+    return fetch(API+path,init).then(function(r){
       if(raw){if(!r.ok){var e=new Error("Download failed ("+r.status+")");e.status=r.status;throw e}return r.blob()}
       return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}if(!r.ok){var e=new Error((j&&j.error)||("Request failed ("+r.status+")"));e.status=r.status;throw e}return j});
     });
@@ -285,25 +295,25 @@
     data=j;var T=j.totals,C=j.capacity,W=j.waitlist;
     $("#updated").textContent="Updated "+new Date(j.generatedAt).toLocaleTimeString("en-NG",{hour:"2-digit",minute:"2-digit",timeZone:"Africa/Lagos"});
     var first=j.days.length?j.days[0].date:null,last=j.days.length?j.days[j.days.length-1].date:null;
-    $("#season").textContent=first?(fmtDay(first)+" – "+fmtDay(last)+" · "+plural(C.days,"day")+" · "+C.perDay+" bookings a day across 3 sessions"):"No open dates configured.";
+    $("#season").textContent=first?(fmtDay(first)+" – "+fmtDay(last)+" · "+plural(C.days,"day")+" · 40 ten-minute slots a day (32 on Sundays) · "+C.season.toLocaleString("en-NG")+" in the season"):"No open dates configured.";
 
     // KPI tiles
     var fillPct=C.season?Math.min(100,T.bookings*100/C.season):0;
     var tiles=[
       {k:"Revenue",v:NGN(T.revenue),s:"from "+plural(T.bookings,"paid booking"),w:1},
-      {k:"Bookings",v:T.bookings.toLocaleString("en-NG"),s:PCT(T.bookings,C.season)+" of "+C.season.toLocaleString("en-NG")+" places",m:fillPct},
-      {k:"Children",v:T.children.toLocaleString("en-NG"),s:T.bookings?(T.children/T.bookings).toFixed(1)+" per booking":"–"},
+      {k:"Bookings",v:T.bookings.toLocaleString("en-NG"),s:PCT(T.bookings,C.season)+" of "+C.season.toLocaleString("en-NG")+" slots",m:fillPct},
+      {k:"Children",v:T.children.toLocaleString("en-NG"),s:T.bookings?(T.children/T.bookings).toFixed(1)+" per booking · "+plural(T.extraAdults||0,"extra adult"):"–"},
       {k:"Arrived",v:T.arrivedBookings.toLocaleString("en-NG"),s:T.dueBookings?("of "+T.dueBookings+" due so far · "+PCT(T.arrivedBookings,T.dueBookings)):(first?"visits start "+fmtShort(first):"–"),m:T.dueBookings?T.arrivedBookings*100/T.dueBookings:null},
-      {k:"With a bundle",v:PCT(T.withBundle,T.bookings),s:T.bookings?PCT(T.withVoucher,T.bookings)+" bought a voucher":"no bookings yet"},
+      {k:"With a gift package",v:PCT(T.withGift,T.bookings),s:T.bookings?plural(T.earlyBirdChildren||0,"child","children")+" at early-bird price":"no bookings yet"},
       {k:"Waiting list",v:(W.waiting||0).toLocaleString("en-NG"),s:plural(W.waitingChildren||0,"child","children")+" waiting"}
     ];
     $("#kpis").innerHTML=tiles.map(function(t){return '<div class="tile'+(t.w?' wide':'')+'"><div class="k">'+esc(t.k)+'</div><div class="v">'+esc(t.v)+'</div><div class="s">'+esc(t.s)+'</div>'+(t.m!=null?'<div class="m" aria-hidden="true"><i style="width:'+t.m.toFixed(1)+'%"></i></div>':'')+'</div>'}).join("");
 
-    drawSplit(T);drawSales(j.sales,j.today);drawFill(j);drawGifts(j);drawFunnel(j);
+    drawSplit(T);drawSales(j.sales,j.today);drawFill(j);drawGifts(j);drawEarlyBird(j);drawFunnel(j);
   }
 
   function drawSplit(T){
-    var parts=[{k:"Experience tickets",v:T.tickets,c:"var(--s-ticket)"},{k:"Gift bundles",v:T.bundles,c:"var(--s-bundle)"},{k:"Gift vouchers",v:T.vouchers,c:"var(--s-voucher)"}];
+    var parts=[{k:"Children's tickets",v:T.childrenRevenue,c:"var(--s-ticket)"},{k:"Gift packages",v:T.giftRevenue,c:"var(--s-bundle)"},{k:"Additional adults",v:T.adultsRevenue,c:"var(--s-voucher)"}];
     var sum=parts.reduce(function(a,p){return a+p.v},0);
     if(!sum){$("#split").innerHTML='<div class="empty">No paid bookings yet. Revenue will show here as payments arrive.</div>';return}
     var bar='<div class="stack" role="img" aria-label="Revenue split: '+parts.map(function(p){return p.k+" "+NGN(p.v)}).join(", ")+'">'+parts.filter(function(p){return p.v>0}).map(function(p){return '<i tabindex="0" style="flex:'+p.v+' 0 0;background:'+p.c+'" data-tip="<b>'+esc(p.k)+'</b>'+esc(NGN(p.v))+' · '+PCT(p.v,sum)+'"></i>'}).join("")+'</div>';
@@ -337,20 +347,21 @@
 
   function drawFill(j){
     if(!j.days.length){$("#fill").innerHTML='<div class="empty">No open dates configured.</div>';return}
-    var sess=j.sessions;
-    var head='<tr><th>Date</th>'+sess.map(function(s){return '<th>'+esc(SESSION_NAMES[s.id]||s.id)+'<div class="muted sess-time" style="font-weight:600;letter-spacing:0;text-transform:none;font-size:11.5px">'+esc(s.label)+'</div></th>'}).join("")+'<th class="num dayc">Day</th></tr>';
+    var head='<tr><th>Date</th>'+COLS.map(function(c){return '<th>'+esc(c.name)+'<div class="muted sess-time" style="font-weight:600;letter-spacing:0;text-transform:none;font-size:11.5px">'+esc(c.sub)+'</div></th>'}).join("")+'<th class="num dayc">Day</th></tr>';
     var rows=j.days.map(function(d){
       var cls=d.date===j.today?"today":d.date<j.today?"past":"";
-      var cells=sess.map(function(s){
-        var c=d.sessions[s.id]||{booked:0,capacity:s.capacityPerDay,children:0,arrived:0,waiting:0};
+      var cells=COLS.map(function(col){
+        var id=col.id.filter(function(x){return d.blocks[x]})[0], c=id?d.blocks[id]:null;
+        if(!c)return '<td class="cell muted">—</td>';
         var pct=c.capacity?Math.min(100,c.booked*100/c.capacity):0;
-        var tags=(c.booked>=c.capacity?'<span class="tag full">Full</span> ':'')+(c.waiting?'<span class="tag wait">+'+c.waiting+' waiting</span> ':'')+(c.arrived?'<span class="tag in">'+c.arrived+' in</span>':'');
-        return '<td class="cell"><div class="t">'+c.booked+'/'+c.capacity+'<span>'+plural(c.children,"child","kids")+'</span></div><div class="meter" aria-hidden="true"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+tags+'</td>';
+        var tags=(c.booked>=c.capacity?'<span class="tag full">Full</span> ':'')+(c.arrived?'<span class="tag in">'+c.arrived+' in</span>':'');
+        return '<td class="cell"><div class="t">'+c.booked+'/'+c.capacity+'<span>'+plural(c.children,"child","kids")+'</span></div><div class="meter" aria-hidden="true"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+(id==="midday"?'<span class="tag">Midday</span> ':'')+tags+'</td>';
       }).join("");
-      var dayCap=sess.reduce(function(a,s){return a+((d.sessions[s.id]||{}).capacity||s.capacityPerDay)},0);
-      return '<tr class="'+cls+'"><td class="d">'+esc(fmtDay(d.date))+(d.date===j.today?'<small>Today</small>':'')+'<small class="tot">'+d.bookings+'/'+dayCap+' · '+esc(NGNs(d.revenue))+'</small></td>'+cells+'<td class="num dayc"><b>'+d.bookings+'</b>/'+dayCap+'<div class="muted" style="font-size:12px">'+esc(NGNs(d.revenue))+(d.arrivedBookings?' · '+d.arrivedBookings+' in':'')+'</div></td></tr>';
+      var wait=d.waiting?' <span class="tag wait">+'+d.waiting+' waiting</span>':'';
+      return '<tr class="'+cls+'"><td class="d">'+esc(fmtDay(d.date))+(d.date===j.today?'<small>Today</small>':'')+'<small class="tot">'+d.bookings+'/'+d.capacity+' · '+esc(NGNs(d.revenue))+'</small>'+wait+'</td>'+cells+'<td class="num dayc"><b>'+d.bookings+'</b>/'+d.capacity+'<div class="muted" style="font-size:12px">'+esc(NGNs(d.revenue))+(d.arrivedBookings?' · '+d.arrivedBookings+' in':'')+'</div></td></tr>';
     }).join("");
-    var foot='<tr><td>Season</td>'+sess.map(function(s){var cap=s.capacityPerDay*j.capacity.days;return '<td>'+s.booked+'/'+cap+' <span class="muted" style="font-weight:600;white-space:nowrap">'+PCT(s.booked,cap)+'</span></td>'}).join("")+'<td class="num dayc">'+j.totals.bookings+'/'+j.capacity.season+'</td></tr>';
+    var B={};(j.blocks||[]).forEach(function(b){B[b.id]=b});
+    var foot='<tr><td>Season</td>'+COLS.map(function(col){var booked=0,cap=0;col.id.forEach(function(x){if(B[x]){booked+=B[x].booked;cap+=B[x].capacity}});return '<td>'+booked+'/'+cap+' <span class="muted" style="font-weight:600;white-space:nowrap">'+PCT(booked,cap)+'</span></td>'}).join("")+'<td class="num dayc">'+j.totals.bookings+'/'+j.capacity.season+'</td></tr>';
     $("#fill").innerHTML='<div class="scroll"><table class="fill"><thead>'+head+'</thead><tbody>'+rows+'</tbody><tfoot>'+foot+'</tfoot></table></div>';
   }
 
@@ -360,22 +371,35 @@
   }
   function drawGifts(j){
     var T=j.totals;
-    $("#attach").textContent=T.bookings?(PCT(T.withBundle,T.bookings)+" of bookings added a bundle"):"";
-    var nB=j.bundles.reduce(function(a,b){return a+b.count},0),nV=j.vouchers.reduce(function(a,v){return a+v.count},0);
-    var v=j.variants||{};
-    var html='<div class="sub" style="margin-top:12px">Santa Gift Bundles · '+plural(nB,"bundle")+' · '+NGN(T.bundles)+'</div>';
-    html+=nB?hbars(j.bundles,function(b){return b.name},function(b){return b.count},function(b){return NGNs(b.amount)}):'<div class="empty">No bundles sold yet.</div>';
-    if(nB)html+='<div class="chips"><span>Boy <b>'+(v.boy||0)+'</b></span><span>Girl <b>'+(v.girl||0)+'</b></span><span>Baby <b>'+(v.baby||0)+'</b></span></div>';
-    html+='<div class="sub">Santa Gift Vouchers · '+plural(nV,"voucher")+' · '+NGN(T.vouchers)+'</div>';
-    html+=nV?hbars(j.vouchers,function(x){return NGNs(x.value)},function(x){return x.count},function(x){return NGNs(x.amount)}):'<div class="empty">No vouchers sold yet.</div>';
+    $("#attach").textContent=T.bookings?(PCT(T.withGift,T.bookings)+" of bookings added one"):"";
+    var n=j.gifts.reduce(function(a,b){return a+b.count},0), v=j.variants||{};
+    var html='<div class="sub" style="margin-top:12px">'+plural(n,"package")+' · '+NGN(T.giftRevenue)+' · one per booking</div>';
+    html+=n?hbars(j.gifts,function(b){return b.name},function(b){return b.count},function(b){return NGNs(b.amount)}):'<div class="empty">No gift packages sold yet.</div>';
+    if(n)html+='<div class="chips"><span>Boy <b>'+(v.boy||0)+'</b></span><span>Girl <b>'+(v.girl||0)+'</b></span><span>Baby <b>'+(v.baby||0)+'</b></span></div>';
+    html+='<p class="hint">Experience-only bookings: <b style="color:var(--snow)">'+(T.bookings-T.withGift)+'</b> (no gift). Diamond gifts are bought on auldontoys.com and don\'t show here.</p>';
     $("#gifts").innerHTML=html;
+  }
+
+  function drawEarlyBird(j){
+    var e=j.earlyBird||{},T=j.totals,host=$("#earlyBird");
+    var state=e.active?'<span class="tag in">Active</span>':e.upcoming?'<span class="tag">Starts '+esc(fmtShort(e.from))+'</span>':'<span class="tag wait">Ended</span>';
+    var line=NGN(e.price)+' per child (standard '+NGN(30000)+') · '+plural(T.earlyBirdBookings||0,"booking")+', '+plural(T.earlyBirdChildren||0,"child","children")+' so far';
+    host.innerHTML='<div class="eb-state">'+state+'<span class="muted" style="font-size:13.5px">'+esc(line)+'</span></div>'+
+      '<p class="hint">'+(e.ended?'New bookings pay the standard price. Bookings already made keep the price they paid.'+(e.endedAt?' Ended '+esc(new Date(e.endedAt).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit",timeZone:"Africa/Lagos"}))+'.':''):'Runs until management decides to stop it. Ending it takes effect immediately for new bookings.')+'</p>'+
+      '<div class="exports"><button type="button" class="btn btn-sm '+(e.ended?'btn-ghost':'btn-danger')+'" id="ebToggle">'+(e.ended?'Restart early-bird offer':'End early-bird offer now')+'</button></div>';
+    $("#ebToggle").onclick=function(){
+      var end=!e.ended;
+      if(!confirm(end?"End the early-bird offer now? New bookings will pay the standard "+NGN(30000)+" per child.":"Restart the early-bird offer? New bookings will pay "+NGN(e.price)+" per child."))return;
+      this.disabled=true;
+      api("/api/admin/early-bird",false,{ended:end}).then(function(){toast(end?"Early-bird offer ended":"Early-bird offer restarted");return load(true)}).catch(function(err){toast(err.message);if(err.status===401)signedOut("Your token no longer works.")});
+    };
   }
 
   function drawFunnel(j){
     var c=j.checkouts,W=j.waitlist,started=(c.paid||0)+(c.pending||0)+(c.expired||0)+(c.cancelled||0);
-    var html='<p class="hint">Every time a parent reaches the payment step, a checkout starts. Unpaid ones expire after 30 minutes and free the place.</p>';
+    var html='<p class="hint">Every time a parent reaches the payment step, a checkout starts. Unpaid ones expire after 30 minutes and free the slot.</p>';
     html+='<div class="chips"><span>Started <b>'+started+'</b></span><span>Paid <b>'+(c.paid||0)+'</b></span><span>Paying now <b>'+(c.pending||0)+'</b></span><span>Expired <b>'+(c.expired||0)+'</b></span>'+(c.cancelled?'<span>Cancelled <b>'+c.cancelled+'</b></span>':'')+'<span>Paid rate <b>'+PCT(c.paid||0,started-(c.pending||0))+'</b></span></div>';
-    html+='<div class="sub">Waiting list (full sessions)</div><div class="chips"><span>Waiting <b>'+(W.waiting||0)+'</b></span><span>Contacted <b>'+(W.contacted||0)+'</b></span><span>Booked <b>'+(W.booked||0)+'</b></span><span>Cancelled <b>'+(W.cancelled||0)+'</b></span></div>';
+    html+='<div class="sub">Waiting list (fully booked days)</div><div class="chips"><span>Waiting <b>'+(W.waiting||0)+'</b></span><span>Contacted <b>'+(W.contacted||0)+'</b></span><span>Booked <b>'+(W.booked||0)+'</b></span><span>Cancelled <b>'+(W.cancelled||0)+'</b></span></div>';
     $("#funnel").innerHTML=html;
   }
 

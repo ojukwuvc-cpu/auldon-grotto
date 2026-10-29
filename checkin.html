@@ -4,14 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Grotto door check-in — Auldon Toys staff</title>
+<title>Grotto door check-in — Auldontoys staff</title>
 <meta name="theme-color" content="#0a1621">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Hanken+Grotesk:wght@400;600;700;800&display=swap">
-<script>window.GROTTO_API = "https://api.auldontoys.com";</script>
+<script>window.GROTTO_API = "https://api.auldontoys.com";
+  if (location.pathname.indexOf("/preview/") === 0) window.GROTTO_API = "https://api.auldontoys.com/preview";
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { var apiQ = new URLSearchParams(location.search).get("api"); if (apiQ) window.GROTTO_API = apiQ; }</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <style>
   :root{color-scheme:dark;--night:#0a1621;--card:#13293b;--card-2:#17334a;--snow:#f6f2ea;--frost:#9fb6c6;--frost-dim:#8aa0b2;--gold:#f3c257;--gold-soft:#ffe6a6;--red:#e8392f;--green:#49b36e;--amber:#e8a13a;--line:rgba(255,255,255,.10);--line-2:rgba(255,255,255,.18);--radius:18px;--display:"Fraunces",Georgia,serif;--ui:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -72,7 +74,9 @@
   .badge{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:7px 12px;border:1px solid var(--line-2);color:var(--frost)}
   .badge.nophoto{background:rgba(232,57,47,.18);border-color:rgba(232,57,47,.6);color:#ffb3ad}
   .badge.photo{background:rgba(73,179,110,.14);border-color:rgba(73,179,110,.45);color:#9be3b5}
-  .badge.gift{background:rgba(243,194,87,.12);border-color:rgba(243,194,87,.45);color:var(--gold-soft)}
+  .badge.gift{background:rgba(243,194,87,.16);border-color:rgba(243,194,87,.6);color:var(--gold-soft)}
+  .badge.nogift{background:rgba(255,255,255,.06);border-color:var(--line-2);color:var(--snow)}
+  .item .tm{flex:none;width:68px;font-weight:800;font-size:13.5px;color:var(--gold-soft)}
   .actions{display:grid;gap:10px;margin-top:16px}
   .contact{color:var(--frost);font-size:13px;margin-top:12px} .contact a{color:var(--gold-soft)}
   /* today list */
@@ -155,8 +159,13 @@
   var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   var NGN=function(n){return "₦"+Number(n||0).toLocaleString("en-NG")};
   var DOWS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  var SESSIONS={morning:"Morning · 9:00 AM – 12:00 PM",afternoon:"Afternoon · 1:00 PM – 5:30 PM",evening:"Evening · 6:00 PM – 9:00 PM"};
-  var BUNDLES={bronze:"Bronze",silver:"Silver",gold:"Gold",diamond:"Diamond"};
+  var BUNDLES={bronze:"Bronze",silver:"Silver",gold:"Gold"};
+  var VARIANTS={boy:"Boy",girl:"Girl",baby:"Baby"};
+  // visit_time holds the slot start ("09:15"); each visit is 10 minutes.
+  function t12(hm){var p=String(hm).split(":"),h=+p[0],m=+p[1];return ((h+11)%12+1)+":"+(m<10?"0":"")+m+" "+(h<12?"AM":"PM")}
+  function slotLabel(hm){if(!/^\d\d:\d\d$/.test(String(hm)))return String(hm||"");var p=hm.split(":"),e=+p[0]*60+(+p[1])+10;return t12(hm)+" – "+t12(Math.floor(e/60)+":"+(e%60<10?"0":"")+e%60)}
+  function blockOf(hm){var p=String(hm).split(":"),m=+p[0]*60+(+p[1]);if(isNaN(m))return "Other";return m<720?"Morning":m<780?"Midday":m<900?"Afternoon · 1:00 – 3:00 PM":m<1080?"Afternoon · 3:30 – 5:30 PM":"Evening"}
+  function giftText(g){return g?(BUNDLES[g.tier]||g.tier)+" Gift Package ("+(VARIANTS[g.variant]||g.variant)+")":""}
   var TOKEN_KEY="grotto_admin_token", token=null, current=null, scanner=null, scanning=false, toastT;
 
   function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -224,16 +233,16 @@
     else{box.className="status paid";box.innerHTML=statusHtml("ok","Paid — ready to check in",NGN(b.amount_total)+" received");arrive.hidden=false;arrive.textContent="Mark as arrived";arrive.className="btn btn-green btn-block"}
     var names=(b.children||[]).map(function(c){return c.name});
     $("#rGuests").textContent=names.join(", ")||"—";
-    $("#rWhen").textContent=fmtDay(b.visit_date)+" · "+(SESSIONS[b.visit_time]||b.visit_time);
+    $("#rWhen").textContent=fmtDay(b.visit_date)+" · "+slotLabel(b.visit_time);
     $("#rCode").textContent=b.ticket_code+" · "+b.ref;
     var badges=[];
     badges.push(b.photo_consent?'<span class="badge photo">Photos OK</span>':'<span class="badge nophoto">NO PHOTOS</span>');
-    var vouchers=b.vouchers||[];if(vouchers.length){var byV={};vouchers.forEach(function(v){byV[v]=(byV[v]||0)+1});badges.push('<span class="badge gift">Voucher'+(vouchers.length>1?"s":"")+": "+Object.keys(byV).map(function(v){return (byV[v]>1?byV[v]+"× ":"")+NGN(v)}).join(", ")+'</span>')}
+    badges.push(b.gift?'<span class="badge gift">GIFT: '+esc(giftText(b.gift))+'</span>':'<span class="badge nogift">NO GIFT</span>');
     badges.push('<span class="badge">'+(b.child_count||names.length)+' child'+((b.child_count||names.length)===1?"":"ren")+'</span>');
+    badges.push('<span class="badge">Up to '+(2+(b.extra_adults||0))+' adults'+(b.extra_adults?' ('+b.extra_adults+' paid extra)':'')+'</span>');
     $("#rBadges").innerHTML=badges.join("");
     $("#rKids").innerHTML=(b.children||[]).map(function(c,i){
-      var g=c.bundle?'<span class="gift">'+esc(BUNDLES[c.bundle.tier]||c.bundle.tier)+' bundle · '+esc(String(c.bundle.variant||"").replace(/^\w/,function(ch){return ch.toUpperCase()}))+(c.bundle.amount?' · '+NGN(c.bundle.amount):'')+'</span>':'<span>Gift from Santa (no bundle)</span>';
-      return '<div class="kid"><span class="b">'+(i+1)+'</span><div><b>'+esc(c.name)+'</b> · '+(c.age===0?"under 1":c.age+(c.age===1?" year":" years"))+(c.interests&&c.interests.length?' · loves '+esc(c.interests.join(", ")):'')+g+'</div></div>';
+      return '<div class="kid"><span class="b">'+(i+1)+'</span><div><b>'+esc(c.name)+'</b> · '+(c.age===0?"under 1":c.age+(c.age===1?" year":" years"))+(c.interests&&c.interests.length?' · loves '+esc(c.interests.join(", ")):'')+'</div></div>';
     }).join("");
     $("#rContact").innerHTML='Parent: <b>'+esc(b.guardian_name)+'</b> · <a href="tel:'+esc(b.guardian_phone)+'">'+esc(b.guardian_phone)+'</a>';
     announce(box.textContent);
@@ -265,12 +274,14 @@
       var arrived=rows.filter(function(b){return b.arrived_at}).length, kids=rows.reduce(function(a,b){return a+(b.child_count||0)},0);
       $("#counts").innerHTML='<span><b>'+rows.length+'</b> bookings</span><span><b>'+kids+'</b> children</span><span><b>'+arrived+'</b> arrived</span><span><b>'+(rows.length-arrived)+'</b> to come</span>';
       if(!rows.length){host.innerHTML='<p class="hint">No paid bookings for '+esc(fmtDay(d))+'.</p>';return}
-      ["morning","afternoon","evening"].forEach(function(s){
-        var inS=rows.filter(function(b){return b.visit_time===s});if(!inS.length)return;
-        var h=document.createElement("div");h.className="sess-h";h.textContent=SESSIONS[s]+" · "+inS.length;host.appendChild(h);
+      rows.sort(function(a,b){return String(a.visit_time).localeCompare(String(b.visit_time))});
+      var blocks=[];rows.forEach(function(b){var k=blockOf(b.visit_time);if(blocks.indexOf(k)<0)blocks.push(k)});
+      blocks.forEach(function(s){
+        var inS=rows.filter(function(b){return blockOf(b.visit_time)===s});
+        var h=document.createElement("div");h.className="sess-h";h.textContent=s+" · "+inS.length;host.appendChild(h);
         inS.forEach(function(b){
           var el=document.createElement("button");el.type="button";el.className="item";
-          el.innerHTML='<span class="t"><b>'+esc((b.children||[]).map(function(c){return c.name}).join(", "))+'</b><span>'+esc(b.guardian_name)+' · '+esc(b.ticket_code)+(b.photo_consent?'':' · NO PHOTOS')+'</span></span><span class="st'+(b.arrived_at?' in':'')+'">'+(b.arrived_at?'In '+fmtTime(b.arrived_at):'Expected')+'</span>';
+          el.innerHTML='<span class="tm">'+esc(t12(b.visit_time))+'</span><span class="t"><b>'+esc((b.children||[]).map(function(c){return c.name}).join(", "))+'</b><span>'+esc(b.guardian_name)+' · '+esc(b.ticket_code)+(b.gift?' · GIFT '+esc(BUNDLES[b.gift.tier]||b.gift.tier):' · no gift')+(b.photo_consent?'':' · NO PHOTOS')+'</span></span><span class="st'+(b.arrived_at?' in':'')+'">'+(b.arrived_at?'In '+fmtTime(b.arrived_at):'Expected')+'</span>';
           el.onclick=function(){$("#code").value=b.ticket_code;render(b)};
           host.appendChild(el);
         });
