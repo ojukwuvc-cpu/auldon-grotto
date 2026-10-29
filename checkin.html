@@ -161,9 +161,9 @@
   var DOWS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   var BUNDLES={bronze:"Bronze",silver:"Silver",gold:"Gold"};
   var VARIANTS={boy:"Boy",girl:"Girl",baby:"Baby"};
-  // visit_time holds the slot start ("09:15"); each visit is 10 minutes.
+  // visit_time holds the slot start ("09:15"); slots are shown by their start time only.
   function t12(hm){var p=String(hm).split(":"),h=+p[0],m=+p[1];return ((h+11)%12+1)+":"+(m<10?"0":"")+m+" "+(h<12?"AM":"PM")}
-  function slotLabel(hm){if(!/^\d\d:\d\d$/.test(String(hm)))return String(hm||"");var p=hm.split(":"),e=+p[0]*60+(+p[1])+10;return t12(hm)+" – "+t12(Math.floor(e/60)+":"+(e%60<10?"0":"")+e%60)}
+  function slotLabel(hm){return /^\d\d:\d\d$/.test(String(hm))?t12(hm):String(hm||"")}
   function blockOf(hm){var p=String(hm).split(":"),m=+p[0]*60+(+p[1]);if(isNaN(m))return "Other";return m<720?"Morning":m<780?"Midday":m<900?"Afternoon · 1:00 – 3:00 PM":m<1080?"Afternoon · 3:30 – 5:30 PM":"Evening"}
   function giftText(g){return g?(BUNDLES[g.tier]||g.tier)+" Gift Package ("+(VARIANTS[g.variant]||g.variant)+")":""}
   var TOKEN_KEY="grotto_admin_token", token=null, current=null, scanner=null, scanning=false, toastT;
