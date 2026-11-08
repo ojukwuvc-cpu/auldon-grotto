@@ -148,10 +148,9 @@
   .gcell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
   .gcell figcaption{transition:padding-bottom .35s ease,background .35s ease}
   .gcell:hover figcaption{padding-bottom:17px;background:linear-gradient(0deg,rgba(6,12,20,.94),rgba(6,12,20,.12) 62%,transparent)}
-  @keyframes gReveal{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
-  .gallery.reveal .gcell{opacity:0}
-  .gallery.reveal .gcell.in{opacity:1;animation:gReveal .6s cubic-bezier(.2,.7,.2,1)}
-  @media (prefers-reduced-motion:reduce){.gallery.reveal .gcell{opacity:1;animation:none}}
+  .gallery.reveal .gcell{opacity:0;transition:opacity .55s ease,transform .35s ease,box-shadow .35s ease}
+  .gallery.reveal .gcell.in{opacity:1}
+  @media (prefers-reduced-motion:reduce){.gallery.reveal .gcell{opacity:1 !important;transition:none}}
   .gcell figcaption{position:absolute;left:0;right:0;bottom:0;padding:18px 14px 12px;font-weight:700;color:#fff;font-size:14px;background:linear-gradient(0deg,rgba(6,12,20,.85),transparent)}
   .gcell.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(160deg,rgba(200,16,46,.16),rgba(255,255,255,.03))}
   .gcell.ph figcaption{position:static;background:none;padding:0;color:var(--frost);font-weight:700;font-size:13px}
@@ -1240,12 +1239,19 @@
     return '<a class="pk diamond" href="'+esc(d.url)+'" target="_blank" rel="noopener"><div class="img">'+ICONS.diamond+'</div><div class="body"><div class="tier">'+esc(d.name)+'</div><div class="gp" style="font-size:.95rem">Choose your own<small>'+esc(d.sub)+' Select Diamond when you book, then choose your gifts after paying.</small></div><span class="ext">Browse the collection '+ICONS.ext+'</span></div></a>';
   }
   function revealGallery(gg){
-    var cells=gg.querySelectorAll(".gcell");
-    if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)return;
-    if(!("IntersectionObserver" in window)){cells.forEach(function(c){c.classList.add("in")});return}
+    var cells=[].slice.call(gg.querySelectorAll(".gcell"));
+    if(!cells.length)return;
+    if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)return; // cells stay visible
     gg.classList.add("reveal");
-    var io=new IntersectionObserver(function(ents){ents.forEach(function(e){if(e.isIntersecting){var el=e.target;el.style.animationDelay=((+el.getAttribute("data-i")||0)*85)+"ms";el.classList.add("in");io.unobserve(el)}})},{threshold:0.12,rootMargin:"0px 0px -8% 0px"});
-    cells.forEach(function(c,i){c.setAttribute("data-i",i);io.observe(c)});
+    cells.forEach(function(c,i){c.setAttribute("data-i",i)});
+    function reveal(c){if(c.classList.contains("in")||c._rv)return;c._rv=true;setTimeout(function(){c.classList.add("in")},(+c.getAttribute("data-i")||0)*85)}
+    function check(){var vh=window.innerHeight||document.documentElement.clientHeight;cells.forEach(function(c){var r=c.getBoundingClientRect();if(r.top<vh*0.92&&r.bottom>0)reveal(c)})}
+    function done(){return cells.every(function(c){return c.classList.contains("in")})}
+    var onScroll=function(){check();if(done())window.removeEventListener("scroll",onScroll)};
+    check(); // reveal whatever is already in view
+    if(!done())window.addEventListener("scroll",onScroll,{passive:true});
+    // Failsafe: never leave the gallery hidden, whatever happens with scroll events.
+    setTimeout(function(){window.removeEventListener("scroll",onScroll);cells.forEach(function(c){c.classList.add("in")});gg.classList.remove("reveal")},4000);
   }
   function renderLanding(){
     var c=CFG.contact||{};
