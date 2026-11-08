@@ -549,6 +549,10 @@
   @media(min-width:430px){.mini-count .lbl{display:inline}}
   @media(max-width:360px){.brand small{font-size:9.5px;letter-spacing:.1em}.topbar .mini-count{font-size:12px;padding:5px 9px}}
   .day .full{font-size:10px;color:#ff8a82;font-weight:700;margin-top:4px}
+  .slot-host{margin-top:22px;border-top:1px solid var(--line);padding-top:18px}
+  .slot-host.live{min-height:90px}
+  .slot-empty{text-align:center;color:var(--frost);padding:10px 0;margin:0}
+  .slot-head{font-weight:700;color:var(--snow);font-size:15px;margin-bottom:4px}
   .day[disabled]{opacity:.45;cursor:not-allowed}
   .day[disabled]:hover{background:var(--card)}
   .srow .chg{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;color:var(--gold-soft);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer}
@@ -1092,9 +1096,9 @@
   /* ---------- state ---------- */
   function freshState(){return {location:null,date:null,slot:null,children:[],extraAdults:0,guardian:{name:"",phone:"",email:"",consent:false},promo:"",quote:null,calendar:null}}
   var S=freshState();
-  var STEPS=["date","time","register","review"];
-  var STEP_NAMES={location:"Choose your grotto",date:"Pick a date",time:"Pick a time",register:"Who's visiting?",gift:"Santa Gift Package",review:"Review & pay"};
-  var CTA_LABEL={location:"Choose this grotto",date:"Choose this date",time:"Choose this time",register:"Review booking",review:"Pay by bank transfer"};
+  var STEPS=["date","register","review"];
+  var STEP_NAMES={location:"Choose your grotto",date:"Date & time",time:"Pick a time",register:"Who's visiting?",gift:"Santa Gift Package",review:"Review & pay"};
+  var CTA_LABEL={location:"Choose this grotto",date:"Continue",time:"Choose this time",register:"Review booking",review:"Pay by bank transfer"};
   var cur=0, pollTimer=null, expiryTimer=null, currentRef=null, dayFull=false;
 
   /* ---------- helpers ---------- */
@@ -1320,7 +1324,7 @@
       if($("#screen-wizard").hidden){show("#screen-wizard");mountActionBar()}cur=Math.min(st.step||0,STEPS.length-1);goStep();return}
     if(!$("#screen-wizard").hidden){removeActionBar();show("#screen-landing")}
   });
-  function renderStep(key){({location:renderLocation,date:renderDate,time:renderTime,register:renderRegister,gift:renderGift,review:renderReview})[key]()}
+  function renderStep(key){({location:renderLocation,date:renderDate,register:renderRegister,gift:renderGift,review:renderReview})[key]()}
 
   /* ---------- steps ---------- */
   function renderLocation(){
@@ -1337,7 +1341,8 @@
   function renderDate(){
     var el=$("#pane-date");
     var dates=CFG.season.openDates||[];
-    el.innerHTML='<h2>When shall Santa expect you?</h2><p class="hint">'+esc(CFG.contact&&CFG.contact.venue||"")+', Lekki · open every day '+esc(CFG.season.label||"")+'. Weekends and Christmas week go first.</p><div class="daystrip" role="group" aria-label="Choose a date"></div><div id="dayFullHost"></div>';
+    var sm=CFG.sessionMinutes||10;
+    el.innerHTML='<h2>When shall Santa expect you?</h2><p class="hint">'+esc(CFG.contact&&CFG.contact.venue||"")+', Lekki · open every day '+esc(CFG.season.label||"")+'. Pick a day, then a time — each family enjoys a private '+sm+'-minute visit (please arrive 15 minutes early).</p><div class="daystrip" role="group" aria-label="Choose a date"></div><div id="dayFullHost"></div><div id="slotHost" class="slot-host"><p class="hint slot-empty">Pick a day above to see available times.</p></div>';
     var strip=$(".daystrip",el), today=new Date();today.setHours(0,0,0,0);
     function draw(cal){
       strip.innerHTML="";var lastMonth=-1;
@@ -1349,7 +1354,7 @@
         var tag=full?'<div class="full">Full</div>':few?'<div class="few">'+info.left+' left</div>':weekend?'<div class="few">Popular</div>':'';
         b.innerHTML='<div class="dow">'+DOWS[wd]+'</div><div class="dnum tnum">'+d.getDate()+'</div><div class="mon">'+MONTHS[d.getMonth()]+'</div>'+tag;
         if(full)b.setAttribute("aria-label",fmtDay(iso)+", fully booked — join the waiting list");
-        b.onclick=function(){if(S.date!==iso){S.slot=null}S.date=iso;dayFull=full;$$(".day",strip).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");$("#dayFullHost").innerHTML="";if(full)renderWaitlistForm();updateActionBar()};
+        b.onclick=function(){if(S.date!==iso){S.slot=null}S.date=iso;dayFull=full;$$(".day",strip).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");$("#dayFullHost").innerHTML="";if(full){clearSlots("This date is fully booked — join the waiting list above, or pick another day.");renderWaitlistForm()}else{loadSlots()}updateActionBar()};
         strip.appendChild(b);
       });
       if(!strip.querySelector(".day"))strip.innerHTML='<p class="hint">Bookings for this season have closed.</p>';
@@ -1357,13 +1362,17 @@
     }
     draw(S.calendar||null);
     api("/api/calendar?locationId="+encodeURIComponent(S.location?S.location.id:"")).then(function(c){S.calendar=c.dates;if(!$("#pane-date").hidden)draw(S.calendar);updateActionBar()}).catch(function(){});
+    if(S.date&&!dayFull)loadSlots();
   }
-  function renderTime(){
-    var el=$("#pane-time");
-    var sm=CFG.sessionMinutes||10;el.innerHTML='<h2>Choose your time with Santa</h2><p class="hint">Live availability for <b style="color:var(--snow)">'+esc(S.date?fmtDay(S.date):"")+'</b>. Each family enjoys a private '+sm+'-minute session with Santa — please arrive 15 minutes before your time.</p><div id="slotHost"><div class="skel" style="margin-top:20px"></div><div class="skel" style="margin-top:10px"></div></div>';
+  function clearSlots(msg){var h=$("#slotHost");if(h){h.className="slot-host";h.innerHTML='<p class="hint slot-empty">'+(msg||"Pick a day above to see available times.")+'</p>'}}
+  function loadSlots(){
+    var host=$("#slotHost");if(!host)return;
+    host.className="slot-host live";
+    host.innerHTML='<div class="slot-head">Times for <b>'+esc(S.date?fmtDay(S.date):"")+'</b></div><div class="skel" style="margin-top:14px"></div><div class="skel" style="margin-top:10px"></div>';
     api("/api/availability?locationId="+encodeURIComponent(S.location.id)+"&date="+encodeURIComponent(S.date)).then(function(av){
-      var host=$("#slotHost");if(!host)return;host.innerHTML="";
-      if(av.full){dayFull=true;host.innerHTML='<div class="offline">Every time slot on '+esc(fmtDay(S.date))+' has just been booked. Go back to pick another date or join that day\'s waiting list.</div>';S.slot=null;updateActionBar();return}
+      var host=$("#slotHost");if(!host)return;
+      if(av.full){dayFull=true;host.className="slot-host";host.innerHTML='<div class="offline">Every time slot on '+esc(fmtDay(S.date))+' has just been booked. Pick another date above, or join that day’s waiting list.</div>';S.slot=null;renderWaitlistForm();updateActionBar();return}
+      host.innerHTML='<div class="slot-head">Times for <b>'+esc(fmtDay(S.date))+'</b></div>';
       av.blocks.forEach(function(bl){
         var free=bl.slots.filter(function(s){return s.left>0}).length;
         var h=document.createElement("div");h.className="block-h";h.innerHTML=esc(bl.name)+' <span>'+esc(bl.label)+' · '+(free?free+' free':'fully booked')+'</span>';host.appendChild(h);
@@ -1374,15 +1383,14 @@
           b.innerHTML='<div class="tm">'+esc(start)+'</div><div class="av '+(s.left>0?"ok":"gone")+'">'+(s.left>0?"Available":s.past?"Passed":"Booked")+'</div>';
           b.setAttribute("aria-label",s.label+(s.left>0?", available":s.past?", already passed":", booked"));
           if(s.left<=0){b.disabled=true}
-          else{b.setAttribute("aria-pressed",!!(S.slot&&S.slot.id===s.id));b.onclick=function(){S.slot={id:s.id,label:s.label,block:bl.name};$$(".slot",host).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar()}}
+          else{b.setAttribute("aria-pressed",!!(S.slot&&S.slot.id===s.id));b.onclick=function(){S.slot={id:s.id,label:s.label,block:bl.name};$$(".slot",host).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar();if(validStep())setTimeout(function(){if(STEPS[cur]==="date"&&S.slot&&validStep())next()},300)}}
           g.appendChild(b);
         });
         host.appendChild(g);
       });
-      // Previously chosen slot taken in the meantime → clear it.
       if(S.slot){var still=av.blocks.some(function(bl){return bl.slots.some(function(s){return s.id===S.slot.id&&s.left>0})});if(!still){S.slot=null;toast("That time slot has been taken — please choose another.")}}
       updateActionBar();
-    }).catch(function(e){var host=$("#slotHost");if(host)host.innerHTML='<div class="offline">Couldn\'t load availability: '+esc(e.message)+'. <a href="#" id="retrySlots" style="color:var(--gold-soft)">Try again</a></div>';var r=$("#retrySlots");if(r)r.onclick=function(ev){ev.preventDefault();renderTime()}});
+    }).catch(function(e){var host=$("#slotHost");if(host){host.className="slot-host";host.innerHTML='<div class="offline">Couldn’t load availability: '+esc(e.message)+'. <a href="#" id="retrySlots" style="color:var(--gold-soft)">Try again</a></div>';var r=$("#retrySlots");if(r)r.onclick=function(ev){ev.preventDefault();loadSlots()}}});
   }
   function renderWaitlistForm(){
     var host=$("#dayFullHost");if(!host||!S.date)return;
@@ -1520,7 +1528,7 @@
     var chg=function(step,label){return '<button type="button" class="chg" data-goto="'+step+'">Change '+label+'</button>'};
     $("#summaryBox").innerHTML=
       '<div class="srow"><span class="k">Venue</span><span class="v">'+esc(S.location.name)+'<small>'+esc(S.location.sub)+'</small></span></div>'+
-      '<div class="srow"><span class="k">Date & time'+chg("date","date")+'</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.slot.label)+' · private '+((CFG.sessionMinutes||10))+'-minute visit</small>'+chg("time","time")+'</span></div>'+
+      '<div class="srow"><span class="k">Date & time'+chg("date","")+'</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.slot.label)+' · private '+((CFG.sessionMinutes||10))+'-minute visit</small>'+'</span></div>'+
       '<div class="srow"><span class="k">'+(p.kids>1?p.kids+" children":"1 child")+chg("register","details")+'</span><span class="v">'+esc(names||"—")+'</span></div>'+
       '<div class="srow"><span class="k">Santa Experience'+(p.earlyBird?' <span style="color:var(--green);font-weight:700">· early-bird</span>':'')+'</span><span class="v">'+NGN(p.childrenTotal)+'<small>'+p.kids+' × '+NGN(p.childPrice)+'</small></span></div>'+
       '<div class="srow"><span class="k">Adults</span><span class="v">'+(p.extraAdults?NGN(p.adultsTotal)+'<small>'+p.adultsIncluded+' included + '+p.extraAdults+' × '+NGN(p.extraAdultPrice)+'</small>':'Included<small>up to '+p.adultsIncluded+' parents or guardians</small>')+'</span></div>'+
@@ -1546,7 +1554,7 @@
   function validStep(){
     var k=STEPS[cur];
     if(k==="location")return !!S.location;
-    if(k==="date")return !!S.date&&!dayFull;
+    if(k==="date")return !!S.date&&!!S.slot&&!dayFull;
     if(k==="time")return !!S.slot;
     if(k==="register")return !firstProblem();
     if(k==="gift")return !S.gift||!S.gift.tier||isDiamond(S.gift)||!!S.gift.variant;
@@ -1587,7 +1595,7 @@
   }
   function flashInvalid(){
     var k=STEPS[cur], msg="Please make a selection to continue.", target=null;
-    if(k==="date"){msg=dayFull?"That date is fully booked — join its waiting list below or pick another date.":"Please pick a date to continue.";target=dayFull?$("#dayFullHost"):$(".daystrip")}
+    if(k==="date"){if(dayFull){msg="That date is fully booked — join its waiting list below or pick another date.";target=$("#dayFullHost")}else if(!S.date){msg="Please pick a date to continue.";target=$(".daystrip")}else{msg="Please choose a time slot above.";target=$("#slotHost")}}
     else if(k==="time"){msg="Please choose a time slot.";target=$("#slotHost")}
     else if(k==="register"){
       var p=firstProblem();
@@ -1613,7 +1621,7 @@
     }).catch(function(e){
       var f=e.field||"";
       toast(e.message||"Couldn't start the booking. Please try again.");
-      if(f==="slotId"||f==="time"){S.slot=null;goto("time")}
+      if(f==="slotId"||f==="time"){S.slot=null;goto("date")}
       else if(f==="children"||f==="extraAdults"||/^guardian/.test(f)){goto("register");setTimeout(function(){var fa=$("#formAlert");if(fa)fa.textContent=e.message||"";var sel=f==="guardian.phone"?"#gPhone":f==="guardian.email"?"#gEmail":f==="guardian.name"?"#gName":null;var el=sel&&$(sel);if(el){el.classList.add("err");el.scrollIntoView({behavior:"smooth",block:"center"});el.focus()}},100)}
       else if(f==="gift"){goto("gift")}
       else if(f==="date"){goto("date")}
@@ -1652,7 +1660,7 @@
     pollTimer=setInterval(check,5000);
   }
   function stopTimers(){clearInterval(pollTimer);clearInterval(expiryTimer)}
-  $("#restartBtn").onclick=function(){S.quote=null;S.slot=null;store("grotto_preview_pending_ref",null);show("#screen-wizard");mountActionBar();goto("time")};
+  $("#restartBtn").onclick=function(){S.quote=null;S.slot=null;store("grotto_preview_pending_ref",null);show("#screen-wizard");mountActionBar();goto("date")};
   // Leaving the payment page: the old reservation simply expires (no money can be taken from an unpaid account).
   $("#payCancel").onclick=function(){stopTimers();store("grotto_preview_pending_ref",null);clearDraft();S=freshState();show("#screen-landing");try{history.replaceState({g:"home"},"")}catch(e){};toast("No problem — nothing was charged. Start again whenever you're ready.")};
 
