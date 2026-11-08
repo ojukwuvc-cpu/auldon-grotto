@@ -142,6 +142,26 @@
   .faq-wrap .fa{padding:0 18px 15px;color:var(--frost);font-size:14.5px;line-height:1.62}
   .faq-wrap .fa a{color:var(--gold-soft)}
   .chip.avail{background:rgba(255,138,130,.14);border-color:rgba(255,138,130,.5);color:#ffd9d4;font-weight:700}
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:22px}
+  .gcell{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);aspect-ratio:4/3;margin:0}
+  .gcell img{width:100%;height:100%;object-fit:cover;display:block}
+  .gcell figcaption{position:absolute;left:0;right:0;bottom:0;padding:18px 14px 12px;font-weight:700;color:#fff;font-size:14px;background:linear-gradient(0deg,rgba(6,12,20,.85),transparent)}
+  .gcell.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(160deg,rgba(200,16,46,.16),rgba(255,255,255,.03))}
+  .gcell.ph figcaption{position:static;background:none;padding:0;color:var(--frost);font-weight:700;font-size:13px}
+  .gcell .phic svg{width:30px;height:30px;color:var(--gold-soft)}
+  .gallery-hint{margin-top:12px;color:var(--frost);font-size:13px;text-align:center}
+  .loved-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:22px}
+  .loved{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  .loved .ic{flex:none}.loved .ic svg{width:30px;height:30px;color:var(--gold-soft)}
+  .loved b{display:block;color:var(--snow);font-size:15px;margin-bottom:2px}
+  .loved span{color:var(--frost);font-size:13.5px;line-height:1.5}
+  .tmrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px}
+  .tm{margin:0;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .tm blockquote{margin:0 0 10px;color:var(--snow);font-size:15px;line-height:1.55}
+  .tm figcaption{color:var(--gold-soft);font-weight:700;font-size:13.5px}
+  .tm figcaption span{color:var(--frost);font-weight:400}
+  .gift-example{margin-top:14px;padding:12px 14px;border:1px dashed rgba(212,175,110,.5);border-radius:12px;color:var(--frost);font-size:13.5px;line-height:1.55}
+  .gift-example b{color:var(--snow)}.gift-example .eb{color:var(--gold-soft)}
 
   .trust{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:22px}
   .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--frost);background:rgba(255,255,255,.04);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
@@ -634,6 +654,9 @@
   @media(min-width:720px){
     .ticket-row{grid-template-columns:1.2fr .8fr}
     .exp-grid{grid-template-columns:repeat(3,1fr)}
+    .exp-grid.center-last .exp:last-child{grid-column:2}
+    .gallery{grid-template-columns:repeat(4,1fr)}
+    .loved-grid{grid-template-columns:repeat(2,1fr)}
     .pk-grid{grid-template-columns:repeat(4,1fr)}
     footer .wrap{flex-direction:row;align-items:center;justify-content:space-between}
   }
@@ -785,6 +808,16 @@
       </div>
     </section>
 
+    <section class="section" id="gallery">
+      <div class="wrap">
+        <span class="kicker">Inside the magic</span>
+        <h2>A peek inside the grotto</h2>
+        <p class="sub">Real moments from the Auldon Toys Santa Grotto.</p>
+        <div class="gallery placeholder" id="galleryGrid"></div>
+        <p class="gallery-hint" id="galleryHint" hidden>Photos from this year’s grotto are on the way.</p>
+      </div>
+    </section>
+
     <section class="section" id="how">
       <div class="wrap">
         <span class="kicker">How it works</span>
@@ -805,8 +838,19 @@
         <p class="sub">The Santa Experience doesn't include a gift. Add one Santa Gift Package to your booking — for a boy, a girl or a baby — and it's ready for your visit.</p>
         <div class="pk-grid" id="pkGrid"></div>
         <p class="note-sm" id="giftNote"></p>
+        <p class="gift-example" id="giftExample" hidden></p>
         <div class="gift-cta"><button type="button" class="btn btn-ghost" id="giftsBtn">Add a gift when you book →</button></div>
         <div class="other-gift" id="otherGift"></div>
+      </div>
+    </section>
+
+    <section class="section" id="loved">
+      <div class="wrap">
+        <span class="kicker">Why families love it</span>
+        <h2>A Christmas memory, made easy</h2>
+        <p class="sub">Everything about the visit is designed around your child and your family.</p>
+        <div class="loved-grid" id="lovedGrid"></div>
+        <div class="tmrow" id="tmRow" hidden></div>
       </div>
     </section>
 
@@ -1017,7 +1061,7 @@
     openingHours:[{days:"Monday – Saturday",hours:"9:00 AM – 9:00 PM"},{days:"Sunday",hours:"12:00 PM – 9:00 PM"}],
     ticket:{id:"experience",name:"Santa Experience",price:30000,per:"child",perks:["A private visit with Santa, just for your family","Meet Santa face to face in his magical grotto","Christmas photo moments inside the grotto","Write a letter to Santa while you wait","Gift & toy discovery around the store","Up to two parents or guardians included"],note:"The Santa Experience does not include a gift. To include a gift, add a Santa Gift Package to your booking."},
     earlyBird:{active:false,price:25000,from:"2026-11-01",upcoming:true},adults:{included:2,extraPrice:15000,maxExtra:4},
-    experience:[{icon:"santa",name:"Meet Santa",sub:"Children come face to face with Santa in his magical grotto."},{icon:"clock",name:"Your Own Time Slot",sub:"A private visit just for your family, at the time you choose — no queueing."},{icon:"photo",name:"Christmas Photo Moments",sub:"Captured family moments inside the grotto."},{icon:"mail",name:"Letters to Santa",sub:"Children write their letter to Santa while they wait — we provide everything."},{icon:"bear",name:"Gift & Toy Discovery",sub:"Families explore and discover Christmas gifts and toys."},{icon:"heart",name:"Family Memories",sub:"An experience built around lasting family memories."}],
+    experience:[{icon:"santa",name:"Meet Santa",sub:"Children come face to face with Santa in his magical grotto."},{icon:"book",name:"Santa's Christmas Story",sub:"Santa shares a special Christmas story with every child."},{icon:"clock",name:"Your Own Time Slot",sub:"A private visit just for your family, at the time you choose — no queueing."},{icon:"photo",name:"Christmas Photo Moments",sub:"Captured family moments inside the grotto."},{icon:"mail",name:"Letters to Santa",sub:"Children write their letter to Santa while they wait — we provide everything."},{icon:"bear",name:"Gift & Toy Discovery",sub:"Families explore and discover Christmas gifts and toys."},{icon:"heart",name:"Family Memories",sub:"An experience built around lasting family memories."}],
     giftPackages:[{id:"bronze",name:"Bronze",price:50000,images:{}},{id:"silver",name:"Silver",price:100000,images:{}},{id:"gold",name:"Gold",price:150000,images:{}}],
     giftVariants:[{id:"boy",name:"Boy"},{id:"girl",name:"Girl"},{id:"baby",name:"Baby"}],
     giftNote:"Each package contains toys and selected Christmas items. Pictures show the packages currently in stock.",
@@ -1193,6 +1237,7 @@
     $("#chipPrice").textContent=NGN(CFG.ticket.price)+" per child"+(eb.active?" ("+NGN(eb.price)+" early-bird)":"");
     var eg=$("#expGrid");eg.innerHTML="";
     (CFG.experience||[]).forEach(function(e,i){var d=document.createElement("div");d.className="exp";d.innerHTML='<span class="ic">'+ic(e.icon)+'</span><div><div class="num">0'+(i+1)+'</div><b>'+esc(e.name)+'</b><span>'+esc(e.sub)+'</span></div>';eg.appendChild(d)});
+    eg.classList.toggle("center-last",(((CFG.experience||[]).length)%3)===1);
     var t=CFG.ticket,ad=CFG.adults||{};
     $("#ticketCardHost").innerHTML='<div class="pkg feature ticket-card"><span class="tag">Per child</span><div class="pname">'+esc(t.name)+'</div>'+priceHtml()+'<ul>'+t.perks.map(function(k){return '<li>'+ICONS.check+'<span>'+esc(k)+'</span></li>'}).join('')+'</ul><p class="note">Additional adults beyond two: '+NGN(ad.extraPrice)+' each. '+esc(t.note||"")+'</p></div>';
     var hrs=CFG.openingHours||[];
@@ -1210,6 +1255,22 @@
     if(c.venue){var _fv=$("#faqVenue");if(_fv)_fv.textContent=c.venue;}
     var _fdr=$("#faqAddr");if(_fdr)_fdr.textContent=c.address||"";
     if(c.mapsUrl){var _fmp=$("#faqMaps");if(_fmp)_fmp.href=c.mapsUrl;}
+    var gal=CFG.gallery||[],gg=$("#galleryGrid");
+    if(gg){
+      if(gal.length){gg.className="gallery";gg.innerHTML=gal.map(function(g){return '<figure class="gcell"><img src="'+esc(g.src)+'" alt="'+esc(g.caption||"Santa Grotto")+'" loading="lazy"><figcaption>'+esc(g.caption||"")+'</figcaption></figure>'}).join("");}
+      else{var ph=[["santa","Meeting Santa"],["photo","Photo moments"],["gift","The gift reveal"],["heart","Family memories"]];gg.className="gallery placeholder";gg.innerHTML=ph.map(function(x){return '<div class="gcell ph"><span class="phic">'+ic(x[0])+'</span><figcaption>'+esc(x[1])+'</figcaption></div>'}).join("");var gh=$("#galleryHint");if(gh)gh.hidden=false;}
+    }
+    var lg=$("#lovedGrid");
+    if(lg){var sig=[["santa","A private visit with Santa","Your family\u2019s own time with Santa \u2014 no queues, no rush."],["clock","You pick the time","Choose any day this season and the slot that suits you."],["photo","Photos to keep","Capture real Christmas moments inside the grotto."],["gift","Make it extra special","Add a gift package for each child, ready on the day."]];
+      lg.innerHTML=sig.map(function(s){return '<div class="loved"><span class="ic">'+ic(s[0])+'</span><div><b>'+esc(s[1])+'</b><span>'+esc(s[2])+'</span></div></div>'}).join("");}
+    var tm=CFG.testimonials||[],tr=$("#tmRow");
+    if(tr){if(tm.length){tr.hidden=false;tr.innerHTML=tm.map(function(t){return '<figure class="tm"><blockquote>\u201c'+esc(t.quote)+'\u201d</blockquote><figcaption>'+esc(t.name||"")+(t.detail?' <span>'+esc(t.detail)+'</span>':'')+'</figcaption></figure>'}).join("");}else{tr.hidden=true;}}
+    var ge=$("#giftExample");
+    if(ge){var eb2=CFG.earlyBird||{},cp=eb2.active?eb2.price:CFG.ticket.price,bz=(CFG.giftPackages||[]).filter(function(b){return b.id==="bronze"})[0],sv=(CFG.giftPackages||[]).filter(function(b){return b.id==="silver"})[0];
+      if(bz&&sv){var one=CFG.ticket.price+bz.price,oneE=cp+bz.price,two=2*CFG.ticket.price+2*sv.price,twoE=2*cp+2*sv.price;
+        ge.innerHTML='<b>What a visit costs:</b> 1 child + a Bronze gift = '+NGN(one)+' \u00b7 2 children + Silver gifts = '+NGN(two)+(eb2.active?'. <span class="eb">Early-bird now: '+NGN(oneE)+' / '+NGN(twoE)+'.</span>':'.');
+        ge.hidden=false;}
+    }
     if(c.venue)$("#ftAddress").textContent=c.venue+" · "+(c.address||"");
     if(c.mapsUrl)$("#ftMaps").href=c.mapsUrl;
     if(c.whatsappUrl){var links=[['Call or WhatsApp '+(c.phone||c.whatsapp||''),c.whatsappUrl],[(c.website||'').replace(/^https?:\/\/(www\.)?/,''),c.website]];var so=c.socials||{};[['Instagram',so.instagram],['TikTok',so.tiktok],['Facebook',so.facebook],['X',so.x]].forEach(function(p){if(p[1])links.push(p)});$("#ftLinks").innerHTML=links.filter(function(l){return l[1]}).map(function(l){return '<a href="'+esc(l[1])+'" target="_blank" rel="noopener">'+esc(l[0])+'</a>'}).join("")+'<a href="#terms" id="termsLink">Privacy &amp; booking terms</a>'}
