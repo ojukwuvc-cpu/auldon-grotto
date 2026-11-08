@@ -132,6 +132,16 @@
   .countdown-k{color:var(--frost);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
   .countdown-n{font-family:var(--display);font-weight:600;font-size:clamp(2.6rem,12vw,3.4rem);line-height:1;color:var(--gold-soft);margin:3px 0}
   .countdown-s{color:var(--frost);font-size:12.5px;font-weight:600}
+  .faq-wrap{max-width:820px;margin:8px auto 0}
+  .faq-wrap details{border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.03);margin:10px 0;overflow:hidden}
+  .faq-wrap details[open]{border-color:rgba(212,175,110,.5);background:rgba(255,255,255,.05)}
+  .faq-wrap summary{list-style:none;cursor:pointer;padding:15px 18px;font-weight:700;color:var(--snow);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15.5px}
+  .faq-wrap summary::-webkit-details-marker{display:none}
+  .faq-wrap summary::after{content:"+";font-size:22px;color:var(--gold-soft);font-weight:400;line-height:1;transition:transform .2s;flex:none}
+  .faq-wrap details[open] summary::after{transform:rotate(45deg)}
+  .faq-wrap .fa{padding:0 18px 15px;color:var(--frost);font-size:14.5px;line-height:1.62}
+  .faq-wrap .fa a{color:var(--gold-soft)}
+  .chip.avail{background:rgba(255,138,130,.14);border-color:rgba(255,138,130,.5);color:#ffd9d4;font-weight:700}
 
   .trust{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:22px}
   .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--frost);background:rgba(255,255,255,.04);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
@@ -706,7 +716,7 @@
         <span class="logo"><img src="/assets/auldon-logo.png" width="148" height="57" alt="Auldon Toys"></span>
         <span class="brand-sub">Santa Grotto<small>2026</small></span>
       </div>
-      <div class="mini-count" id="miniCount"><span class="dot"></span><span><b id="miniDays">—</b> <span class="lbl">to Christmas Eve</span></span></div>
+      <div class="mini-count" id="miniCount"><span class="dot"></span><span><b id="miniDays">—</b> <span class="lbl">till the grotto opens</span></span></div>
     </div>
   </header>
 
@@ -748,6 +758,7 @@
             <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-11a7 7 0 0114 0c0 6.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><span id="chipWhere">Auldon Toys, Lekki</span></span>
             <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="chipWhen">10 Dec – 3 Jan</span></span>
             <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg><span id="chipPrice">₦30,000 per child</span></span>
+            <span class="chip avail" id="chipAvail" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>filling fast</span></span>
           </div>
         </div>
       </div>
@@ -799,12 +810,31 @@
       </div>
     </section>
 
+    <section class="section" id="faq">
+      <div class="wrap">
+        <span class="kicker">Good to know</span>
+        <h2>Questions, answered</h2>
+        <p class="sub">Everything parents ask before they book.</p>
+        <div class="faq-wrap">
+          <details><summary>How long is the Santa visit?</summary><div class="fa">Each family gets a private <span id="faqMins">10</span>-minute session with Santa in his grotto, booked as your own time slot — no queues, no rush.</div></details>
+          <details><summary>What ages is the grotto for?</summary><div class="fa">All ages are welcome, from babies to big kids. Gift packages come in Boy, Girl and Baby options, so every child gets something that suits them.</div></details>
+          <details><summary>When should we arrive?</summary><div class="fa">Please arrive <span id="faqArrive">15</span> minutes before your time slot, with your booking reference ready, so your family enjoys the full experience.</div></details>
+          <details><summary>How many adults can come?</summary><div class="fa">Up to two parents or guardians are included with every booking. Additional adults are <span id="faqAdult">₦15,000</span> each.</div></details>
+          <details><summary>Are gifts included?</summary><div class="fa">The Santa Experience itself does not include a gift. You can add an optional Santa Gift Package for each child — Bronze, Silver or Gold — or choose Diamond and pick your gifts on auldontoys.com after booking.</div></details>
+          <details><summary>Can we take photos?</summary><div class="fa">Yes — bring your phone or camera to capture the moments inside the grotto. We’ll ask your photo-consent preference when you book.</div></details>
+          <details><summary>How do we pay?</summary><div class="fa">In Naira by bank transfer from any Nigerian bank app. You’ll get the account details right after booking, and your slot is held while you pay.</div></details>
+          <details><summary>Can we change or cancel?</summary><div class="fa">Tickets are non-refundable, but can be moved to another date or time slot subject to availability — call or WhatsApp <b>0810 002 5985</b> with your booking reference.</div></details>
+          <details><summary>Where is the grotto?</summary><div class="fa"><b id="faqVenue">Auldon Toys Experience Center</b><br><span id="faqAddr"></span><br><a id="faqMaps" href="#" target="_blank" rel="noopener">Open in Google Maps</a></div></details>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="wrap">
         <div class="band" id="band">
           <div>
             <h2>Ready to make their Christmas?</h2>
-            <p>Time slots fill up fast. Reserve yours now and pay in Naira by bank transfer from any Nigerian bank app.</p>
+            <p id="bandAvail">Time slots fill up fast. Reserve yours now and pay in Naira by bank transfer from any Nigerian bank app.</p>
           </div>
           <div class="band-cta"><button class="btn btn-gold" id="bandBtn">Start booking →</button></div>
         </div>
@@ -1058,15 +1088,41 @@
   function focusHeading(pane){var h=$("h2",pane);if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}}
 
   /* ---------- countdown & snow ---------- */
+  function initAvailability(){
+    try{
+      var loc=(CFG.locations&&CFG.locations[0]&&CFG.locations[0].id)||"lekki";
+      api("/api/calendar?locationId="+encodeURIComponent(loc)).then(function(c){
+        var d=(c&&c.dates)||{},isos=Object.keys(d),open=0,full=0,few=0;
+        isos.forEach(function(iso){var i=d[iso]||{};if(i.full){full++;}else{open++;if(typeof i.left==="number"&&i.left<=8)few++;}});
+        var band=$("#bandAvail");
+        if(band){
+          if(full||few){
+            var parts=[];if(full)parts.push(full+" date"+(full>1?"s":"")+" already fully booked");if(few)parts.push(few+" more filling fast");
+            band.innerHTML='<b style="color:var(--snow)">Booking is live.</b> '+parts.join(" · ")+". Reserve your slot and pay in Naira by bank transfer.";
+          }else if(open){
+            band.innerHTML='<b style="color:var(--snow)">Booking is live.</b> All '+open+" dates are open right now — the most popular Sundays go first. Reserve your slot and pay in Naira by bank transfer.";
+          }
+        }
+        var chip=$("#chipAvail");
+        if(chip&&(full+few)>0){chip.querySelector("span").textContent=(full+few)+" dates filling fast";chip.hidden=false;}
+      }).catch(function(){});
+    }catch(e){}
+  }
   function initCountdown(){
     var xmas=parseDate(CFG.christmasEve||"2026-12-24"), sz=CFG.season||{};
     var start=parseDate(sz.start||"2026-12-10"), end=parseDate(sz.end||"2027-01-03"), today=new Date();today.setHours(0,0,0,0);
     var sleeps=daysTo(xmas), toOpen=daysTo(start);
-    $("#miniDays").textContent=sleeps+(sleeps===1?" day":" days");
-    var k,n,u,sub;
-    if(today<start){k="Grotto opens in";n=toOpen;u=toOpen===1?"day":"days";sub=sleeps+" sleeps till Christmas"}
-    else if(today<=end){k="Santa is in";n="Open";u="today";sub=today<xmas?(sleeps+(sleeps===1?" sleep":" sleeps")+" till Christmas"):"Until "+end.getDate()+" "+MONTHS[end.getMonth()]}
-    else{k="See you";n="Next";u="Christmas";sub="Thank you for visiting!"}
+    var k,n,u,sub,mini,miniLbl;
+    if(today<start){
+      k="Grotto opens in";n=toOpen;u=toOpen===1?"day":"days";
+      sub="Opens "+start.getDate()+" "+MONTHS[start.getMonth()];
+      mini=toOpen+(toOpen===1?" day":" days");miniLbl="till the grotto opens";
+    }else if(today<=end){
+      k="Santa is in";n="Open";u="today";
+      sub=today<xmas?(sleeps+(sleeps===1?" sleep":" sleeps")+" till Christmas"):"Until "+end.getDate()+" "+MONTHS[end.getMonth()];
+      mini="Open now";miniLbl="— Santa is in";
+    }else{k="See you";n="Next";u="Christmas";sub="Thank you for visiting!";mini="";miniLbl="See you next Christmas";}
+    $("#miniDays").textContent=mini;var _ml=document.querySelector("#miniCount .lbl");if(_ml)_ml.textContent=miniLbl;
     $("#tagK").textContent=k;$("#heroDays").textContent=n;$("#tagUnit").textContent=u;$("#tagSleeps").textContent=sub;
   }
   function initHeroSnow(){
@@ -1147,6 +1203,13 @@
     $("#giftNote").textContent=(CFG.giftNote||"")+" One package per child.";
     var og=CFG.otherGifting||[];
     $("#otherGift").innerHTML='<b>Also in store this Christmas</b><ul>'+og.map(function(o){return '<li><b style="display:inline;font-size:13px">'+esc(o.name)+'</b> — '+esc(o.sub)+'</li>'}).join("")+'</ul>';
+    var _ad=CFG.adults||{};
+    (function(id,v){var e=$(id);if(e&&v!=null)e.textContent=v;})("#faqMins",CFG.sessionMinutes||10);
+    (function(id,v){var e=$(id);if(e)e.textContent=v;})("#faqArrive",CFG.arriveBefore||15);
+    if(_ad.extraPrice){var _fad=$("#faqAdult");if(_fad)_fad.textContent=NGN(_ad.extraPrice);}
+    if(c.venue){var _fv=$("#faqVenue");if(_fv)_fv.textContent=c.venue;}
+    var _fdr=$("#faqAddr");if(_fdr)_fdr.textContent=c.address||"";
+    if(c.mapsUrl){var _fmp=$("#faqMaps");if(_fmp)_fmp.href=c.mapsUrl;}
     if(c.venue)$("#ftAddress").textContent=c.venue+" · "+(c.address||"");
     if(c.mapsUrl)$("#ftMaps").href=c.mapsUrl;
     if(c.whatsappUrl){var links=[['Call or WhatsApp '+(c.phone||c.whatsapp||''),c.whatsappUrl],[(c.website||'').replace(/^https?:\/\/(www\.)?/,''),c.website]];var so=c.socials||{};[['Instagram',so.instagram],['TikTok',so.tiktok],['Facebook',so.facebook],['X',so.x]].forEach(function(p){if(p[1])links.push(p)});$("#ftLinks").innerHTML=links.filter(function(l){return l[1]}).map(function(l){return '<a href="'+esc(l[1])+'" target="_blank" rel="noopener">'+esc(l[0])+'</a>'}).join("")+'<a href="#terms" id="termsLink">Privacy &amp; booking terms</a>'}
@@ -1598,7 +1661,7 @@
     $("#startBtn").onclick=function(){openWizard(false)};$("#bandBtn").onclick=function(){openWizard(false)};$("#giftsBtn").onclick=function(){openWizard(false)};
     $("#termsBack").onclick=function(){history.back()};
     if(CFG.locations&&CFG.locations.length>1)STEPS.unshift("location");
-    renderLanding();initCountdown();initSnow();initHeroSnow();
+    renderLanding();initCountdown();initAvailability();initSnow();initHeroSnow();
     var tl=$("#termsLink");if(tl)tl.onclick=function(ev){ev.preventDefault();openTerms()};
     try{history.replaceState({g:"home"},"")}catch(e){}
     if(location.hash==="#terms"){openTerms()}
