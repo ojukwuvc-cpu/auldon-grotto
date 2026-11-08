@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>[Preview] Grotto door check-in — Auldontoys staff</title>
+<title>[Preview] Grotto door check-in — Auldon Toys staff</title>
 <meta name="theme-color" content="#0a1621">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -76,6 +76,8 @@
   .badge.photo{background:rgba(73,179,110,.14);border-color:rgba(73,179,110,.45);color:#9be3b5}
   .badge.gift{background:rgba(243,194,87,.16);border-color:rgba(243,194,87,.6);color:var(--gold-soft)}
   .badge.diamond{background:rgba(159,227,255,.14);border-color:rgba(159,227,255,.6);color:#c9f2ff}
+  .kgift{font-weight:800;color:var(--gold-soft)}
+  .kgift.dia{color:#c9f2ff}
   .badge.nogift{background:rgba(255,255,255,.06);border-color:var(--line-2);color:var(--snow)}
   .item .tm{flex:none;width:68px;font-weight:800;font-size:13.5px;color:var(--gold-soft)}
   .actions{display:grid;gap:10px;margin-top:16px}
@@ -167,6 +169,8 @@
   function slotLabel(hm){return /^\d\d:\d\d$/.test(String(hm))?t12(hm):String(hm||"")}
   function blockOf(hm){var p=String(hm).split(":"),m=+p[0]*60+(+p[1]);if(isNaN(m))return "Other";return m<720?"Morning":m<780?"Midday":m<900?"Afternoon · 1:00 – 3:00 PM":m<1080?"Afternoon · 3:30 – 5:30 PM":"Evening"}
   function giftText(g){return g?(BUNDLES[g.tier]||g.tier)+" Gift Package ("+(VARIANTS[g.variant]||g.variant)+")":""}
+  function giftShort(c){return (c.gift.tier==="diamond"||c.gift.external)?"Diamond (online)":(BUNDLES[c.gift.tier]||c.gift.tier)+" ("+(VARIANTS[c.gift.variant]||c.gift.variant)+")";}
+  function listGift(b){var gk=(b.children||[]).filter(function(c){return c.gift});if(!gk.length)return " · no gift";var dia=gk.some(function(c){return c.gift.tier==="diamond"||c.gift.external}),paid=gk.filter(function(c){return !(c.gift.tier==="diamond"||c.gift.external)}),parts=[];if(paid.length)parts.push("GIFT "+paid.map(function(c){return BUNDLES[c.gift.tier]||c.gift.tier}).join("/"));if(dia)parts.push("DIAMOND (online)");return " · "+parts.join(" · ");}
   var TOKEN_KEY="grotto_preview_admin_token", token=null, current=null, scanner=null, scanning=false, toastT;
 
   function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -238,12 +242,18 @@
     $("#rCode").textContent=b.ticket_code+" · "+b.ref;
     var badges=[];
     badges.push(b.photo_consent?'<span class="badge photo">Photos OK</span>':'<span class="badge nophoto">NO PHOTOS</span>');
-    badges.push(b.gift&&b.gift.tier==="diamond"?'<span class="badge diamond">DIAMOND — ONLINE ORDER · look up '+esc(b.ref)+' in the store</span>':b.gift?'<span class="badge gift">GIFT: '+esc(giftText(b.gift))+'</span>':'<span class="badge nogift">NO GIFT</span>');
+    var gk=(b.children||[]).filter(function(c){return c.gift});
+    var diaK=gk.filter(function(c){return c.gift.tier==="diamond"||c.gift.external});
+    var paidK=gk.filter(function(c){return !(c.gift.tier==="diamond"||c.gift.external)});
+    if(diaK.length)badges.push('<span class="badge diamond">DIAMOND — ONLINE ORDER · look up '+esc(b.ref)+' in the store'+(diaK.length<(b.children||[]).length?' · '+esc(diaK.map(function(c){return c.name}).join(", ")):'')+'</span>');
+    if(paidK.length)badges.push('<span class="badge gift">GIFT'+(paidK.length>1?'S':'')+': '+esc(paidK.map(function(c){return c.name+" — "+(BUNDLES[c.gift.tier]||c.gift.tier)+" ("+(VARIANTS[c.gift.variant]||c.gift.variant)+")"}).join(" · "))+'</span>');
+    if(!gk.length)badges.push('<span class="badge nogift">NO GIFT</span>');
     badges.push('<span class="badge">'+(b.child_count||names.length)+' child'+((b.child_count||names.length)===1?"":"ren")+'</span>');
     badges.push('<span class="badge">Up to '+(2+(b.extra_adults||0))+' adults'+(b.extra_adults?' ('+b.extra_adults+' paid extra)':'')+'</span>');
     $("#rBadges").innerHTML=badges.join("");
     $("#rKids").innerHTML=(b.children||[]).map(function(c,i){
-      return '<div class="kid"><span class="b">'+(i+1)+'</span><div><b>'+esc(c.name)+'</b> · '+(c.age===0?"under 1":c.age+(c.age===1?" year":" years"))+(c.interests&&c.interests.length?' · loves '+esc(c.interests.join(", ")):'')+'</div></div>';
+      var kg=c.gift?' · <span class="kgift'+((c.gift.tier==="diamond"||c.gift.external)?' dia':'')+'">'+esc(giftShort(c))+'</span>':'';
+      return '<div class="kid"><span class="b">'+(i+1)+'</span><div><b>'+esc(c.name)+'</b> · '+(c.age===0?"under 1":c.age+(c.age===1?" year":" years"))+(c.interests&&c.interests.length?' · loves '+esc(c.interests.join(", ")):'')+kg+'</div></div>';
     }).join("");
     $("#rContact").innerHTML='Parent: <b>'+esc(b.guardian_name)+'</b> · <a href="tel:'+esc(b.guardian_phone)+'">'+esc(b.guardian_phone)+'</a>';
     announce(box.textContent);
@@ -282,7 +292,7 @@
         var h=document.createElement("div");h.className="sess-h";h.textContent=s+" · "+inS.length;host.appendChild(h);
         inS.forEach(function(b){
           var el=document.createElement("button");el.type="button";el.className="item";
-          el.innerHTML='<span class="tm">'+esc(t12(b.visit_time))+'</span><span class="t"><b>'+esc((b.children||[]).map(function(c){return c.name}).join(", "))+'</b><span>'+esc(b.guardian_name)+' · '+esc(b.ticket_code)+(b.gift&&b.gift.tier==="diamond"?' · DIAMOND (online order)':b.gift?' · GIFT '+esc(BUNDLES[b.gift.tier]||b.gift.tier):' · no gift')+(b.photo_consent?'':' · NO PHOTOS')+'</span></span><span class="st'+(b.arrived_at?' in':'')+'">'+(b.arrived_at?'In '+fmtTime(b.arrived_at):'Expected')+'</span>';
+          el.innerHTML='<span class="tm">'+esc(t12(b.visit_time))+'</span><span class="t"><b>'+esc((b.children||[]).map(function(c){return c.name}).join(", "))+'</b><span>'+esc(b.guardian_name)+' · '+esc(b.ticket_code)+esc(listGift(b))+(b.photo_consent?'':' · NO PHOTOS')+'</span></span><span class="st'+(b.arrived_at?' in':'')+'">'+(b.arrived_at?'In '+fmtTime(b.arrived_at):'Expected')+'</span>';
           el.onclick=function(){$("#code").value=b.ticket_code;render(b)};
           host.appendChild(el);
         });

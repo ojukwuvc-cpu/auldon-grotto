@@ -673,6 +673,26 @@
   }
   @media(prefers-reduced-motion:reduce){.tag-hang{animation:none}}
 </style>
+<style>
+  .cg{margin-top:16px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .cg .lh{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--gold);letter-spacing:.04em}
+  .cg .lh svg{width:15px;height:15px}
+  .cg .tierchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .cg .tierchips .ichip b{color:var(--gold-soft);font-weight:800;margin-left:4px}
+  .cg .tierchips .ichip.cg-dia b{color:#9fe3ff}
+  .cg .tierchips .ichip.cg-dia[aria-pressed="true"]{border-color:#9fe3ff;background:rgba(159,227,255,.14);color:#c9f2ff}
+  .cg-var{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+  .cg-var .lbl{font-size:12px;color:var(--frost);font-weight:700;margin-right:2px}
+  .cg-img{margin-top:12px}
+  .cg-img img{width:100%;max-width:280px;border-radius:12px;display:block;border:1px solid var(--line)}
+  .cg-dia-note{margin-top:12px;display:flex;gap:9px;align-items:flex-start;background:rgba(159,227,255,.06);border:1px dashed rgba(159,227,255,.35);border-radius:12px;padding:11px 13px;color:var(--frost);font-size:13px;line-height:1.5}
+  .cg-dia-note svg{width:17px;height:17px;color:#9fe3ff;flex:none;margin-top:1px}
+  .cg-all{margin-top:12px;background:none;border:0;color:var(--gold-soft);font-weight:700;font-size:13px;text-decoration:underline;text-underline-offset:3px;padding:6px 0;cursor:pointer;min-height:36px}
+  .srow.sub .k{padding-left:12px;color:var(--frost-dim);font-size:13.5px}
+  .srow.sub{padding:7px 0}
+  .brand .logo img{height:46px!important}
+  @media(max-width:360px){.brand .logo img{height:40px!important}}
+</style>
 </head>
 <body>
 <canvas id="snow"></canvas>
@@ -704,7 +724,7 @@
       </svg>
       <div class="stage">
         <figure class="scene">
-          <img src="/assets/hero-santa.jpg" width="1407" height="772" alt="Santa laughing with a little girl on his knee inside the Auldontoys Santa's Grotto" fetchpriority="high">
+          <img src="/assets/hero-santa.jpg" width="1407" height="772" alt="Santa laughing with a little girl on his knee inside the Auldon Toys Santa's Grotto" fetchpriority="high">
           <div class="tag-hang" role="group" aria-label="Countdown">
             <div class="gtag">
               <span class="gk" id="tagK">Grotto opens in</span>
@@ -761,7 +781,7 @@
         <p class="sub">Everything is handled online, so your family has its own time with Santa.</p>
         <div class="steps3 how3">
           <div class="howcard"><div class="num">01 · BOOK</div><h3>Pick a date &amp; time slot</h3><p>Choose any day from 10 December to 3 January and a time slot, tell us who's coming, add a gift package if you'd like, and pay by bank transfer. If a day is fully booked, join its waiting list.</p></div>
-          <div class="howcard"><div class="num">02 · ARRIVE</div><h3>Come 10 minutes early</h3><p>Show your booking confirmation or reference at check-in. Children write their letter to Santa while they wait — we provide everything.</p></div>
+          <div class="howcard"><div class="num">02 · ARRIVE</div><h3>Come 15 minutes early</h3><p>Show your booking confirmation or reference at check-in. Children write their letter to Santa while they wait — we provide everything.</p></div>
           <div class="howcard"><div class="num">03 · MEET SANTA</div><h3>Your moment with Santa</h3><p>Meet Santa in his grotto and capture the moment. If you added a gift package, it's ready for your child on the day. Then explore Christmas gifts and toys in store.</p></div>
         </div>
       </div>
@@ -795,7 +815,7 @@
       <div class="wrap">
         <div>
           <div class="brandline">© 2026 Auldon Toys · Making the kids happy…</div>
-          <div class="addr" id="ftAddress">Auldontoys Experience Centre · Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos</div>
+          <div class="addr" id="ftAddress">Auldon Toys Experience Center · Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos</div>
           <div class="addr"><a href="https://maps.app.goo.gl/T1Qi87gruWndQ7VWA?g_st=iw" target="_blank" rel="noopener" id="ftMaps">Open in Google Maps</a></div>
         </div>
         <div class="fl" id="ftLinks">
@@ -814,13 +834,13 @@
   <!-- ===== PRIVACY & BOOKING TERMS ===== -->
   <main id="screen-terms" class="screen" hidden>
     <div class="wrap terms">
-      <span class="kicker">Auldontoys Santa Grotto 2026</span>
+      <span class="kicker">Auldon Toys Santa Grotto 2026</span>
       <h2>Privacy &amp; booking terms</h2>
       <p class="note-sm">Last updated 29 October 2026. Questions about these terms? Call or WhatsApp 0810 002 5985.</p>
       <h3>Your booking</h3>
       <ul>
         <li>The Santa Experience is priced per child: every child attending needs their own ticket. Up to two parents or guardians are included in each booking; each additional adult is ₦15,000.</li>
-        <li>Each booking is a private visit at the time slot you choose. Please arrive 10 minutes before your slot and present your booking confirmation or reference. Late arrival may affect your experience.</li>
+        <li>Each booking is a private 10-minute visit at the time slot you choose. Please arrive 15 minutes before your slot and present your booking confirmation or reference. Late arrival may affect your experience.</li>
         <li>The Santa Experience does not include a gift. Only bookings that include a Santa Gift Package receive a gift. Package pictures show the packages currently in stock.</li>
         <li>Early-bird prices apply only while the offer is running and are fixed at the time you book.</li>
         <li>Your slot is held for 30 minutes while you pay. If the transfer doesn't arrive in that time the booking expires, the slot is released and no money is taken.</li>
@@ -926,7 +946,7 @@
         <button class="btn btn-ghost" id="shareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:17px;height:17px"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7"/><path d="M16 6l-4-4-4 4M12 2v14"/></svg>Share ticket</button>
         <button class="btn btn-gold btn-wide" id="againBtn">Book another visit</button>
       </div>
-      <p class="afterword">Please arrive 10 minutes before your time slot and show this ticket, your confirmation email or your booking reference at check-in.</p>
+      <p class="afterword">Please arrive 15 minutes before your time slot and show this ticket, your confirmation email or your booking reference at check-in.</p>
     </div>
   </main>
 </div>
@@ -962,7 +982,7 @@
   /* ---------- fallback catalogue (display only, if the API is unreachable) ---------- */
   var FALLBACK={
     bookingsOpen:false,
-    locations:[{id:"lekki",name:"Auldontoys Experience Centre",sub:"Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos",icon:"palm"}],
+    locations:[{id:"lekki",name:"Auldon Toys Experience Center",sub:"Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos",icon:"palm"}],
     season:{start:"2026-12-10",end:"2027-01-03",label:"10 December 2026 – 3 January 2027",openDates:[]},
     openingHours:[{days:"Monday – Saturday",hours:"9:00 AM – 9:00 PM"},{days:"Sunday",hours:"12:00 PM – 9:00 PM"}],
     ticket:{id:"experience",name:"Santa Experience",price:30000,per:"child",perks:["A private visit with Santa, just for your family","Meet Santa face to face in his magical grotto","Christmas photo moments inside the grotto","Write a letter to Santa while you wait","Gift & toy discovery around the store","Up to two parents or guardians included"],note:"The Santa Experience does not include a gift. To include a gift, add a Santa Gift Package to your booking."},
@@ -971,10 +991,10 @@
     giftPackages:[{id:"bronze",name:"Bronze",price:50000,images:{}},{id:"silver",name:"Silver",price:100000,images:{}},{id:"gold",name:"Gold",price:150000,images:{}}],
     giftVariants:[{id:"boy",name:"Boy"},{id:"girl",name:"Girl"},{id:"baby",name:"Baby"}],
     giftNote:"Each package contains toys and selected Christmas items. Pictures show the packages currently in stock.",
-    diamond:{id:"diamond",name:"Diamond",sub:"Choose your own gifts from our Santa Grotto collection on the Auldontoys website.",url:"https://www.auldontoys.com/collections/auldontoys-santa-grotto-experience"},
+    diamond:{id:"diamond",name:"Diamond",sub:"Choose your own gifts from our Santa Grotto collection on the Auldon Toys website.",url:"https://www.auldontoys.com/collections/auldontoys-santa-grotto-experience"},
     otherGifting:[{name:"Christmas Combo Boxes",sub:"Curated seasonal combos"},{name:"My Baby's First Christmas",sub:"A special range for the littlest ones"},{name:"Christmas Hampers",sub:"Toys + Christmas items + seasonal gifting"},{name:"Gift Wrapping",sub:"Add-on wrapping for purchased gifts"}],
     interests:[],bookingFee:0,maxChildren:6,paymentWindowMinutes:30,christmasEve:"2026-12-24",promos:{},
-    contact:{venue:"Auldontoys Experience Centre",address:"Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos",mapsUrl:"https://maps.app.goo.gl/T1Qi87gruWndQ7VWA?g_st=iw",phone:"0810 002 5985",whatsapp:"+234 810 002 5985",whatsappUrl:"https://wa.me/2348100025985",website:"https://www.auldontoys.com",socials:{instagram:"https://www.instagram.com/auldontoys",tiktok:"https://www.tiktok.com/@auldontoys",facebook:"https://www.facebook.com/auldontoys",x:"https://x.com/auldontoys"}}
+    contact:{venue:"Auldon Toys Experience Center",address:"Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos",mapsUrl:"https://maps.app.goo.gl/T1Qi87gruWndQ7VWA?g_st=iw",phone:"0810 002 5985",whatsapp:"+234 810 002 5985",whatsappUrl:"https://wa.me/2348100025985",website:"https://www.auldontoys.com",socials:{instagram:"https://www.instagram.com/auldontoys",tiktok:"https://www.tiktok.com/@auldontoys",facebook:"https://www.facebook.com/auldontoys",x:"https://x.com/auldontoys"}}
   };
   var CFG=null, ONLINE=false;
 
@@ -996,11 +1016,11 @@
   var ic=function(k){return ICONS[k]||ICONS.heart};
 
   /* ---------- state ---------- */
-  function freshState(){return {location:null,date:null,slot:null,children:[],extraAdults:0,gift:null,guardian:{name:"",phone:"",email:"",consent:false},promo:"",quote:null,calendar:null}}
+  function freshState(){return {location:null,date:null,slot:null,children:[],extraAdults:0,guardian:{name:"",phone:"",email:"",consent:false},promo:"",quote:null,calendar:null}}
   var S=freshState();
-  var STEPS=["date","time","register","gift","review"];
+  var STEPS=["date","time","register","review"];
   var STEP_NAMES={location:"Choose your grotto",date:"Pick a date",time:"Pick a time",register:"Who's visiting?",gift:"Santa Gift Package",review:"Review & pay"};
-  var CTA_LABEL={location:"Choose this grotto",date:"Choose this date",time:"Choose this time",register:"Continue to gift packages",gift:"Review booking",review:"Pay by bank transfer"};
+  var CTA_LABEL={location:"Choose this grotto",date:"Choose this date",time:"Choose this time",register:"Review booking",review:"Pay by bank transfer"};
   var cur=0, pollTimer=null, expiryTimer=null, currentRef=null, dayFull=false;
 
   /* ---------- helpers ---------- */
@@ -1012,7 +1032,7 @@
   function variantOf(id){return (CFG.giftVariants||[]).filter(function(v){return v.id===id})[0]}
   function childPrice(){var eb=CFG.earlyBird||{};return eb.active?eb.price:CFG.ticket.price}
   function adultPrice(){return (CFG.adults||{}).extraPrice||0}
-  function estimate(){var t=Math.max(1,S.children.length)*childPrice()+S.extraAdults*adultPrice();if(S.gift&&S.gift.tier){var p=pkgOf(S.gift.tier);if(p)t+=p.price}return t+(CFG.bookingFee||0)}
+  function estimate(){var t=Math.max(1,S.children.length)*childPrice()+S.extraAdults*adultPrice();S.children.forEach(function(c){if(c.gift&&c.gift.tier&&!isDiamond(c.gift)){var p=pkgOf(c.gift.tier);if(p)t+=p.price}});return t+(CFG.bookingFee||0)}
   function pkgImage(p,variant){var im=p&&p.images||{};return im[variant]||im.any||im[Object.keys(im)[0]]||null}
   function isDiamond(g){return !!(g&&CFG.diamond&&g.tier===CFG.diamond.id)}
   function giftLabel(g){if(!g||!g.tier)return "";if(isDiamond(g))return "Diamond — gifts chosen on auldontoys.com";var p=pkgOf(g.tier),v=variantOf(g.variant);return (p?p.name:g.tier)+" Gift Package"+(v?" ("+v.name+")":"")}
@@ -1030,7 +1050,7 @@
   function emailOk(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e||"").trim())}
   /* draft: keep what the parent typed across refresh / accidental navigation (24 h) */
   var DRAFT_KEY="grotto_preview_draft_v2";
-  function saveDraft(){try{if(!CFG||!ONLINE)return;localStorage.setItem(DRAFT_KEY,JSON.stringify({t:Date.now(),cur:cur,S:{location:S.location,date:S.date,slot:S.slot,children:S.children,extraAdults:S.extraAdults,gift:S.gift,guardian:S.guardian,promo:S.promo}}))}catch(e){}}
+  function saveDraft(){try{if(!CFG||!ONLINE)return;localStorage.setItem(DRAFT_KEY,JSON.stringify({t:Date.now(),cur:cur,S:{location:S.location,date:S.date,slot:S.slot,children:S.children,extraAdults:S.extraAdults,guardian:S.guardian,promo:S.promo}}))}catch(e){}}
   function loadDraft(){try{var d=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null");if(!d||Date.now()-d.t>86400000)return null;return d}catch(e){return null}}
   function clearDraft(){store(DRAFT_KEY,null);store("grotto_preview_draft_v1",null)}
   /* focus + announce each step for keyboard and screen-reader users */
@@ -1102,7 +1122,7 @@
   }
   function pkgCard(p){
     var img=pkgImage(p,"girl");
-    return '<div class="pk '+esc(p.id)+'"><div class="img">'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+' gift package" loading="lazy">':ICONS.gift)+'</div><div class="body"><div class="tier">'+esc(p.name)+'</div><div class="gp">'+NGN(p.price)+'<small>per booking · Boy, Girl or Baby</small></div></div></div>';
+    return '<div class="pk '+esc(p.id)+'"><div class="img">'+(img?'<img src="'+esc(img)+'" alt="'+esc(p.name)+' gift package" loading="lazy">':ICONS.gift)+'</div><div class="body"><div class="tier">'+esc(p.name)+'</div><div class="gp">'+NGN(p.price)+'<small>per child · Boy, Girl or Baby</small></div></div></div>';
   }
   function diamondCard(){
     var d=CFG.diamond;if(!d)return "";
@@ -1110,11 +1130,11 @@
   }
   function renderLanding(){
     var c=CFG.contact||{};
-    $("#chipWhere").textContent=(c.venue||"Auldontoys")+", Lekki";
+    $("#chipWhere").textContent=(c.venue||"Auldon Toys")+", Lekki";
     var dates=(CFG.season&&CFG.season.openDates)||[];
     if(dates.length){var a=parseDate(dates[0]),b=parseDate(dates[dates.length-1]);$("#chipWhen").textContent=a.getDate()+" "+MONTHS[a.getMonth()]+" – "+b.getDate()+" "+MONTHS[b.getMonth()]}
     var eb=CFG.earlyBird||{};
-    $("#chipPrice").textContent=eb.active?(NGN(eb.price)+" per child · early-bird"):(NGN(CFG.ticket.price)+" per child");
+    $("#chipPrice").textContent=NGN(CFG.ticket.price)+" per child"+(eb.active?" ("+NGN(eb.price)+" early-bird)":"");
     var eg=$("#expGrid");eg.innerHTML="";
     (CFG.experience||[]).forEach(function(e,i){var d=document.createElement("div");d.className="exp";d.innerHTML='<span class="ic">'+ic(e.icon)+'</span><div><div class="num">0'+(i+1)+'</div><b>'+esc(e.name)+'</b><span>'+esc(e.sub)+'</span></div>';eg.appendChild(d)});
     var t=CFG.ticket,ad=CFG.adults||{};
@@ -1124,7 +1144,7 @@
       '<p>Open every day, '+esc((CFG.season&&CFG.season.label)||"")+', including Christmas Day, Boxing Day and New Year\'s Day. Each family books its own time slot.</p>'+
       '<p><b style="color:var(--snow)">'+esc(c.venue||"")+'</b><br>'+esc(c.address||"")+'<br><a href="'+esc(c.mapsUrl||"#")+'" target="_blank" rel="noopener">Open in Google Maps '+ICONS.ext+'</a></p>';
     $("#pkGrid").innerHTML=(CFG.giftPackages||[]).map(pkgCard).join("")+diamondCard();
-    $("#giftNote").textContent=(CFG.giftNote||"")+" One package per booking.";
+    $("#giftNote").textContent=(CFG.giftNote||"")+" One package per child.";
     var og=CFG.otherGifting||[];
     $("#otherGift").innerHTML='<b>Also in store this Christmas</b><ul>'+og.map(function(o){return '<li><b style="display:inline;font-size:13px">'+esc(o.name)+'</b> — '+esc(o.sub)+'</li>'}).join("")+'</ul>';
     if(c.venue)$("#ftAddress").textContent=c.venue+" · "+(c.address||"");
@@ -1135,7 +1155,7 @@
     var open=ONLINE&&CFG.bookingsOpen!==false;
     $("#startBtn").hidden=!open;$("#band").hidden=!open;$("#giftsBtn").hidden=!open;
     var cs=$("#comingSoon");cs.hidden=open;
-    if(!open&&ONLINE){var when=CFG.bookingsOpenAt?(" Bookings open on "+fmtDay(CFG.bookingsOpenAt)+"."):" Bookings open soon.";$("#comingText").textContent="Something magical is on its way to the Auldontoys Experience Centre, Lekki."+when+" Follow @auldontoys for the reveal, or call "+(c.phone||"")+"."}
+    if(!open&&ONLINE){var when=CFG.bookingsOpenAt?(" Bookings open on "+fmtDay(CFG.bookingsOpenAt)+"."):" Bookings open soon.";$("#comingText").textContent="Something magical is on its way to the Auldon Toys Experience Center, Lekki."+when+" Follow @auldontoys for the reveal, or call "+(c.phone||"")+"."}
   }
 
   /* ---------- navigation ---------- */
@@ -1216,7 +1236,7 @@
   }
   function renderTime(){
     var el=$("#pane-time");
-    el.innerHTML='<h2>Choose your time with Santa</h2><p class="hint">Live availability for <b style="color:var(--snow)">'+esc(S.date?fmtDay(S.date):"")+'</b>. Each family has its own private visit — please arrive 10 minutes early.</p><div id="slotHost"><div class="skel" style="margin-top:20px"></div><div class="skel" style="margin-top:10px"></div></div>';
+    var sm=CFG.sessionMinutes||10;el.innerHTML='<h2>Choose your time with Santa</h2><p class="hint">Live availability for <b style="color:var(--snow)">'+esc(S.date?fmtDay(S.date):"")+'</b>. Each family enjoys a private '+sm+'-minute session with Santa — please arrive 15 minutes before your time.</p><div id="slotHost"><div class="skel" style="margin-top:20px"></div><div class="skel" style="margin-top:10px"></div></div>';
     api("/api/availability?locationId="+encodeURIComponent(S.location.id)+"&date="+encodeURIComponent(S.date)).then(function(av){
       var host=$("#slotHost");if(!host)return;host.innerHTML="";
       if(av.full){dayFull=true;host.innerHTML='<div class="offline">Every time slot on '+esc(fmtDay(S.date))+' has just been booked. Go back to pick another date or join that day\'s waiting list.</div>';S.slot=null;updateActionBar();return}
@@ -1264,7 +1284,7 @@
   function addChild(){S.children.push({name:"",age:"",interests:[]})}
   function renderRegister(){
     var el=$("#pane-register"),ad=CFG.adults||{},max=ad.maxExtra||4;
-    el.innerHTML='<h2>Who is Santa meeting?</h2><p class="hint">Each child has their own Santa Experience ticket ('+NGN(childPrice())+' per child'+((CFG.earlyBird||{}).active?', early-bird':'')+'). Tell us about each one so Santa can greet them personally — up to '+CFG.maxChildren+' children per booking.</p>'+
+    el.innerHTML='<h2>Who is Santa meeting?</h2><p class="hint">Each child has their own Santa Experience ticket ('+NGN(childPrice())+' per child'+((CFG.earlyBird||{}).active?', early-bird':'')+'). Tell us about each one, and add an optional Santa Gift Package for each child below. '+esc(CFG.giftNote||"")+'</p>'+
       '<div id="childList"></div>'+
       '<button type="button" class="addchild" id="addChildBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add another child</button>'+
       '<div class="letter-note">'+ICONS.mail+'<span>Children write their letter to Santa at the grotto while they wait — we provide all the materials.</span></div>'+
@@ -1285,6 +1305,22 @@
     var cr=$("#consentRow");cr.onclick=function(){S.guardian.consent=!S.guardian.consent;cr.setAttribute("aria-checked",S.guardian.consent);updateActionBar()};
   }
   function ageOpts(sel){var o='<option value="">Select…</option>';for(var a=0;a<=12;a++)o+='<option value="'+a+'"'+(String(sel)===String(a)?' selected':'')+'>'+(a===0?"Under 1":a+(a===1?" year":" years"))+'</option>';return o}
+  function giftBlock(ch,i){
+    var cur=ch.gift||{},dia=CFG.diamond;
+    var chips='<button type="button" class="ichip cg-tier" data-ct="" data-i="'+i+'" aria-pressed="'+(!cur.tier)+'">No gift</button>';
+    (CFG.giftPackages||[]).forEach(function(pk){chips+='<button type="button" class="ichip cg-tier" data-ct="'+pk.id+'" data-i="'+i+'" aria-pressed="'+(cur.tier===pk.id)+'">'+esc(pk.name)+' <b>+'+NGN(pk.price)+'</b></button>'});
+    if(dia)chips+='<button type="button" class="ichip cg-tier cg-dia" data-ct="'+dia.id+'" data-i="'+i+'" aria-pressed="'+isDiamond(cur)+'">'+esc(dia.name)+' <b>online</b></button>';
+    var extra='';
+    if(isDiamond(cur)){
+      extra='<div class="cg-dia-note">'+ICONS.diamond+'<span>You\'ll choose '+esc(ch.name.trim()||"this child")+'\'s gifts on auldontoys.com after payment. '+esc((dia||{}).orderNote||"")+'</span></div>';
+    }else if(cur.tier){
+      var pk=pkgOf(cur.tier),img=pkgImage(pk,cur.variant);
+      extra='<div class="cg-var"><span class="lbl">For a</span>'+(CFG.giftVariants||[]).map(function(v){return '<button type="button" class="ichip" data-cv="'+v.id+'" data-i="'+i+'" aria-pressed="'+(cur.variant===v.id)+'">'+esc(v.name)+'</button>'}).join('')+'</div>'+
+        (img&&cur.variant?'<div class="cg-img"><img src="'+esc(img)+'" alt="'+esc((pk||{}).name||"")+' package" loading="lazy"></div>':'');
+    }
+    var all=(S.children.length>1&&cur.tier)?'<button type="button" class="cg-all" data-ca="'+i+'">Use this package for all children</button>':'';
+    return '<div class="cg"><div class="lh">'+ICONS.gift+' Santa Gift Package <span class="opt-tag" style="color:var(--frost-dim);font-weight:600">(optional)</span></div><div class="tierchips">'+chips+'</div>'+extra+all+'</div>';
+  }
   function renderChildren(){
     var host=$("#childList");if(!host)return;host.innerHTML="";
     S.children.forEach(function(ch,i){
@@ -1292,13 +1328,17 @@
       card.innerHTML='<div class="ch-head"><div class="n"><span class="b">'+(i+1)+'</span>Child '+(i+1)+'</div>'+(S.children.length>1?'<button type="button" class="rm" data-rm="'+i+'">Remove</button>':'')+'</div>'+
         '<div class="two"><div class="field"><label>First name</label><input class="input" data-f="name" data-i="'+i+'" value="'+esc(ch.name)+'" placeholder="e.g. Ada" autocomplete="off"></div>'+
         '<div class="field"><label>Age</label><select data-f="age" data-i="'+i+'">'+ageOpts(ch.age)+'</select></div></div>'+
-        '<div class="field" style="margin-top:14px"><label>What do they love? <span class="opt-tag">(optional — helps Santa)</span></label><div class="interests" data-chips="'+i+'"></div></div>';
+        '<div class="field" style="margin-top:14px"><label>What do they love? <span class="opt-tag">(optional — helps Santa)</span></label><div class="interests" data-chips="'+i+'"></div></div>'+
+        giftBlock(ch,i);
       host.appendChild(card);
       var chipWrap=$('[data-chips="'+i+'"]',card);
       (CFG.interests||[]).forEach(function(it){var c=document.createElement("button");c.type="button";c.className="ichip";c.setAttribute("aria-pressed",ch.interests.indexOf(it)>=0);c.textContent=it;c.onclick=function(){var idx=ch.interests.indexOf(it);if(idx>=0)ch.interests.splice(idx,1);else ch.interests.push(it);c.setAttribute("aria-pressed",ch.interests.indexOf(it)>=0)};chipWrap.appendChild(c)});
     });
     $$("[data-rm]",host).forEach(function(b){b.onclick=function(){S.children.splice(+b.getAttribute("data-rm"),1);S.quote=null;renderChildren();updateActionBar()}});
     $$("[data-f]",host).forEach(function(inp){inp.oninput=inp.onchange=function(){var i=+inp.getAttribute("data-i"),f=inp.getAttribute("data-f");S.children[i][f]=inp.value;inp.classList.remove("err");if(f==="name"||f==="age")updateActionBar()}});
+    $$("[data-ct]",host).forEach(function(b){b.onclick=function(){var i=+b.getAttribute("data-i"),t=b.getAttribute("data-ct"),g=S.children[i].gift||{};S.children[i].gift=t?(CFG.diamond&&t===CFG.diamond.id?{tier:t}:{tier:t,variant:(g.tier===t?g.variant:null)}):null;S.quote=null;renderChildren();updateActionBar()}});
+    $$("[data-cv]",host).forEach(function(b){b.onclick=function(){var i=+b.getAttribute("data-i");if(S.children[i].gift){S.children[i].gift.variant=b.getAttribute("data-cv");S.quote=null;renderChildren();updateActionBar()}}});
+    $$("[data-ca]",host).forEach(function(b){b.onclick=function(){var i=+b.getAttribute("data-ca"),src=S.children[i].gift;S.children.forEach(function(c){c.gift=src?JSON.parse(JSON.stringify(src)):null});S.quote=null;renderChildren();updateActionBar();toast("Applied to all children")}});
   }
   function renderGift(){
     var el=$("#pane-gift"),g=S.gift||{};
@@ -1334,12 +1374,21 @@
     }
   }
   function quote(){
-    return api("/api/quote",{method:"POST",body:{children:S.children.length,extraAdults:S.extraAdults,gift:S.gift&&S.gift.tier?{tier:S.gift.tier,variant:S.gift.variant}:null,promoCode:S.promo||undefined}}).then(function(qt){S.quote=qt;return qt});
+    return api("/api/quote",{method:"POST",body:{children:S.children.map(function(c){return {gift:c.gift&&c.gift.tier?{tier:c.gift.tier,variant:c.gift.variant}:null}}),extraAdults:S.extraAdults,promoCode:S.promo||undefined}}).then(function(qt){S.quote=qt;return qt});
   }
   function renderReview(){
     var el=$("#pane-review");
     el.innerHTML='<h2>Almost there — review your visit</h2><p class="hint">Check the details, then pay by bank transfer to secure your time slot.</p><div class="summary" id="summaryBox"><div class="skel" style="min-height:220px"></div></div>';
     quote().then(drawSummary).catch(function(e){$("#summaryBox").innerHTML='<div class="offline">Couldn\'t calculate your total: '+esc(e.message)+'</div>'});
+  }
+  function giftSummaryRows(p){
+    var cg=p.childGifts||[],any=cg.some(Boolean);
+    var head='<div class="srow"><span class="k">Gift packages<button type="button" class="chg" data-goto="register">Change</button></span><span class="v">'+(any?NGN(p.giftTotal):'<span style="color:var(--frost)">None</span><small>Experience only — no gift</small>')+'</span></div>';
+    var rows=S.children.map(function(c,i){var gg=cg[i];if(!gg)return "";var who=esc(c.name.trim()||("Child "+(i+1)));
+      if(gg.external)return '<div class="srow sub"><span class="k">'+who+' — Diamond</span><span class="v" style="color:#9fe3ff">Online<small>chosen on auldontoys.com after payment</small></span></div>';
+      return '<div class="srow sub"><span class="k">'+who+' — '+esc((pkgOf(gg.tier)||{}).name||gg.tier)+' package</span><span class="v">'+NGN(gg.amount)+'<small>'+esc((variantOf(gg.variant)||{}).name||gg.variant)+'</small></span></div>';
+    }).join("");
+    return head+rows;
   }
   function drawSummary(p){
     var names=S.children.map(function(c){return c.name.trim()}).filter(Boolean).join(", ");
@@ -1347,11 +1396,11 @@
     var chg=function(step,label){return '<button type="button" class="chg" data-goto="'+step+'">Change '+label+'</button>'};
     $("#summaryBox").innerHTML=
       '<div class="srow"><span class="k">Venue</span><span class="v">'+esc(S.location.name)+'<small>'+esc(S.location.sub)+'</small></span></div>'+
-      '<div class="srow"><span class="k">Date & time'+chg("date","date")+'</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.slot.label)+' · private visit</small>'+chg("time","time")+'</span></div>'+
+      '<div class="srow"><span class="k">Date & time'+chg("date","date")+'</span><span class="v">'+esc(fmtDay(S.date))+'<small>'+esc(S.slot.label)+' · private '+((CFG.sessionMinutes||10))+'-minute visit</small>'+chg("time","time")+'</span></div>'+
       '<div class="srow"><span class="k">'+(p.kids>1?p.kids+" children":"1 child")+chg("register","details")+'</span><span class="v">'+esc(names||"—")+'</span></div>'+
       '<div class="srow"><span class="k">Santa Experience'+(p.earlyBird?' <span style="color:var(--green);font-weight:700">· early-bird</span>':'')+'</span><span class="v">'+NGN(p.childrenTotal)+'<small>'+p.kids+' × '+NGN(p.childPrice)+'</small></span></div>'+
       '<div class="srow"><span class="k">Adults</span><span class="v">'+(p.extraAdults?NGN(p.adultsTotal)+'<small>'+p.adultsIncluded+' included + '+p.extraAdults+' × '+NGN(p.extraAdultPrice)+'</small>':'Included<small>up to '+p.adultsIncluded+' parents or guardians</small>')+'</span></div>'+
-      '<div class="srow"><span class="k">Gift package'+chg("gift","")+'</span><span class="v">'+(isDiamond(p.gift)?'Diamond<small>Choose and pay for your gifts on auldontoys.com after this payment</small>':p.gift?NGN(p.giftTotal)+'<small>'+esc(giftLabel(p.gift))+'</small>':'<span style="color:var(--frost)">None</span><small>Experience only — no gift</small>')+'</span></div>'+
+      giftSummaryRows(p)+
       (p.fee>0?'<div class="srow"><span class="k">Booking fee</span><span class="v">'+NGN(p.fee)+'</span></div>':'')+
       (p.discount>0?'<div class="srow"><span class="k">Promo '+esc(p.promo)+'</span><span class="v" style="color:var(--green)">−'+NGN(p.discount)+'</span></div>':'')+
       '<div class="total"><span class="k">Total</span><span class="v tnum">'+NGN(p.total)+'</span></div>'+
@@ -1386,6 +1435,7 @@
     for(var i=0;i<S.children.length;i++){var c=S.children[i];
       if(!c.name.trim())return {sel:'[data-f=name][data-i="'+i+'"]',msg:"Please enter child "+(i+1)+"'s first name."};
       if(c.age==="")return {sel:'[data-f=age][data-i="'+i+'"]',msg:"Please choose child "+(i+1)+"'s age."};
+      if(c.gift&&c.gift.tier&&!isDiamond(c.gift)&&!c.gift.variant)return {sel:'[data-cv][data-i="'+i+'"]',msg:"Choose Boy, Girl or Baby for "+(c.name.trim()||("child "+(i+1)))+"'s "+((pkgOf(c.gift.tier)||{}).name||"")+" package."};
     }
     if(!g.name.trim())return {sel:"#gName",msg:"Please enter the parent or guardian's full name."};
     if(!phoneOk(g.phone))return {sel:"#gPhone",msg:"Please enter a valid WhatsApp number, e.g. 0810 002 5985."};
@@ -1431,8 +1481,8 @@
     var c=$("#contBtn");c.textContent="Setting up your transfer…";c.disabled=true;
     api("/api/bookings",{method:"POST",body:{
       locationId:S.location.id,date:S.date,slotId:S.slot.id,
-      children:S.children.map(function(ch){return {name:ch.name.trim(),age:Number(ch.age),interests:ch.interests}}),
-      extraAdults:S.extraAdults,gift:S.gift&&S.gift.tier?{tier:S.gift.tier,variant:S.gift.variant}:null,promoCode:S.promo||undefined,
+      children:S.children.map(function(ch){return {name:ch.name.trim(),age:Number(ch.age),interests:ch.interests,gift:ch.gift&&ch.gift.tier?{tier:ch.gift.tier,variant:ch.gift.variant}:undefined}}),
+      extraAdults:S.extraAdults,promoCode:S.promo||undefined,
       guardian:{name:S.guardian.name.trim(),phone:normPhone(S.guardian.phone),email:S.guardian.email.trim().toLowerCase(),consent:S.guardian.consent}
     }}).then(function(b){
       removeActionBar();store("grotto_preview_pending_ref",b.ref);clearDraft();showPayment(b,true);
@@ -1504,25 +1554,26 @@
     $("#tkPackage").textContent=(b.package||"Santa Experience")+" · "+b.childCount+(b.childCount>1?" children":" child")+" · up to "+adultsMax+" adults";
     $("#tkLocation").textContent=loc?loc.name:b.locationId;
     $("#tkWhen").textContent=fmtDay(b.date)+" · "+(b.slot||"");
-    var dia=b.gift&&b.gift.external;
-    $("#tkGifts").innerHTML='<div class="grid2" style="grid-template-columns:1fr"><div class="cell"><div class="ck">Gift</div><div class="cv">'+(dia?'Diamond — gifts chosen on auldontoys.com':b.gift?esc(b.gift.name+" Gift Package ("+b.gift.variantName+")"):'Experience only — no gift package')+'</div></div></div>';
-    var dn=$("#diamondNext");
-    if(dia){
+    var gifted=(b.children||[]).filter(function(c){return c.gift});
+    var gi=gifted.map(function(c){return esc(c.name)+' — '+(c.gift.external?'Diamond (choose on auldontoys.com)':esc(c.gift.name+' ('+c.gift.variantName+')'))}).join('<br>');
+    $("#tkGifts").innerHTML='<div class="grid2" style="grid-template-columns:1fr"><div class="cell"><div class="ck">'+(gifted.length>1?'Gifts':'Gift')+'</div><div class="cv">'+(gi||'Experience only — no gift package')+'</div></div></div>';
+    var dn=$("#diamondNext"),dm=b.diamond;
+    if(dm){
       dn.hidden=false;
-      dn.innerHTML='<div class="k">Next step</div><h3>Choose your Diamond gifts</h3><p>Pick your gifts from our Santa Grotto collection on auldontoys.com — they\'re paid for separately there. '+esc(b.gift.orderNote||"")+'</p>'+
+      dn.innerHTML='<div class="k">Next step</div><h3>Choose your Diamond gifts</h3><p>For <b>'+esc(dm.children.join(", "))+'</b>. Pick your gifts from our Santa Grotto collection on auldontoys.com — paid for separately there. '+esc(dm.orderNote||"")+'</p>'+
         '<div class="dref"><span>Your booking reference</span><b>'+esc(b.ref)+'</b><button type="button" class="copy" id="copyRef">Copy</button></div>'+
-        '<a class="btn btn-diamond btn-block" href="'+esc(b.gift.url)+'" target="_blank" rel="noopener">Choose your Diamond gifts '+ICONS.ext+'</a>';
+        '<a class="btn btn-diamond btn-block" href="'+esc(dm.url)+'" target="_blank" rel="noopener">Choose your Diamond gifts '+ICONS.ext+'</a>';
       $("#copyRef").onclick=function(){copyText(b.ref,"Booking reference copied")};
     }else{dn.hidden=true;dn.innerHTML=""}
     $("#tkCode").textContent=b.ticketCode;
     $("#tkEmail").textContent=b.guardianEmail||"";
     drawQR(ticketUrl(b.ticketCode));
     show("#screen-ticket");
-    var start=b.slotStart||"09:00", end=start; // calendar entry marks the start time only
+    var start=b.slotStart||"09:00", _sm=CFG.sessionMinutes||10, _t=(+start.split(":")[0])*60+(+start.split(":")[1])+_sm, end=("0"+Math.floor(_t/60)).slice(-2)+":"+("0"+(_t%60)).slice(-2);
     startTicketCountdown(b.date,start);
     $("#calBtn").onclick=function(){downloadIcs(b,loc,start,end)};
     $("#shareBtn").onclick=function(){
-      var url=ticketUrl(b.ticketCode),txt="Our Santa Grotto ticket at Auldontoys — "+fmtDay(b.date)+", "+(b.slot||"");
+      var url=ticketUrl(b.ticketCode),txt="Our Santa Grotto ticket at Auldon Toys — "+fmtDay(b.date)+", "+(b.slot||"");
       if(navigator.share){navigator.share({title:"Santa Grotto ticket",text:txt,url:url}).catch(function(){})}else copyText(url,"Ticket link copied");
     };
     $("#againBtn").onclick=function(){S=freshState();clearDraft();history.replaceState(null,"",location.pathname);show("#screen-landing")};
@@ -1535,7 +1586,7 @@
   function downloadIcs(b,loc,start,end){
     var ps=start.split(":"),s=parseDate(b.date);s.setHours(+ps[0],+ps[1],0,0);var pe=end.split(":"),e=parseDate(b.date);e.setHours(+pe[0],+pe[1],0,0);
     var f=function(d){return d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2)+"T"+("0"+d.getHours()).slice(-2)+("0"+d.getMinutes()).slice(-2)+"00"};
-    var ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Auldon Toys//Grotto//EN","BEGIN:VEVENT","UID:"+b.ticketCode+"@grotto.auldontoys.com","DTSTAMP:"+f(new Date()),"DTSTART;TZID=Africa/Lagos:"+f(s),"DTEND;TZID=Africa/Lagos:"+f(e),"SUMMARY:Santa Grotto at Auldontoys","LOCATION:"+(loc?loc.name+", "+loc.sub:""),"DESCRIPTION:Booking "+b.ref+" · ticket "+b.ticketCode+". Please arrive 10 minutes early. "+ticketUrl(b.ticketCode),"BEGIN:VALARM","TRIGGER:-P1D","ACTION:DISPLAY","DESCRIPTION:Santa Grotto tomorrow!","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+    var ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Auldon Toys//Grotto//EN","BEGIN:VEVENT","UID:"+b.ticketCode+"@grotto.auldontoys.com","DTSTAMP:"+f(new Date()),"DTSTART;TZID=Africa/Lagos:"+f(s),"DTEND;TZID=Africa/Lagos:"+f(e),"SUMMARY:Santa Grotto at Auldon Toys","LOCATION:"+(loc?loc.name+", "+loc.sub:""),"DESCRIPTION:Booking "+b.ref+" · ticket "+b.ticketCode+". Please arrive 15 minutes early. "+ticketUrl(b.ticketCode),"BEGIN:VALARM","TRIGGER:-P1D","ACTION:DISPLAY","DESCRIPTION:Santa Grotto tomorrow!","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
     var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics],{type:"text/calendar"}));a.download="santa-grotto.ics";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
   }
 
@@ -1558,7 +1609,7 @@
       var r=document.createElement("div");r.className="resume";
       r.innerHTML='<div><b>Carry on where you left off?</b><span>We kept your booking details for '+esc(fmtDay(draft.S.date))+(draft.S.slot?' · '+esc(draft.S.slot.label):'')+'.</span></div><button type="button" class="btn btn-gold" id="resumeBtn">Continue booking</button><button type="button" class="btn btn-ghost" id="discardBtn" style="padding:11px 14px;font-size:13px">Start over</button>';
       $(".hero .trust").after(r);
-      $("#resumeBtn").onclick=function(){var d=draft.S;S=freshState();S.location=d.location;S.date=d.date;S.slot=d.slot;S.children=d.children||[];S.extraAdults=d.extraAdults||0;S.gift=d.gift||null;S.guardian=d.guardian||S.guardian;S.promo=d.promo||"";cur=Math.min(draft.cur||0,STEPS.length-1);r.remove();openWizard(true)};
+      $("#resumeBtn").onclick=function(){var d=draft.S;S=freshState();S.location=d.location;S.date=d.date;S.slot=d.slot;S.children=d.children||[];S.extraAdults=d.extraAdults||0;S.guardian=d.guardian||S.guardian;S.promo=d.promo||"";cur=Math.min(draft.cur||0,STEPS.length-1);r.remove();openWizard(true)};
       $("#discardBtn").onclick=function(){clearDraft();r.remove()};
     }
     if(!ONLINE){
