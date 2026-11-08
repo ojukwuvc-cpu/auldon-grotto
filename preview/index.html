@@ -147,6 +147,12 @@
   .gcell:hover{transform:translateY(-4px);box-shadow:0 18px 42px rgba(0,0,0,.5)}
   .gcell:hover img{transform:scale(1.07)}
   .gcell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+  .gcell figcaption{transition:padding-bottom .35s ease,background .35s ease}
+  .gcell:hover figcaption{padding-bottom:17px;background:linear-gradient(0deg,rgba(6,12,20,.94),rgba(6,12,20,.12) 62%,transparent)}
+  @keyframes gReveal{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:none}}
+  .gallery.reveal .gcell{opacity:0}
+  .gallery.reveal .gcell.in{opacity:1;animation:gReveal .6s cubic-bezier(.2,.7,.2,1)}
+  @media (prefers-reduced-motion:reduce){.gallery.reveal .gcell{opacity:1;animation:none}}
   .gcell figcaption{position:absolute;left:0;right:0;bottom:0;padding:18px 14px 12px;font-weight:700;color:#fff;font-size:14px;background:linear-gradient(0deg,rgba(6,12,20,.85),transparent)}
   .gcell.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(160deg,rgba(200,16,46,.16),rgba(255,255,255,.03))}
   .gcell.ph figcaption{position:static;background:none;padding:0;color:var(--frost);font-weight:700;font-size:13px}
@@ -818,7 +824,7 @@
       <div class="wrap">
         <span class="kicker">Inside the magic</span>
         <h2>A peek inside the grotto</h2>
-        <p class="sub">Real moments from the Auldon Toys Santa Grotto.</p>
+        <p class="sub">A glimpse of the magic waiting for your family this Christmas.</p>
         <div class="gallery placeholder" id="galleryGrid"></div>
         <p class="gallery-hint" id="galleryHint" hidden>Photos from this year’s grotto are on the way.</p>
       </div>
@@ -1234,6 +1240,14 @@
     var d=CFG.diamond;if(!d)return "";
     return '<a class="pk diamond" href="'+esc(d.url)+'" target="_blank" rel="noopener"><div class="img">'+ICONS.diamond+'</div><div class="body"><div class="tier">'+esc(d.name)+'</div><div class="gp" style="font-size:.95rem">Choose your own<small>'+esc(d.sub)+' Select Diamond when you book, then choose your gifts after paying.</small></div><span class="ext">Browse the collection '+ICONS.ext+'</span></div></a>';
   }
+  function revealGallery(gg){
+    var cells=gg.querySelectorAll(".gcell");
+    if(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+    if(!("IntersectionObserver" in window)){cells.forEach(function(c){c.classList.add("in")});return}
+    gg.classList.add("reveal");
+    var io=new IntersectionObserver(function(ents){ents.forEach(function(e){if(e.isIntersecting){var el=e.target;el.style.animationDelay=((+el.getAttribute("data-i")||0)*85)+"ms";el.classList.add("in");io.unobserve(el)}})},{threshold:0.12,rootMargin:"0px 0px -8% 0px"});
+    cells.forEach(function(c,i){c.setAttribute("data-i",i);io.observe(c)});
+  }
   function renderLanding(){
     var c=CFG.contact||{};
     $("#chipWhere").textContent=(c.venue||"Auldon Toys")+", Lekki";
@@ -1263,7 +1277,7 @@
     if(c.mapsUrl){var _fmp=$("#faqMaps");if(_fmp)_fmp.href=c.mapsUrl;}
     var gal=CFG.gallery||[],gg=$("#galleryGrid");
     if(gg){
-      if(gal.length){gg.className="gallery";gg.innerHTML=gal.map(function(g){return '<figure class="gcell"><img src="'+esc(g.src)+'" alt="'+esc(g.caption||"Santa Grotto")+'" loading="lazy"><figcaption>'+esc(g.caption||"")+'</figcaption></figure>'}).join("");}
+      if(gal.length){gg.className="gallery";gg.innerHTML=gal.map(function(g){return '<figure class="gcell"><img src="'+esc(g.src)+'" alt="'+esc(g.caption||"Santa Grotto")+'" loading="lazy"><figcaption>'+esc(g.caption||"")+'</figcaption></figure>'}).join("");revealGallery(gg);}
       else{var ph=[["santa","Meeting Santa"],["photo","Photo moments"],["gift","The gift reveal"],["heart","Family memories"]];gg.className="gallery placeholder";gg.innerHTML=ph.map(function(x){return '<div class="gcell ph"><span class="phic">'+ic(x[0])+'</span><figcaption>'+esc(x[1])+'</figcaption></div>'}).join("");var gh=$("#galleryHint");if(gh)gh.hidden=false;}
     }
     var lg=$("#lovedGrid");
