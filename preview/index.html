@@ -597,6 +597,10 @@
   .ticket-row .ticket-card{margin-top:0;max-width:none}
   .eb{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:rgba(73,179,110,.12);border:1px solid rgba(73,179,110,.45);color:#9be3b5;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:800}
   .eb s{color:var(--frost-dim);font-weight:600}
+  .was{font-size:13px;color:var(--frost);font-weight:600;margin-bottom:-2px}
+  .was s{color:var(--frost-dim)}
+  .eburge{display:flex;align-items:center;gap:7px;margin-top:9px;color:#ffb3a8;font-size:12.5px;font-weight:700}
+  .eburge svg{width:15px;height:15px;color:var(--gold-soft);flex:none}
   .hours-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
   .hours-card h3{font-size:1.15rem}
   .hours-card .hr{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
@@ -1218,7 +1222,7 @@
   /* ---------- landing ---------- */
   function priceHtml(){
     var t=CFG.ticket,eb=CFG.earlyBird||{};
-    if(eb.active)return '<div class="price">'+NGN(eb.price)+' <span>per child</span></div><span class="eb">Early-bird price · <s>'+NGN(t.price)+'</s> for a limited time</span>';
+    if(eb.active){var sv=t.price-eb.price;return '<div class="was">Regular price <s>'+NGN(t.price)+'</s> per child</div><div class="price">'+NGN(eb.price)+' <span>per child</span></div><span class="eb">Early-bird'+(sv>0?' · save '+NGN(sv)+' per child':'')+'</span><div class="eburge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg><span>Limited early-bird slots this season — book before they\'re gone.</span></div>';}
     return '<div class="price">'+NGN(t.price)+' <span>per child</span></div>'+(eb.upcoming&&eb.from?'<span class="eb">Early-bird '+NGN(eb.price)+' per child from '+parseDate(eb.from).getDate()+' '+MONTHS_LONG[parseDate(eb.from).getMonth()]+'</span>':'');
   }
   function pkgCard(p){
@@ -1235,7 +1239,7 @@
     var dates=(CFG.season&&CFG.season.openDates)||[];
     if(dates.length){var a=parseDate(dates[0]),b=parseDate(dates[dates.length-1]);$("#chipWhen").textContent=a.getDate()+" "+MONTHS[a.getMonth()]+" – "+b.getDate()+" "+MONTHS[b.getMonth()]}
     var eb=CFG.earlyBird||{};
-    $("#chipPrice").textContent=NGN(CFG.ticket.price)+" per child"+(eb.active?" ("+NGN(eb.price)+" early-bird)":"");
+    $("#chipPrice").textContent=eb.active?NGN(eb.price)+" per child · early-bird (usually "+NGN(CFG.ticket.price)+")":NGN(CFG.ticket.price)+" per child";
     var eg=$("#expGrid");eg.innerHTML="";
     (CFG.experience||[]).forEach(function(e,i){var d=document.createElement("div");d.className="exp";d.innerHTML='<span class="ic">'+ic(e.icon)+'</span><div><div class="num">0'+(i+1)+'</div><b>'+esc(e.name)+'</b><span>'+esc(e.sub)+'</span></div>';eg.appendChild(d)});
     eg.classList.toggle("center-last",(((CFG.experience||[]).length)%3)===1);
