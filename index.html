@@ -1065,11 +1065,11 @@
     openingHours:[{days:"Monday – Saturday",hours:"9:00 AM – 9:00 PM"},{days:"Sunday",hours:"12:00 PM – 9:00 PM"}],
     ticket:{id:"experience",name:"Santa Experience",price:30000,per:"child",perks:["A private visit with Santa, just for your family","Meet Santa face to face in his magical grotto","Christmas photo moments inside the grotto","Write a letter to Santa while you wait","Gift & toy discovery around the store","Up to two parents or guardians included"],note:"The Santa Experience does not include a gift. To include a gift, add a Santa Gift Package to your booking."},
     earlyBird:{active:false,price:25000,from:"2026-11-01",upcoming:true},adults:{included:2,extraPrice:15000,maxExtra:4},
-    experience:[{icon:"santa",name:"Meet Santa",sub:"Children come face to face with Santa in his magical grotto."},{icon:"book",name:"Santa's Christmas Story",sub:"Santa shares a special Christmas story with every child."},{icon:"clock",name:"Your Own Time Slot",sub:"A private visit just for your family, at the time you choose — no queueing."},{icon:"photo",name:"Christmas Photo Moments",sub:"Captured family moments inside the grotto."},{icon:"mail",name:"Letters to Santa",sub:"Children write their letter to Santa while they wait — we provide everything."},{icon:"bear",name:"Gift & Toy Discovery",sub:"Families explore and discover Christmas gifts and toys."},{icon:"heart",name:"Family Memories",sub:"An experience built around lasting family memories."}],
+    experience:[{icon:"santa",name:"Meet Santa",sub:"Children come face to face with Santa in his magical grotto."},{icon:"clock",name:"Your Own Time Slot",sub:"A private visit just for your family, at the time you choose — no queueing."},{icon:"photo",name:"Christmas Photo Moments",sub:"Captured family moments inside the grotto."},{icon:"mail",name:"Letters to Santa",sub:"Children write their letter to Santa while they wait — we provide everything."},{icon:"bear",name:"Gift & Toy Discovery",sub:"Families explore and discover Christmas gifts and toys."},{icon:"heart",name:"Family Memories",sub:"An experience built around lasting family memories."}],
     giftPackages:[{id:"bronze",name:"Bronze",price:50000,images:{}},{id:"silver",name:"Silver",price:100000,images:{}},{id:"gold",name:"Gold",price:150000,images:{}}],
     giftVariants:[{id:"boy",name:"Boy"},{id:"girl",name:"Girl"},{id:"baby",name:"Baby"}],
     giftNote:"Each package contains toys and selected Christmas items. Pictures show the packages currently in stock.",
-    diamond:{id:"diamond",name:"Diamond",sub:"Choose your own gifts from our Santa Grotto collection on the Auldon Toys website.",url:"https://www.auldontoys.com/collections/auldontoys-santa-grotto-experience"},
+    diamond:{id:"diamond",name:"Diamond",label:"Customize your gift",sub:"Choose your own gifts from our Santa Grotto collection on the Auldon Toys website.",url:"https://www.auldontoys.com/collections/auldontoys-santa-grotto-experience"},
     otherGifting:[{name:"Christmas Combo Boxes",sub:"Curated seasonal combos"},{name:"My Baby's First Christmas",sub:"A special range for the littlest ones"},{name:"Christmas Hampers",sub:"Toys + Christmas items + seasonal gifting"},{name:"Gift Wrapping",sub:"Add-on wrapping for purchased gifts"}],
     interests:[],bookingFee:0,maxChildren:6,paymentWindowMinutes:30,christmasEve:"2026-12-24",promos:{},
     contact:{venue:"Auldon Toys Experience Center",address:"Plot 12, Block 88, Otunba Adedoyin Ogungbe Crescent, Lekki Phase 1, Lagos",mapsUrl:"https://maps.app.goo.gl/T1Qi87gruWndQ7VWA?g_st=iw",phone:"0810 002 5985",whatsapp:"+234 810 002 5985",whatsappUrl:"https://wa.me/2348100025985",website:"https://www.auldontoys.com",socials:{instagram:"https://www.instagram.com/auldontoys",tiktok:"https://www.tiktok.com/@auldontoys",facebook:"https://www.facebook.com/auldontoys",x:"https://x.com/auldontoys"}}
@@ -1113,7 +1113,7 @@
   function estimate(){var t=Math.max(1,S.children.length)*childPrice()+S.extraAdults*adultPrice();S.children.forEach(function(c){if(c.gift&&c.gift.tier&&!isDiamond(c.gift)){var p=pkgOf(c.gift.tier);if(p)t+=p.price}});return t+(CFG.bookingFee||0)}
   function pkgImage(p,variant){var im=p&&p.images||{};return im[variant]||im.any||im[Object.keys(im)[0]]||null}
   function isDiamond(g){return !!(g&&CFG.diamond&&g.tier===CFG.diamond.id)}
-  function giftLabel(g){if(!g||!g.tier)return "";if(isDiamond(g))return "Diamond — gifts chosen on auldontoys.com";var p=pkgOf(g.tier),v=variantOf(g.variant);return (p?p.name:g.tier)+" Gift Package"+(v?" ("+v.name+")":"")}
+  function giftLabel(g){if(!g||!g.tier)return "";if(isDiamond(g))return ((CFG.diamond&&(CFG.diamond.label||CFG.diamond.name))||"Diamond")+" — gifts chosen on auldontoys.com";var p=pkgOf(g.tier),v=variantOf(g.variant);return (p?p.name:g.tier)+" Gift Package"+(v?" ("+v.name+")":"")}
   var toastT;
   function toast(msg){$("#toastMsg").textContent=msg;var t=$("#toast");var bar=$("#actionbar");t.style.bottom=bar&&!bar.hidden?(bar.offsetHeight+10)+"px":"";t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show")},3400)}
   function store(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}}
@@ -1230,7 +1230,7 @@
   }
   function diamondCard(){
     var d=CFG.diamond;if(!d)return "";
-    return '<a class="pk diamond" href="'+esc(d.url)+'" target="_blank" rel="noopener"><div class="img">'+ICONS.diamond+'</div><div class="body"><div class="tier">'+esc(d.name)+'</div><div class="gp" style="font-size:.95rem">Choose your own<small>'+esc(d.sub)+' Select Diamond when you book, then choose your gifts after paying.</small></div><span class="ext">Browse the collection '+ICONS.ext+'</span></div></a>';
+    return '<a class="pk diamond" href="'+esc(d.url)+'" target="_blank" rel="noopener"><div class="img">'+ICONS.diamond+'</div><div class="body"><div class="tier">'+esc(d.label||d.name)+'</div><div class="gp" style="font-size:.95rem">Choose your own<small>'+esc(d.sub)+' Select Diamond when you book, then choose your gifts after paying.</small></div><span class="ext">Browse the collection '+ICONS.ext+'</span></div></a>';
   }
   function renderLanding(){
     var c=CFG.contact||{};
@@ -1436,7 +1436,7 @@
     var cur=ch.gift||{},dia=CFG.diamond;
     var chips='<button type="button" class="ichip cg-tier" data-ct="" data-i="'+i+'" aria-pressed="'+(!cur.tier)+'">No gift</button>';
     (CFG.giftPackages||[]).forEach(function(pk){chips+='<button type="button" class="ichip cg-tier" data-ct="'+pk.id+'" data-i="'+i+'" aria-pressed="'+(cur.tier===pk.id)+'">'+esc(pk.name)+' <b>+'+NGN(pk.price)+'</b></button>'});
-    if(dia)chips+='<button type="button" class="ichip cg-tier cg-dia" data-ct="'+dia.id+'" data-i="'+i+'" aria-pressed="'+isDiamond(cur)+'">'+esc(dia.name)+' <b>online</b></button>';
+    if(dia)chips+='<button type="button" class="ichip cg-tier cg-dia" data-ct="'+dia.id+'" data-i="'+i+'" aria-pressed="'+isDiamond(cur)+'">'+esc(dia.label||dia.name)+' <b>online</b></button>';
     var extra='';
     if(isDiamond(cur)){
       extra='<div class="cg-dia-note">'+ICONS.diamond+'<span>You\'ll choose '+esc(ch.name.trim()||"this child")+'\'s gifts on auldontoys.com after payment. '+esc((dia||{}).orderNote||"")+'</span></div>';
@@ -1487,7 +1487,7 @@
     var d=CFG.diamond;
     if(d){
       var db=document.createElement("button");db.type="button";db.className="pk-opt diamond";db.setAttribute("aria-pressed",isDiamond(g));
-      db.innerHTML='<span class="th">'+ICONS.diamond+'</span><span class="t"><b>'+esc(d.name)+' — choose your own gifts</b><span>From our Santa Grotto collection on auldontoys.com</span></span><span class="pr">Online</span>';
+      db.innerHTML='<span class="th">'+ICONS.diamond+'</span><span class="t"><b>'+esc(d.label||d.name)+' — choose your own gifts</b><span>From our Santa Grotto collection on auldontoys.com</span></span><span class="pr">Online</span>';
       db.onclick=function(){S.gift={tier:d.id};S.quote=null;renderGift();updateActionBar();var v=$("#pkVar");if(v)v.scrollIntoView({behavior:"smooth",block:"nearest"})};
       pick.appendChild(db);
     }
