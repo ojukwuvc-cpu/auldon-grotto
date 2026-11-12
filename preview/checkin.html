@@ -233,7 +233,7 @@
   function render(b){
     current=b;$("#result").hidden=false;
     var box=$("#statusBox"),arrive=$("#arriveBtn");
-    if(b.status!=="paid"){box.className="status bad";box.innerHTML=statusHtml("bad","Not paid — do not admit",b.status==="pending"?"Payment not received yet (reference "+b.ref+")":"Booking is "+b.status+" (reference "+b.ref+")");arrive.hidden=true}
+    if(b.status!=="paid"){box.className="status bad";box.innerHTML=b.status==="late_conflict"?statusHtml("bad","Paid late — slot not held","Their payment arrived after the hold ended and the slot went to another family. Ask the manager to rebook them (reference "+b.ref+")"):statusHtml("bad","Not paid — do not admit",b.status==="pending"?"Payment not received yet (reference "+b.ref+")":"Booking is "+b.status+" (reference "+b.ref+")");arrive.hidden=true}
     else if(b.arrived_at){box.className="status already";box.innerHTML=statusHtml("warn","Already checked in","Arrived at "+fmtTime(b.arrived_at)+" today — check it's the same family");arrive.hidden=false;arrive.textContent="Check in again anyway";arrive.className="btn btn-ghost btn-block"}
     else{box.className="status paid";box.innerHTML=statusHtml("ok","Paid — ready to check in",NGN(b.amount_total)+" received");arrive.hidden=false;arrive.textContent="Mark as arrived";arrive.className="btn btn-green btn-block"}
     var names=(b.children||[]).map(function(c){return c.name});
