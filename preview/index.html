@@ -1246,7 +1246,7 @@
   /* ---------- landing ---------- */
   function priceHtml(){
     var t=CFG.ticket,eb=CFG.earlyBird||{};
-    if(eb.active){var sv=t.price-eb.price;return '<div class="price-split"><div class="pcell normal"><span class="pl">Normal booking rate</span><s class="pbig">'+NGN(t.price)+'</s><span class="per">per child</span></div><div class="pcell promo"><span class="ptag">Promo price</span><span class="pbig">'+NGN(eb.price)+'</span><span class="per">per child'+(sv>0?' · save '+NGN(sv):'')+'</span></div></div><div class="eburge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg><span>This is a limited promo — the normal booking rate is '+NGN(t.price)+' per child. Book before the promo ends.</span></div>';}
+    if(eb.active){var sv=t.price-eb.price;return '<div class="price-split"><div class="pcell normal"><span class="pl">Normal booking rate</span><s class="pbig">'+NGN(t.price)+'</s><span class="per">per child</span></div><div class="pcell promo"><span class="ptag">Early bird price</span><span class="pbig">'+NGN(eb.price)+'</span><span class="per">per child'+(sv>0?' · save '+NGN(sv):'')+'</span></div></div><div class="eburge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg><span>This is a limited promo — the normal booking rate is '+NGN(t.price)+' per child. Book before the promo ends.</span></div>';}
     return '<div class="price">'+NGN(t.price)+' <span>per child</span></div>'+(eb.upcoming&&eb.from?'<span class="eb">Early-bird '+NGN(eb.price)+' per child from '+parseDate(eb.from).getDate()+' '+MONTHS_LONG[parseDate(eb.from).getMonth()]+'</span>':'');
   }
   function pkgCard(p){
