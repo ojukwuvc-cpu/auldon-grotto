@@ -126,6 +126,15 @@
   .hb .n{font-variant-numeric:tabular-nums;font-weight:800;text-align:right;white-space:nowrap}
   .hb .n span{font-weight:600;color:var(--frost);font-size:12.5px;margin-left:6px}
   .sub{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--frost);margin-top:18px}
+  .fu{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}
+  .fu:first-child{border-top:0}
+  .fu .who{min-width:0;flex:1 1 260px}
+  .fu .who b{display:block;font-size:15px}
+  .fu .who span{display:block;color:var(--frost);font-size:13px;margin-top:3px;line-height:1.45;overflow-wrap:anywhere}
+  .fu .who a{color:var(--gold-soft)}
+  .fu .why{color:#ffd0a8 !important}
+  .fu.done{opacity:.55}
+  .fu-empty{color:var(--frost);font-size:14px;padding:6px 0}
   .exports{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
   .eb-state{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
   .eb-state .tag{margin-top:0}
@@ -171,6 +180,15 @@
     <div class="err" id="loadErr" hidden></div>
 
     <div class="kpis" id="kpis"></div>
+
+    <div class="card" id="followCard">
+      <div class="card-h"><h2>Follow-ups</h2><span class="muted" style="font-size:13px" id="followCount"></span></div>
+      <p class="hint">Families who asked us to call about their custom gifts, and payments that need a person. Tick them off as you go.</p>
+      <div class="sub">Gift call-backs</div>
+      <div id="callbacks"><p class="fu-empty">Loading…</p></div>
+      <div class="sub">Payment issues</div>
+      <div id="payIssues"><p class="fu-empty">Loading…</p></div>
+    </div>
 
     <div class="grid2">
       <div class="card">
@@ -254,7 +272,7 @@
   function signedOut(msg){token=null;try{localStorage.removeItem(TOKEN_KEY)}catch(e){}setSignedIn(false);if(msg){$("#authErr").textContent=msg;$("#authErr").hidden=false}}
   function tryToken(t){
     token=t;
-    return api("/api/admin/stats").then(function(j){try{localStorage.setItem(TOKEN_KEY,t)}catch(e){}setSignedIn(true);draw(j);startTimer();return true})
+    return api("/api/admin/stats").then(function(j){try{localStorage.setItem(TOKEN_KEY,t)}catch(e){}setSignedIn(true);draw(j);loadFollowups();startTimer();return true})
       .catch(function(e){token=null;throw e});
   }
   $("#signIn").onclick=function(){
@@ -269,9 +287,34 @@
   function load(quiet){
     // Keep the last render on screen (dimmed) while refetching, so nothing jumps.
     $("#screen-main").classList.add("loading");
-    return api("/api/admin/stats").then(function(j){$("#loadErr").hidden=true;draw(j);if(!quiet)toast("Updated")})
+    return api("/api/admin/stats").then(function(j){$("#loadErr").hidden=true;draw(j);loadFollowups();if(!quiet)toast("Updated")})
       .catch(function(e){if(e.status===401){signedOut("Your saved token no longer works. Enter the current one.");return}$("#loadErr").textContent="Couldn't refresh: "+e.message+". Showing the last figures.";$("#loadErr").hidden=false})
       .then(function(){$("#screen-main").classList.remove("loading")});
+  }
+  /* ---------- follow-ups ---------- */
+  function loadFollowups(){
+    return api("/api/admin/followups").then(drawFollowups).catch(function(e){if(e.status===401)return;$("#callbacks").innerHTML='<p class="err">Couldn\'t load follow-ups: '+esc(e.message)+'</p>';$("#payIssues").innerHTML=""});
+  }
+  function drawFollowups(f){
+    var cb=f.callbacks||[],pi=f.payments||[];
+    var open=cb.filter(function(r){return !r.callback_done_at}).length+pi.filter(function(r){return !r.attention_resolved_at}).length;
+    $("#followCount").textContent=open?open+" to do":"all clear";
+    $("#callbacks").innerHTML=cb.length?cb.map(function(r){
+      var kids=(r.children||[]).map(function(c){return c.name+(c.age!=null?" ("+c.age+")":"")}).join(", ");
+      return '<div class="fu'+(r.callback_done_at?' done':'')+'"><div class="who"><b>'+esc(r.guardian_name)+' · <a href="tel:'+esc(r.guardian_phone)+'">'+esc(r.guardian_phone)+'</a></b>'+
+        '<span>'+esc(r.ref)+' · visit '+esc(fmtDay(r.visit_date))+' '+esc(r.slot)+' · for '+esc(kids)+'</span>'+
+        '<span>'+esc(r.guardian_email)+(r.callback_done_at?' · called '+esc(fmtDay(r.callback_done_at)):'')+'</span></div>'+
+        '<button type="button" class="btn btn-ghost btn-sm" data-cb="'+esc(r.ref)+'" data-done="'+(!r.callback_done_at)+'">'+(r.callback_done_at?'Undo':'Mark called')+'</button></div>';
+    }).join(""):'<p class="fu-empty">No call-back requests yet.</p>';
+    $("#payIssues").innerHTML=pi.length?pi.map(function(r){
+      return '<div class="fu'+(r.attention_resolved_at?' done':'')+'"><div class="who"><b>'+esc(r.guardian_name)+' · <a href="tel:'+esc(r.guardian_phone)+'">'+esc(r.guardian_phone)+'</a></b>'+
+        '<span class="why">'+esc(r.attention)+'</span>'+
+        '<span>'+esc(r.ref)+' · '+esc(r.status==="late_conflict"?"paid late, slot not held":r.status)+' · booked for '+esc(fmtDay(r.visit_date))+' '+esc(r.slot)+' · total '+NGN(r.amount_total)+(r.flw_amount_paid!=null?' · received '+NGN(r.flw_amount_paid):'')+'</span></div>'+
+        '<button type="button" class="btn btn-ghost btn-sm" data-pi="'+esc(r.ref)+'" data-done="'+(!r.attention_resolved_at)+'">'+(r.attention_resolved_at?'Reopen':'Mark resolved')+'</button></div>';
+    }).join(""):'<p class="fu-empty">No payment issues.</p>';
+    function wire(attr,path,key){$$("["+attr+"]").forEach(function(b){b.onclick=function(){b.disabled=true;var body={};body[key]=b.getAttribute("data-done")==="true";
+      api("/api/admin/followups/"+encodeURIComponent(b.getAttribute(attr))+path,false,body).then(function(){toast("Saved");return loadFollowups()}).catch(function(e){b.disabled=false;toast(e.message||"Couldn't save")})}})}
+    wire("data-cb","/callback","done");wire("data-pi","/resolve","resolved");
   }
   function startTimer(){clearInterval(timer);timer=setInterval(function(){if(!document.hidden)load(true)},60000)}
   document.addEventListener("visibilitychange",function(){if(!document.hidden&&token&&data)load(true)});
