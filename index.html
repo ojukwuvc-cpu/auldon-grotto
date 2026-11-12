@@ -166,8 +166,6 @@
   .tm blockquote{margin:0 0 10px;color:var(--snow);font-size:15px;line-height:1.55}
   .tm figcaption{color:var(--gold-soft);font-weight:700;font-size:13.5px}
   .tm figcaption span{color:var(--frost);font-weight:400}
-  .gift-example{margin-top:14px;padding:12px 14px;border:1px dashed rgba(212,175,110,.5);border-radius:12px;color:var(--frost);font-size:13.5px;line-height:1.55}
-  .gift-example b{color:var(--snow)}.gift-example .eb{color:var(--gold-soft)}
 
   .trust{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:22px}
   .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--frost);background:rgba(255,255,255,.04);border:1px solid var(--line);padding:7px 12px;border-radius:999px}
@@ -866,7 +864,6 @@
         <p class="sub">The Santa Experience doesn't include a gift. Add one Santa Gift Package to your booking — for a boy, a girl or a baby — and it's ready for your visit.</p>
         <div class="pk-grid" id="pkGrid"></div>
         <p class="note-sm" id="giftNote"></p>
-        <p class="gift-example" id="giftExample" hidden></p>
         <div class="gift-cta"><button type="button" class="btn btn-ghost" id="giftsBtn">Add a gift when you book →</button></div>
         <div class="other-gift" id="otherGift"></div>
       </div>
@@ -1289,12 +1286,6 @@
       lg.innerHTML=sig.map(function(s){return '<div class="loved"><span class="ic">'+ic(s[0])+'</span><div><b>'+esc(s[1])+'</b><span>'+esc(s[2])+'</span></div></div>'}).join("");}
     var tm=CFG.testimonials||[],tr=$("#tmRow");
     if(tr){if(tm.length){tr.hidden=false;tr.innerHTML=tm.map(function(t){return '<figure class="tm"><blockquote>\u201c'+esc(t.quote)+'\u201d</blockquote><figcaption>'+esc(t.name||"")+(t.detail?' <span>'+esc(t.detail)+'</span>':'')+'</figcaption></figure>'}).join("");}else{tr.hidden=true;}}
-    var ge=$("#giftExample");
-    if(ge){var eb2=CFG.earlyBird||{},cp=eb2.active?eb2.price:CFG.ticket.price,bz=(CFG.giftPackages||[]).filter(function(b){return b.id==="bronze"})[0],sv=(CFG.giftPackages||[]).filter(function(b){return b.id==="silver"})[0];
-      if(bz&&sv){var one=CFG.ticket.price+bz.price,oneE=cp+bz.price,two=2*CFG.ticket.price+2*sv.price,twoE=2*cp+2*sv.price;
-        ge.innerHTML='<b>What a visit costs:</b> 1 child + a Bronze gift = '+NGN(one)+' \u00b7 2 children + Silver gifts = '+NGN(two)+(eb2.active?'. <span class="eb">Early-bird now: '+NGN(oneE)+' / '+NGN(twoE)+'.</span>':'.');
-        ge.hidden=false;}
-    }
     if(c.venue)$("#ftAddress").textContent=c.venue+" · "+(c.address||"");
     if(c.mapsUrl)$("#ftMaps").href=c.mapsUrl;
     if(c.whatsappUrl){var links=[['Call or WhatsApp '+(c.phone||c.whatsapp||''),c.whatsappUrl],[(c.website||'').replace(/^https?:\/\/(www\.)?/,''),c.website]];var so=c.socials||{};[['Instagram',so.instagram],['TikTok',so.tiktok],['Facebook',so.facebook],['X',so.x]].forEach(function(p){if(p[1])links.push(p)});$("#ftLinks").innerHTML=links.filter(function(l){return l[1]}).map(function(l){return '<a href="'+esc(l[1])+'" target="_blank" rel="noopener">'+esc(l[0])+'</a>'}).join("")+'<a href="#terms" id="termsLink">Privacy &amp; booking terms</a>'}
