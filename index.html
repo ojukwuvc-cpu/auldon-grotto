@@ -662,6 +662,8 @@
   .block-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:22px;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--frost)}
   .block-h span{letter-spacing:0;text-transform:none;font-weight:600;color:var(--frost-dim)}
   .slot .av.gone{color:var(--frost-dim)}
+  .slot .av.held{color:var(--amber)}
+  .held-hint{font-size:12.5px;margin-top:12px}
   .adults{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:15px;margin-top:12px}
   .adults .t{flex:1;min-width:0}
   .adults .t b{display:block;font-size:14.5px}
@@ -943,7 +945,7 @@
         <li>Each booking is a private 10-minute visit at the time slot you choose. Please arrive 15 minutes before your slot and present your booking confirmation or reference. Late arrival may affect your experience.</li>
         <li>The Santa Experience does not include a gift. Only bookings that include a Santa Gift Package receive a gift. Package pictures show the packages currently in stock.</li>
         <li>Early-bird prices apply only while the offer is running and are fixed at the time you book.</li>
-        <li>Your slot is held for 30 minutes while you pay. If the transfer doesn't arrive in that time the booking expires, the slot is released and no money is taken.</li>
+        <li>Your slot is held for <span class="js-paywin">20</span> minutes while you pay. If your transfer arrives after that, we still match it to your booking: you keep the slot if it's still free; if not, we'll contact you to move your visit or refund you in full.</li>
         <li>Tickets are non-refundable, but can be moved to another date or time slot subject to availability — call or WhatsApp 0810 002 5985 with your booking reference.</li>
       </ul>
       <h3>Your privacy</h3>
@@ -998,7 +1000,7 @@
             <li><b>3</b><span>Stay on this page — your Golden Ticket appears the moment it lands.</span></li>
           </ol>
           <div class="waiting" id="waitingBox"><span class="pulse"></span><div><b>Watching for your transfer…</b><span id="waitingSub">This usually takes under a minute.</span></div></div>
-          <div class="expired-box" id="expiredBox" hidden><b>This account has expired.</b><p style="color:var(--frost);font-size:13px;margin-top:6px">No money was taken. Start again and we'll give you a fresh account.</p><button class="btn btn-gold" id="restartBtn" style="margin-top:12px">Start again</button></div>
+          <div class="expired-box" id="expiredBox" hidden><b id="expiredTitle">Your slot hold has ended.</b><p id="expiredText" style="color:var(--frost);font-size:13px;margin-top:6px">If you haven't paid, nothing has been taken — start again for a fresh account. Already sent the money? Don't worry: we'll still match it to your booking reference, keep your slot if it's free, or contact you to move your visit or refund you. Watch your email.</p><button class="btn btn-gold" id="restartBtn" style="margin-top:12px">Start again</button></div>
           <div class="expiry" id="payExpiry">Account valid for <b>—</b></div>
         </div>
       </div>
@@ -1149,10 +1151,10 @@
   function phoneOk(p){return /^\+?\d{10,14}$/.test(normPhone(p))}
   function emailOk(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e||"").trim())}
   /* draft: keep what the parent typed across refresh / accidental navigation (24 h) */
-  var DRAFT_KEY="grotto_draft_v2";
-  function saveDraft(){try{if(!CFG||!ONLINE)return;localStorage.setItem(DRAFT_KEY,JSON.stringify({t:Date.now(),cur:cur,S:{location:S.location,date:S.date,slot:S.slot,children:S.children,extraAdults:S.extraAdults,guardian:S.guardian,promo:S.promo,diamondMode:S.diamondMode}}))}catch(e){}}
+  var DRAFT_KEY="grotto_draft_v3"; // v3: no guardian contact details are stored
+  function saveDraft(){try{if(!CFG||!ONLINE)return;localStorage.setItem(DRAFT_KEY,JSON.stringify({t:Date.now(),cur:cur,S:{location:S.location,date:S.date,slot:S.slot,children:S.children,extraAdults:S.extraAdults,promo:S.promo,diamondMode:S.diamondMode}}))}catch(e){}}
   function loadDraft(){try{var d=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null");if(!d||Date.now()-d.t>86400000)return null;return d}catch(e){return null}}
-  function clearDraft(){store(DRAFT_KEY,null);store("grotto_draft_v1",null)}
+  function clearDraft(){store(DRAFT_KEY,null);store("grotto_draft_v2",null);store("grotto_draft_v1",null)}
   /* focus + announce each step for keyboard and screen-reader users */
   function announce(msg){var l=$("#liveStep");if(l){l.textContent="";setTimeout(function(){l.textContent=msg},50)}}
   function focusHeading(pane){var h=$("h2",pane);if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}}
@@ -1174,7 +1176,7 @@
           }
         }
         var chip=$("#chipAvail");
-        if(chip&&(full+few)>0){chip.querySelector("span").textContent=(full+few)+" dates filling fast";chip.hidden=false;}
+        if(chip&&(full+few)>0){chip.querySelector("span").textContent=few?(few+(few===1?" date":" dates")+" filling fast"):(full+(full===1?" date":" dates")+" fully booked");chip.hidden=false;}
       }).catch(function(){});
     }catch(e){}
   }
@@ -1260,6 +1262,7 @@
     var dates=(CFG.season&&CFG.season.openDates)||[];
     if(dates.length){var a=parseDate(dates[0]),b=parseDate(dates[dates.length-1]);$("#chipWhen").textContent=a.getDate()+" "+MONTHS[a.getMonth()]+" – "+b.getDate()+" "+MONTHS[b.getMonth()]}
     var eb=CFG.earlyBird||{};
+    $$(".js-paywin").forEach(function(e){e.textContent=CFG.paymentWindowMinutes||20});
     $("#chipPrice").innerHTML=eb.active?'<s>'+NGN(CFG.ticket.price)+'</s> '+NGN(eb.price)+' promo · per child':NGN(CFG.ticket.price)+' per child';
     var eg=$("#expGrid");eg.innerHTML="";
     (CFG.experience||[]).forEach(function(e,i){var d=document.createElement("div");d.className="exp";d.innerHTML='<span class="ic">'+ic(e.icon)+'</span><div><div class="num">0'+(i+1)+'</div><b>'+esc(e.name)+'</b><span>'+esc(e.sub)+'</span></div>';eg.appendChild(d)});
@@ -1397,14 +1400,15 @@
         bl.slots.forEach(function(s){
           var b=document.createElement("button");b.type="button";b.className="slot";
           var start=s.label.split(" – ")[0];
-          b.innerHTML='<div class="tm">'+esc(start)+'</div><div class="av '+(s.left>0?"ok":"gone")+'">'+(s.left>0?"Available":s.past?"Passed":"Booked")+'</div>';
-          b.setAttribute("aria-label",s.label+(s.left>0?", available":s.past?", already passed":", booked"));
+          b.innerHTML='<div class="tm">'+esc(start)+'</div><div class="av '+(s.left>0?"ok":s.held?"held":"gone")+'">'+(s.left>0?"Available":s.past?"Passed":s.held?"On hold":"Booked")+'</div>';
+          b.setAttribute("aria-label",s.label+(s.left>0?", available":s.past?", already passed":s.held?", on hold — another family is paying; it may free up shortly":", booked"));
           if(s.left<=0){b.disabled=true}
           else{b.setAttribute("aria-pressed",!!(S.slot&&S.slot.id===s.id));b.onclick=function(){S.slot={id:s.id,label:s.label,block:bl.name};$$(".slot",host).forEach(function(o){o.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");updateActionBar();if(validStep())setTimeout(function(){if(STEPS[cur]==="date"&&S.slot&&validStep())next()},300)}}
           g.appendChild(b);
         });
         host.appendChild(g);
       });
+      if(av.blocks.some(function(bl){return bl.slots.some(function(s){return s.held})})){var hh=document.createElement("p");hh.className="hint held-hint";hh.textContent="“On hold” means another family is paying for that time right now. If their payment doesn’t arrive within "+(CFG.paymentWindowMinutes||20)+" minutes, it opens up again.";host.appendChild(hh)}
       if(S.slot){var still=av.blocks.some(function(bl){return bl.slots.some(function(s){return s.id===S.slot.id&&s.left>0})});if(!still){S.slot=null;toast("That time slot has been taken — please choose another.")}}
       updateActionBar();
     }).catch(function(e){var host=$("#slotHost");if(host){host.className="slot-host";host.innerHTML='<div class="offline">Couldn’t load availability: '+esc(e.message)+'. <a href="#" id="retrySlots" style="color:var(--gold-soft)">Try again</a></div>';var r=$("#retrySlots");if(r)r.onclick=function(ev){ev.preventDefault();loadSlots()}}});
@@ -1682,6 +1686,7 @@
     function check(){
       api("/api/bookings/"+encodeURIComponent(ref)).then(function(b){
         if(b.status==="paid"){stopTimers();store("grotto_pending_ref",null);showTicket(b)}
+        else if(b.status==="late_conflict"){stopTimers();store("grotto_pending_ref",null);$("#waitingBox").hidden=true;$("#expiredTitle").textContent="We've received your payment.";$("#expiredText").textContent="It arrived after your slot hold ended and that time is no longer free. Your money is safe — our team will call you to move your visit or refund you. We've emailed you the details.";$("#restartBtn").hidden=true;$("#expiredBox").hidden=false}
         else if(b.status==="expired"||b.status==="cancelled"){stopTimers();store("grotto_pending_ref",null);$("#waitingBox").hidden=true;$("#expiredBox").hidden=false}
         else{n++;if(n===12)$("#waitingSub").textContent="Still watching. Some banks take a few minutes to settle."}
       }).catch(function(){});
@@ -1769,7 +1774,7 @@
     var tl=$("#termsLink");if(tl)tl.onclick=function(ev){ev.preventDefault();openTerms()};
     try{history.replaceState({g:"home"},"")}catch(e){}
     if(location.hash==="#terms"){openTerms()}
-    store("grotto_draft_v1",null);
+    store("grotto_draft_v1",null);store("grotto_draft_v2",null);
     // Resume an unfinished booking after a refresh or accidental navigation.
     var draft=ONLINE&&CFG.bookingsOpen!==false&&loadDraft();
     if(draft&&draft.S&&draft.S.date){
